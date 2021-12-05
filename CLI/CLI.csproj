@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <StartupObject>CLI.EntryPoint</StartupObject>
+	<UseWindowsForms>true</UseWindowsForms>
+	<AssemblyVersion>1.0.*</AssemblyVersion>
+    <Deterministic>false</Deterministic>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EasyConsole" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lib\Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Update="JetBrains.Platform.Core">
+      <CopyLocal>True</CopyLocal>
+      <SpecificVersion>True</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+
+</Project>
