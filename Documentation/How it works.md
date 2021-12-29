@@ -13,7 +13,7 @@ When shaping starts, the following is occurs:
 Starts by loading the solution file (.sln) and parses its projects (.vcxproj)
 location and names using regex, for example:
 
-``` json
+```xml
 Project("{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}") = "ExampleCLI", "vs_files\CWebBrowser\CWebBrowser.vcxproj", "{2E953487-E73A-4C43-A9B6-174AB7B9A7E2}"
 EndProject
 Project("{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}") = "ExampleLib", "vs_files\EffectLib\EffectLib.vcxproj", "{7F1EC9EC-35DA-4332-A339-B68E3C95976F}"
@@ -29,7 +29,7 @@ will result in `ExampleCLI` and `ExampleLib` data and then proceeds to parse its
 Starts by loading each given project file (vcxproj) and parses its modules (.cpp)
 and headers (.h) using regex, for example: 
 
-``` json
+```xml
   <ItemGroup>
     <ClInclude Include="..\source\ExampleCLI\CLI.h"/>
     <ClInclude Include="..\source\ExampleCLI\Menu.h"/>
@@ -72,8 +72,8 @@ void Hello ()
 
 its text its stored in the Module Dictionary giving its location, for example:
 
-```cpp
-Module.Dictionary[Location.Method] = context
+```csharp
+Module.Dictionary[Location.Method] = context text (the function text above for example)
 ```
 
 then, processing of Shaping Actions occurs, such as Builders, Resolvers, Replacements, Additions and Subtractions (we will call them BRRAS)
