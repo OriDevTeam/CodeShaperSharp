@@ -1,0 +1,7 @@
+
+            Fonts used: NexaRustSlab-Black,BebasNeue 
+
+            Colors used: 076AE0,FFFFFF  
+
+            Icon url: https://thenounproject.com/term/code/109754  
+        
