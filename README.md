@@ -2,6 +2,9 @@
 <img src="https://icyber.me/images/ugK.png" width="300"/>
 </p>
 
+### PROJECT IN DEVELOPMENT
+___
+
  A tool to automate code changes using Regex and Antlr4
 
 - Regex PCRE compliant using [PCRE.NET](https://github.com/ltrzesniewski/pcre-net)
@@ -57,5 +60,5 @@ exceptions regarding these points
 #### Naming Actions
 When writing any sort of Action (such as Builders, Replacements, Additions, etc...) be aware
 that these should not have the same names, as it may end up overwriting each other
-in expression  matching
+in expression matching
 
