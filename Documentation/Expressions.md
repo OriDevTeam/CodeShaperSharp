@@ -1,13 +1,30 @@
 
 # Expressions
+### Be aware that this doc is in development and might not be accurate
+___
 
 There are several expressions that are used when using actions, such as:
  - PCRE Regex Expressions
  - Builder Expressions
  - Resolver Expressions
 
+## Expression Groups
 
-## Regex Expressions
+Due to lack of better quality implementation currently, expressions are grouped into
+these categories
+
+ - Actions Expressions
+   - Builder Expressions 
+   - Resolver Expressions
+   
+
+ - Regex Expressions
+   - PCRE Regex Expressions
+
+When one group is in use, the other cannot be used, for example when its required
+to use Actions Expressions you cannot use Regex Expressions, and vice-versa
+
+### Regex Expressions
 ___
 
 In all the places where expressions are used, regex expressions supports
@@ -16,7 +33,7 @@ is always present, the regex support is Perl Compatible Regex Expressions (PCRE)
 You can test regex expressions at [Regex101 with the Flavor PCRE (PHP<7.3)](https://regex101.com/)
 
 
-## Builder Expressions
+### Builder Expressions
 ___
 
 This expression is used in actions to get a specific builder built string
@@ -48,7 +65,7 @@ Will return the built string:
 I found cookies!
 ```
 
-## Resolver Expressions
+### Resolver Expressions
 
 This expression is used in actions to call a resolver to return a constant string
 and its format is the following:
@@ -74,7 +91,7 @@ When called the resolver will automatically provide these variables locally:
  - args_count: count amount of given arguments
 
 
-### List Mode
+#### List Mode
 
 List mode is to make a switch case like operation which takes any type of expression
 as its keys and values, and it's defined following:
@@ -101,7 +118,7 @@ Will return the resolved string:
 Albert and John solved the problem!
 ```
 
-### Switch Mode
+#### Switch Mode
 
 Switch mode is to make a switch case like operation which takes any type of expression
 as its keys and values, and it's defined following:
@@ -129,10 +146,10 @@ Albert and John solved the problem!
 ```
 
 
-##############
+___
 
 
-
+<!--
 For example, calling the following resolver:
 
 ```
@@ -153,3 +170,4 @@ Will return the resolved string:
 ```
 Albert and John solved the problem!
 ```
+-->
