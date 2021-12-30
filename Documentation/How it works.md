@@ -14,9 +14,9 @@ Starts by loading the solution file (.sln) and parses its projects (.vcxproj)
 location and names using regex, for example:
 
 ```xml
-Project("{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}") = "ExampleCLI", "vs_files\CWebBrowser\CWebBrowser.vcxproj", "{2E953487-E73A-4C43-A9B6-174AB7B9A7E2}"
+Project("{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}") = "ExampleCLI", "projects\ExampleCLI.vcxproj", "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}"
 EndProject
-Project("{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}") = "ExampleLib", "vs_files\EffectLib\EffectLib.vcxproj", "{7F1EC9EC-35DA-4332-A339-B68E3C95976F}"
+Project("{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}") = "ExampleLib", "projects\ExampleLIB.vcxproj", "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}"
 EndProject
 ...
 ```
