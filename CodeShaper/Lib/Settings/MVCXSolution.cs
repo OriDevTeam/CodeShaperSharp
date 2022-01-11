@@ -18,13 +18,16 @@ namespace Lib.Settings
 
     public class MVCXSolution
     {
-        public string Name { get; private set; }
+        public string Name { get;}
         public List<MVCXProject> projects;
 
         public MVCXSolution(string solutionPath)
         {
+            Name = $"Solution {Path.GetFileName(Path.GetDirectoryName(solutionPath))}";
+            
             var solutionFile = File.ReadAllText(solutionPath + "client.sln");
             projects = LoadProjectsRegex(solutionPath, solutionFile);
+            
         }
 
         private List<MVCXProject> LoadProjectsRegex(string solutionPath, string solutionFile)

@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
+             xmlns:expressions="clr-namespace:Lib.Shaping.Expressions;assembly=Lib"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.ActionsTreeView">
+    
+    
+    <Design.DataContext>
+        <shapingWindow:ActionsTreeViewModel/>
+    </Design.DataContext>
+
+    <Border Margin="5"
+            VerticalAlignment="Stretch"
+            Background="Transparent"
+            BorderBrush="Gray"
+            BorderThickness="2"
+            CornerRadius="1">
+        <TreeView Items="{Binding Groups}">
+            <TreeView.DataTemplates>
+                <TreeDataTemplate DataType="expressions:Groups" ItemsSource="{Binding Teams}">
+                    <TextBlock Foreground="Red" Text="{Binding Name}" />
+                </TreeDataTemplate>
+                <DataTemplate DataType="expressions:Groups">
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </TreeView.DataTemplates>
+        </TreeView>
+    </Border>
+    
+</UserControl>

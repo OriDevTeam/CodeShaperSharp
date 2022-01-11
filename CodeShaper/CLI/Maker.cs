@@ -18,18 +18,6 @@ namespace CLI
 {
     internal static class MakerTest
     {
-        public static List<ShapingConfiguration> GetLocalShapingConfigurations()
-        {
-            var configsDir = @"configs\";
-
-            var configurations = new List<ShapingConfiguration>();
-
-            foreach (string file in Directory.EnumerateFiles(configsDir, "*.hjson", SearchOption.AllDirectories))
-                configurations.Add(ShapingConfiguration.Load(file));
-
-            return configurations;
-        }
-
         public static void RunShapingConfiguration(ConsoleProgram program, ShapingConfiguration configuration)
         {
             program.Make(configuration);

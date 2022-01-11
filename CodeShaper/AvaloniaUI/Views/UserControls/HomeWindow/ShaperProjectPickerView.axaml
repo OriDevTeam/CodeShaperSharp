@@ -1,0 +1,57 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:homeWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.HomeWindow"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+             x:Class="AvaloniaUI.Views.UserControls.HomeWindow.ShaperProjectPickerView">
+    
+    <Design.DataContext>
+        <homeWindow:ShaperProjectPickerViewModel />
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="*, 200">
+        <Panel Grid.Row="0" Grid.Column="0">
+            <Grid RowDefinitions="Auto, Auto">
+                <TextBlock Grid.Row="0" Text="Recent Shape Projects"
+                           FontFamily="Tahoma"
+                           FontSize="20"
+                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                           Margin="20, 10"/>
+                <Border Grid.Row="1"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Background="Transparent"
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                        Padding="5">
+                    
+                        <Panel VerticalAlignment="Stretch">
+                        </Panel>
+                </Border>
+            </Grid>
+        </Panel>
+        
+        <Border Grid.Row="1"
+                VerticalAlignment="Bottom"
+                Background="Transparent"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                CornerRadius="5"
+                Padding="5">
+            
+            <Panel Margin="0, 2">
+            
+                <Button Content="Create New Shape Project"
+                        Command="{Binding CreateNewShapeProjectCommand}">
+                </Button>
+                <Button Content="Open Other Shape Project" HorizontalAlignment="Right"
+                        Command="{Binding OpenShapeProjectCommand}">
+                </Button>
+            </Panel>
+            
+        </Border>
+        
+    </Grid>
+</UserControl>

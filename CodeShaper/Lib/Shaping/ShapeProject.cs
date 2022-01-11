@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Projects;
 using Lib.Configurations;
 
 
@@ -18,9 +17,8 @@ namespace Lib.Shaping
     public class ShapeProject
     {
         public ShapeProjectConfiguration Configuration;
-        public List<ShapePatch> Patches = new();
-
-
+        public readonly List<ShapePatch> Patches;
+        
         public event EventHandler<string> SavingShapedFile;
 
         public ShapeProject(ShapingConfiguration shapingConfiguration)
@@ -28,7 +26,7 @@ namespace Lib.Shaping
             Patches = ParsePatches(shapingConfiguration.ShapeProjectDirectory);
         }
 
-        public List<ShapePatch> ParsePatches(string projectDirectory)
+        private List<ShapePatch> ParsePatches(string projectDirectory)
         {
             var patches = new List<ShapePatch>();
 
@@ -49,7 +47,8 @@ namespace Lib.Shaping
 
             return patches;
         }
-
+        
+        /*
         public List<ShapeResult> Shape(VCXSolution vcxProject, ShapingConfiguration config)
         {
             var results = new List<ShapeResult>();
@@ -63,19 +62,23 @@ namespace Lib.Shaping
 
             return results;
         }
-
+        */
 
         internal bool ShouldLoad(string module)
         {
             foreach (var patch in Patches)
             {
-                bool match = PcreRegex.IsMatch(module, patch.Patch.FileSearch);
+                var match = PcreRegex.IsMatch(module, patch.Patch.FileSearch);
 
                 if (match)
                     return true;
             }
 
             return false;
+        }
+
+        public void Load()
+        {
         }
     }
 

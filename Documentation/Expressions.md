@@ -15,6 +15,11 @@ these categories
 
  - Actions Expressions
    - Builder Expressions 
+   
+     - Builder Build Expressions
+       - Regex Replace Expressions
+       - Resolver Expressions
+   
    - Resolver Expressions
    
 

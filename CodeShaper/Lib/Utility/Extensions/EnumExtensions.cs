@@ -14,6 +14,7 @@ namespace Lib.Utility.Extensions
 {
     public static class EnumExtensions
     {
+
         public static string ToEnumString<T>(this T type)
         {
             var enumType = typeof(T);
@@ -33,7 +34,12 @@ namespace Lib.Utility.Extensions
             var enumType = typeof(T);
             foreach (var name in Enum.GetNames(enumType))
             {
-                var enumMemberAttribute = ((EnumMemberAttribute[])enumType.GetField(name).GetCustomAttributes(typeof(EnumMemberAttribute), true)).Single();
+                var enumMember = (EnumMemberAttribute[])enumType.GetField(name).GetCustomAttributes(typeof(EnumMemberAttribute), true);
+
+                if (enumMember.Length < 1)
+                    continue;
+
+                var enumMemberAttribute = enumMember.Single();
                 if (enumMemberAttribute.Value == str) return (T)Enum.Parse(enumType, name);
             }
 

@@ -8,7 +8,6 @@ using Lib.Shapers.CPP;
 using Lib.Shaping;
 
 
-
 // Library Namespaces
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
@@ -16,7 +15,7 @@ using Antlr4.Runtime.Tree;
 using PCRE;
 
 
-namespace Lib.AST.ANTLR
+namespace Lib.AST.ANTLR.CPP14
 {
     public class CPPModuleVisitor : CPP14ParserBaseVisitor<object>
     {
@@ -75,7 +74,7 @@ namespace Lib.AST.ANTLR
                 Result.Process(Module, match.Value, Location.Include);
             }
         }
-
+        
         public override object VisitDeclaration([NotNull] CPP14Parser.DeclarationContext context)
         {
             var con = GetOriginalText(context);  
@@ -83,7 +82,7 @@ namespace Lib.AST.ANTLR
             Module.Dictionary[Location.Declaration] = con;
 
             Result.Process(Module, con, Location.Declaration);
-
+        
             return base.VisitDeclaration(context);
         }
 

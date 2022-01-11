@@ -1,0 +1,93 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+             x:Class="AvaloniaUI.Views.UserControls.HomeWindow.ShaperProjectDetailedView"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:homeWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.HomeWindow"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+             MinWidth="800" MinHeight="450">
+    
+    <Design.DataContext>
+        <homeWindow:ShaperProjectDetailedViewModel />
+    </Design.DataContext>
+
+    
+    <Grid RowDefinitions="30, *, 125" ShowGridLines="False">
+        
+        <Panel Grid.Row="0">
+            
+            <TextBlock Text="{Binding Name}"
+                       Padding="3"
+                       FontSize="18" FontStyle="Italic"
+                       HorizontalAlignment="Center">
+            </TextBlock>
+        </Panel>
+        
+        <Panel Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        
+            <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                    Background="Transparent"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    CornerRadius="5"
+                    Padding="1">
+                <ScrollViewer>
+                    <md:MarkdownScrollViewer Markdown="{Binding Description}">
+                    </md:MarkdownScrollViewer>
+                </ScrollViewer>
+            </Border>
+        </Panel>
+        
+        <Grid Grid.Row="2" RowDefinitions="75, *" ShowGridLines="False">
+            
+            <Panel Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Panel VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                    <Border VerticalAlignment="Top"
+                            BorderBrush="Gray"
+                            BorderThickness="1"
+                            CornerRadius="5"
+                            Padding="5">
+                    
+                        <WrapPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    
+                            <Panel MinWidth="765" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                <TextBlock Text="{Binding ShapeProjectDirectory}" Padding="0, 5" VerticalAlignment="Bottom" FontSize="12"></TextBlock>
+                                <Button Content="Browse" HorizontalAlignment="Right"></Button>
+                            </Panel>
+                    
+                            <Panel MinWidth="765" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                <TextBlock Text="{Binding SourceDirectory}" Padding="0, 5" VerticalAlignment="Bottom" FontSize="12"></TextBlock>
+                                <Button Content="Browse" HorizontalAlignment="Right"></Button>
+                            </Panel>
+                    
+                        </WrapPanel>
+  
+                    </Border>
+                
+                </Panel>
+
+            </Panel>
+            
+            <Panel Grid.Row="1">
+                <Border MinWidth="200" MinHeight="50"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Bottom"
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                        Padding="5">
+                                    
+                    <Panel>
+                        <Button Content="Go Back" Command="{Binding GoBackCommand}" HorizontalAlignment="Left" />
+                        <Button Content="Start Shaping" Command="{Binding StartShapeProjectCommand}" HorizontalAlignment="Right" />
+                    </Panel>
+                    
+                </Border>
+            </Panel>
+            
+        </Grid>
+        
+    </Grid>
+    
+</UserControl>

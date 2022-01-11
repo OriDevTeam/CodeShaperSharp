@@ -5,17 +5,19 @@ using System.Runtime.Serialization;
 
 
 // Application Namespaces
+using Lib.Shaping.Interfaces;
 using Lib.Utility.Extensions;
+using Lib.Shaping.Expressions;
 
 
 // Library Namespaces
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using PCRE;
 
 namespace Lib.Shapers.CPP
 {
-    public class CPPPatch
+    public class CPPPatch : IShapePatch
     {
         [JsonRequired]
         [JsonProperty("file")]
@@ -42,6 +44,9 @@ namespace Lib.Shapers.CPP
 
         [JsonProperty("resolvers")]
         public Dictionary<string, Resolver> Resolvers = new();
+
+        [JsonProperty("makers")]
+        public Dictionary<string, Maker> Makers = new();
     }
 
     public class Replacement
@@ -114,7 +119,7 @@ namespace Lib.Shapers.CPP
         public Dictionary<string, JToken> ExtensionData = new();
     }
 
-    public class Builder
+    public class Builder : IShapeVariable
     {
         [JsonRequired]
         [JsonProperty("location")]
@@ -125,6 +130,9 @@ namespace Lib.Shapers.CPP
 
         [JsonProperty("reference")]
         public string Reference;
+
+        [JsonProperty("reference_flags")]
+        public string ReferenceFlags;
 
         [JsonProperty("match")]
         public string Match;
@@ -148,14 +156,52 @@ namespace Lib.Shapers.CPP
 
         public string Context;
 
-        public string Vars;
-
         public string Result = "";
 
         public bool Ready { get; internal set; }
+        public Dictionary<string, IShapeVariable> LocalVariables { get; internal set; } = new();
+
+        public string ProcessVariable(Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        {
+            var built = Groups.ProcessActionsExpressions(Build, variables, arguments);
+
+            return built;
+        }
+
+        public string ProcessVariable()
+        {
+            throw new NotImplementedException();
+        }
     }
 
-    public class Resolver
+    public class Maker : IShapeVariable
+    {
+        [JsonProperty("prepare")]
+        public string Prepare;
+
+        [JsonProperty("locals")]
+        public Dictionary<string, Dictionary<string, string>> Locals = new();
+
+        [JsonRequired]
+        [JsonProperty("make")]
+        public string Make;
+
+        public Dictionary<string, IShapeVariable> LocalVariables { get; internal set; } = new();
+
+        public string ProcessVariable(Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        {
+            var built = Groups.ProcessActionsExpressions(Make, variables, arguments);
+
+            return built;
+        }
+
+        public string ProcessVariable()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Resolver : IShapeVariable
     {
         [JsonProperty("cases")]
         public Dictionary<string, string> Cases = new();
@@ -163,7 +209,66 @@ namespace Lib.Shapers.CPP
         [JsonProperty("list")]
         public List<string> List = new();
 
+        [JsonProperty("index")]
+        public string Index;
+
+        [JsonProperty("default")]
+        public string Default;
+
         public ResolverMode Mode;
+
+        public string ProcessVariable(Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        {
+            string result = null;
+
+            if (Mode == ResolverMode.List)
+                result = ProcessList(variables, arguments);
+            else
+                result = ProcessCases(variables, arguments);
+
+            return result;
+        }
+
+        public string ProcessVariable()
+        {
+            throw new NotImplementedException();
+        }
+        
+        public string ProcessList(Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        {
+            var localExpressions = new LocalExpressions();
+
+            var index = Convert.ToInt32(localExpressions.ProcessExpression(Index, variables, arguments));
+
+            var defaultVal = localExpressions.ProcessExpression(Default, variables, arguments);
+
+            var value = defaultVal;
+
+            if (List.Count < index)
+                value = List[List.Count];
+            else
+                value = List[index];
+
+            return "";
+        }
+        public string ProcessCases(Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        {
+            if (arguments == null || arguments.Count < 1)
+                return "";
+
+            var value = arguments[0];
+
+            foreach (var acase in Cases)
+            {
+                if (PcreRegex.IsMatch(value, acase.Key))
+                {
+                    return acase.Value;
+                }
+            }
+
+            return Default;
+        }
+        
     }
 
     public enum ResolverMode

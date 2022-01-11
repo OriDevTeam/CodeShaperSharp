@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 // Application Namespaces
 using Lib.AST.ANTLR;
+using Lib.AST.ANTLR.CPP14;
 using Lib.Shapers.CPP;
 using Lib.Shaping.Operations;
 

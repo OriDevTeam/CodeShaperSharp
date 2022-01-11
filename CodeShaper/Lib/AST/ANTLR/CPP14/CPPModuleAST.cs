@@ -1,24 +1,21 @@
 ﻿// System Namespaces
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 
 // Application Namespaces
-using Lib.Shapers;
-using Lib.Shaping;
-
 
 // Library Namespaces
 using Antlr4.Runtime;
+using Lib.Shaping;
 using static CPP14Parser;
 
 
-namespace Lib.AST.ANTLR
+namespace Lib.AST.ANTLR.CPP14
 {
     public class CPPModuleAST
     {
-        string FilePath;
         string FileName;
         string FileContent;
 
@@ -26,7 +23,6 @@ namespace Lib.AST.ANTLR
 
         public CPPModuleAST(ShapeProject shapeProject, string filePath)
         {
-            FilePath = filePath;
             FileName = Path.GetFileName(filePath);
             FileContent = File.ReadAllText(filePath);
             ShapeProject = shapeProject;

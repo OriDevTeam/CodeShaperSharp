@@ -6,11 +6,8 @@ using System.Collections.Generic;
 
 // Application Namespaces
 using Lib.Settings;
-using Lib.AST.ANTLR;
-using Lib.Shapers;
 using Lib.Shapers.CPP;
 using Lib.Shaping;
-
 
 
 // Library Namespaces
@@ -19,127 +16,7 @@ using Lib.Shaping;
 
 namespace Lib.Projects
 {
-    public class VCXSolution
-    {
-        public string SolutionPath;
-        public MVCXSolution SolutionInformation;
-        public ShapeProject ShapeProject;
-
-        public List<VCXModule> Modules = new();
-        public List<VCXProject> Projects = new();
-
-        public event EventHandler LoadingVCXSolution;
-        public event EventHandler<MVCXProject> LoadingVCXProject;
-        public event EventHandler<VCXModule> LoadingVCXModule;
-
-        public int ModuleCount = 0;
-
-        public VCXSolution(string solutionPath, ShapeProject shapeProject)
-        {
-            SolutionPath = solutionPath;
-            ShapeProject = shapeProject;
-            SolutionInformation = new MVCXSolution(solutionPath);
-        }
-
-        public void Load()
-        {
-            ParseSolution();
-        }
-
-        void ParseSolution()
-        {
-            LoadingVCXSolution?.Invoke(this, new EventArgs());
-
-            foreach (var project in SolutionInformation.projects)
-                Projects.Add(ParseProject(SolutionPath, project));
-        }
-
-        VCXProject ParseProject(string solutionPath, MVCXProject project)
-        {
-            var vcxproject = new VCXProject(project);
-
-            LoadingVCXProject?.Invoke(this, project);
-
-            var toLoad = new List<string>();
-
-            foreach (var header in project.includes)
-            {
-                if (!ShapeProject.ShouldLoad(header))
-                    continue;
-
-                ModuleCount++;
-                toLoad.Add(header);
-            }
-
-            foreach (var module in project.modules)
-            {
-                if (!ShapeProject.ShouldLoad(module))
-                    continue;
-
-                ModuleCount++;
-                toLoad.Add(module);
-            }
-
-            foreach (var load in toLoad)
-            {
-                var modulePath = Path.GetDirectoryName(project.Path) + @"\" + load;
-
-                var mod = new VCXModule(ShapeProject, modulePath, project.configurations[0]);
-
-                LoadingVCXModule?.Invoke(this, mod);
-
-                Modules.Add(mod);
-
-                vcxproject.Modules.Add(mod);
-
-                // Thread.Sleep(500);
-            }
-
-            return vcxproject;
-        }
-    }
-
-    public class VCXProject
-    {
-        public MVCXProject Project;
-        public List<VCXModule> Modules = new();
-
-        public event EventHandler<VCXModule> LoadingVCXModule;
-
-        public VCXProject(MVCXProject project)
-        {
-            Project = project;
-        }
-    }
-
-    public class VCXModule
-    {
-        public string Name;
-        public string FilePath;
-        public string TargetFilePath;
-
-        ShapeProject ShapeProject;
-        public ShapeResult Result;
-
-        public CPPModuleAST ModuleAST;
-
-        public VCXModule(ShapeProject shapeProject, string filePath, MVCXProjectConfiguration projectConfiguration)
-        {
-            Name = Path.GetFileName(filePath);
-            FilePath = filePath;
-            ShapeProject = shapeProject;
-
-            Result = Parse();
-        }
-
-        ShapeResult Parse()
-        {
-            ModuleAST = new CPPModuleAST(ShapeProject, FilePath);
-            return ModuleAST.ParseAndProcessModule();
-        }
-
-    }
-
+    /*
     public static class ReportProcessedExtensions
     {
         public static int TotalProcessedReplacementCount(this VCXSolution vcxProject)
@@ -271,4 +148,5 @@ namespace Lib.Projects
             return subtractions;
         }
     }
+    */
 }

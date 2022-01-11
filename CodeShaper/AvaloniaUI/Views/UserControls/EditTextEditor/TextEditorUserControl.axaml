@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="AvaloniaUI.Views.UserControls.EditTextEditor.TextEditorUserControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:behaviors="clr-namespace:AvaloniaUI.Views.UserControls.EditTextEditor"
+             xmlns:ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit">
+    
+    <Grid>
+        <ae:TextEditor x:Name="TextCode"
+                       Margin="0"
+                       Background="Transparent"
+                       Foreground="Black"
+                       SyntaxHighlighting="C#"
+                       HorizontalScrollBarVisibility="Auto"
+                       VerticalScrollBarVisibility="Auto"
+                       FontFamily="{DynamicResource CodeFontFamily}" 
+                       FontWeight="Normal" 
+                       FontSize="14"
+                       WordWrap="False">
+            <i:Interaction.Behaviors>
+                <behaviors:DocumentTextBindingBehavior 
+                    Text="{Binding Code, Mode=TwoWay}"/>
+            </i:Interaction.Behaviors>
+        </ae:TextEditor>
+    </Grid>
+    
+</UserControl>

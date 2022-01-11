@@ -21,11 +21,6 @@ namespace CLI.Menu.Shaping.Making
     {
         public static ShapingConfiguration ShapingConfiguration;
 
-        public VCXSolution VCXProject;
-        public ShapeProject ShapeProject;
-
-        Stopwatch _stopWatch;
-
         public ShapingApplyPage(ConsoleProgram program) : base("Applying Shaping", program)
         {
         }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="AvaloniaUI/App.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Assets/Styles/Icons.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/Controls/ShaperView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/DialogWindow.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/HomePage.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/HomeWindow.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/HomeWindow/ShaperProjectPickerView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/MainWindow.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/ShaperProjectDetailedView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/ShaperView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/ShapingWindow.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/EditTextEditor/TextEditorUserControl.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/HomeWindow/ListShapingConfiguration.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/HomeWindow/ShaperProjectDetailed.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/HomeWindow/ShaperProjectPickerView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/HomeWindow/ShaperView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/ActionToolBox.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/ActionToolBoxView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/ActionsTreeView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/ListShapingConfigurationView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/TargetTreeView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/TextEditor/TextEditorUserControl.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

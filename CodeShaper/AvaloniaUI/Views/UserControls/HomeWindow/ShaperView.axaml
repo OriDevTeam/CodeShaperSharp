@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AvaloniaUI.Views.UserControls.HomeWindow.ShaperView"
+             MinWidth="200" MinHeight="75">
+    
+    <StackPanel>
+            
+        <Grid ColumnDefinitions="*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ShowGridLines="False">
+            
+            <Grid Grid.Column="0">
+            
+                <Panel Grid.Row="0">
+                    <TextBlock Text="{Binding Name}" FontSize="15" TextAlignment="Center" Padding="5"></TextBlock>
+                </Panel>
+            </Grid>
+        
+        </Grid>
+        
+        <Grid RowDefinitions="*, *" ShowGridLines="False">
+            
+            <Panel Grid.Row="0">
+                <TextBlock Text="{Binding Summary}" VerticalAlignment="Top" HorizontalAlignment="Center"></TextBlock>
+            </Panel>
+                
+            <Panel Grid.Row="1">
+                <TextBlock Text="{Binding SourceDirectory}" VerticalAlignment="Bottom" FontSize="12"></TextBlock>
+            </Panel>
+                
+        </Grid>
+        
+    </StackPanel>
+    
+</UserControl>

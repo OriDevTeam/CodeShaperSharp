@@ -6,6 +6,7 @@ using System.Collections.Generic;
 // Application Namespaces
 using Lib.Shapers.CPP;
 using Lib.AST.ANTLR;
+using Lib.AST.ANTLR.CPP14;
 using Lib.Utility.Extensions;
 
 
@@ -16,7 +17,7 @@ using PCRE;
 namespace Lib.Shaping.Operations
 {
 
-    internal class Matching
+    public static class Matching
     {
         public static bool MatchesFile(string fileName, ShapePatch patch)
         {
@@ -104,6 +105,7 @@ namespace Lib.Shaping.Operations
 
             var builder = builderKVP.Value;
 
+
             KeyValuePair<string, Builder> nextBuilder = new();
 
             if (builder.ActiveBuilder.Value != null)
@@ -124,14 +126,17 @@ namespace Lib.Shaping.Operations
 
             if (builder.ActiveBuilder.Value.IsLastDepthBuilder())
             {
-                builder.ActiveBuilder.Value.Result = BuildMatches(builderKVP);
-                builder.ActiveBuilder.Value.Result = ResolveBuildExpression(builderKVP);
+                var vars = builderKVP.GetAllVariables();
+
+                builder.ActiveBuilder.Value.Result = builderKVP.Value.ProcessVariable(vars);
                 build = true;
             }
 
             if (builder.ActiveBuilder.Value.IsLastBranchBuilder())
             {
-                builder.RootBuilder.Value.Result = ResolveBuildExpression(builderKVP.Value.RootBuilder);
+                var vars = builderKVP.GetAllVariables();
+
+                builder.RootBuilder.Value.Result = builderKVP.Value.RootBuilder.Value.ProcessVariable(vars);
                 builder.ActiveBuilder = new KeyValuePair<string, Builder>();
                 build = true;
                 return builder.ActiveBuilder;
@@ -146,7 +151,7 @@ namespace Lib.Shaping.Operations
             var builder = builderKVP.Value;
 
             if (builder.Actions != null)
-                return builder.Actions.Builders.First();
+                return builder.Actions.Builders.FirstOrDefault();
             else if (builder.ParentBuilder.Key != null)
                 return builder.ParentBuilder.Value.Actions.Builders.Next(x => x.Value == builder);
 
@@ -156,7 +161,7 @@ namespace Lib.Shaping.Operations
         public static bool IsLastBranchBuilder(this Builder builder)
         {
             if (builder.ParentBuilder.Value == null)
-                return true;
+                return false;
 
             var tempBuilders = new List<Builder>();
             foreach (var childBuilders in builder.ParentBuilder.Value.Actions.Builders)
@@ -175,7 +180,7 @@ namespace Lib.Shaping.Operations
             if (builder.Actions == null)
                 return true;
 
-            return builder.Actions.Builders == null;
+            return builder.Actions.Builders == null || builder.Actions.Builders.Count < 1;
         }
     }
 }

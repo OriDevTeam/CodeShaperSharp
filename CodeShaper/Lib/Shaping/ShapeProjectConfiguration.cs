@@ -35,9 +35,12 @@ namespace Lib.Shaping
     {
         [JsonProperty("name")]
         public string Name = "No Name";
-
+        
         [JsonProperty("projects")]
-        public Projects projects;
+        public Projects Projects;
+        
+        [JsonProperty("description")]
+        public string Description;
     }
 
     public class Projects

@@ -1,0 +1,50 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="400"
+             x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.ActionToolBox">
+                
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="True">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65"/>
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        
+        <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                Background="Transparent"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                CornerRadius="5"
+                Padding="0">
+            <Panel>
+                <TextBlock Text="Action Name"></TextBlock>
+                
+                <ItemsControl Items="{Binding }"></ItemsControl>
+                
+                <ScrollViewer VerticalScrollBarVisibility="Visible"
+                              VerticalAlignment="Stretch">
+                    
+                    <ItemsControl Items="{Binding Items}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Panel VerticalAlignment="Bottom">
+                                    <TextPresenter Text="Test" Margin="7"></TextPresenter>
+                                    <TextBox Width="100" Height="10"></TextBox>
+                                </Panel>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    
+                </ScrollViewer>
+            </Panel>
+        </Border>
+    </Panel>
+    
+</UserControl>
