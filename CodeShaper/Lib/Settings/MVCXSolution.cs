@@ -32,28 +32,28 @@ namespace Lib.Settings
 
         private List<MVCXProject> LoadProjectsRegex(string solutionPath, string solutionFile)
         {
-            List<MVCXProject> projects = new List<MVCXProject>();
+            var projects = new List<MVCXProject>();
 
-            string pattern = $@"Project\(""(.*?)""\)\s*=\s*""(.*?)""\s*,\s*""(.*?)""\s*,\s*""(.*?)\s?EndProject";
+            var pattern = $@"Project\(""(.*?)""\)\s*=\s*""(.*?)""\s*,\s*""(.*?)""\s*,\s*""(.*?)\s?EndProject";
              
             Regex rg = new(pattern, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
 
-            MatchCollection projectsInformation = rg.Matches(solutionFile);
+            var projectsInformation = rg.Matches(solutionFile);
 
-            for (int idx = 0; idx < projectsInformation.Count; idx++)
+            for (var idx = 0; idx < projectsInformation.Count; idx++)
             {
 
-                string name = projectsInformation[idx].Groups[2].Value;
+                var name = projectsInformation[idx].Groups[2].Value;
 
-                string strGuid = projectsInformation[idx].Groups[1].Value;
-                string guidStr = strGuid.Substring(1, strGuid.Length - 2);
-                Guid guid = Guid.Parse(guidStr);
+                var strGuid = projectsInformation[idx].Groups[1].Value;
+                var guidStr = strGuid.Substring(1, strGuid.Length - 2);
+                var guid = Guid.Parse(guidStr);
 
-                string otherStrGuid = projectsInformation[idx].Groups[4].Value;
-                string guidOtherStr = otherStrGuid.Substring(1, otherStrGuid.Length - 4);
-                Guid otherGuid = Guid.Parse(guidOtherStr);
+                var otherStrGuid = projectsInformation[idx].Groups[4].Value;
+                var guidOtherStr = otherStrGuid.Substring(1, otherStrGuid.Length - 4);
+                var otherGuid = Guid.Parse(guidOtherStr);
 
-                string dir = Path.GetDirectoryName(solutionPath) + "\\" + projectsInformation[idx].Groups[3].Value;
+                var dir = Path.GetDirectoryName(solutionPath) + "\\" + projectsInformation[idx].Groups[3].Value;
                 projects.Add(new MVCXProject(name, dir, guid, otherGuid));
             }
 
@@ -145,9 +145,9 @@ namespace Lib.Settings
             AdditionalIncludeDirectories = GetAdditionalIncludesFromProject(projectConfigurationElement);
         }
 
-        public string GetAdditionalIncludesFromProject(XElement projectConfigurationElement)
+        private static string GetAdditionalIncludesFromProject(XContainer projectConfigurationElement)
         {
-            string additionalIncludes = "";
+            var additionalIncludes = "";
 
             var additionalIncludesData = projectConfigurationElement.Descendants().Where(p => p.Name.LocalName == "AdditionalIncludeDirectories");
 

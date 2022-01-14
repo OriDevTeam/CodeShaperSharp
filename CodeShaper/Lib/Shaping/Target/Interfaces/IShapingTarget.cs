@@ -1,6 +1,5 @@
 ﻿// System Namespaces
 using System.Collections.ObjectModel;
-using Lib.AST.Interfaces;
 
 
 // Application Namespaces
@@ -11,9 +10,11 @@ using Lib.AST.Interfaces;
 
 namespace Lib.Shaping.Target.Interfaces
 {
-    public interface IShapingTarget<T> where T: IASTVisitor
+    public interface IShapingTarget
     {
+        public string Name { get; }
         public ObservableCollection<IShapingTargetGroup> ShapingTargetGroups { get; }
+        
         void Load();
     }
 }

@@ -1,5 +1,5 @@
 ﻿// System Namespaces
-
+using System;
 
 // Application Namespaces
 using Lib.Shapers.CPP;
@@ -14,7 +14,7 @@ namespace Lib.AST.Interfaces
     public interface IASTVisitor : IParseTreeVisitor<object>
     {
         public string Name { get; }
-        public ASTVisitorController<Location> VisitorController { get; }
+        public ASTVisitorController<Enum> VisitorController { get; }
         
         public void Visit();
     }

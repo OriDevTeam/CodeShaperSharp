@@ -5,8 +5,6 @@ using System.Collections.ObjectModel;
 // Application Namespaces
 using Lib.AST;
 using Lib.AST.ANTLR.CPP;
-using Lib.AST.ANTLR.CPP14;
-using Lib.AST.Interfaces;
 using Lib.Settings;
 using Lib.Shaping;
 using Lib.Shaping.Target.Interfaces;
@@ -17,31 +15,33 @@ using Lib.Shaping.Target.Interfaces;
 
 namespace Lib.Projects.VCXSolution
 {
-    public class VCXSolutionTarget<T> : IShapingTarget<IASTVisitor> where T: new()
+    public class VCXSolutionTarget : IShapingTarget
     {
-        private T Visitor = new();
+        public string Name => SolutionInformation.Name;
         
         public ObservableCollection<IShapingTargetGroup> ShapingTargetGroups { get; } = new();
 
         public readonly MVCXSolution SolutionInformation;
         public readonly ShapeProject ShapeProject;
-        public readonly ASTPreparationController<CPP14Lexer, CPP14Parser, CPPASTVisitor> PreparationController;
+        private readonly ASTPreparationController<CPP14Lexer, CPP14Parser, CPPASTVisitor> preparationController;
 
         public VCXSolutionTarget(string solutionPath, ShapeProject shapeProject)
         {
             ShapeProject = shapeProject;
             SolutionInformation = new MVCXSolution(solutionPath);
-            PreparationController = new ASTPreparationController<CPP14Lexer, CPP14Parser, CPPASTVisitor>();
+            preparationController = new ASTPreparationController<CPP14Lexer, CPP14Parser, CPPASTVisitor>();
         }
 
         public void Load()
         {
-            ShapingTargetGroups.Add(new VCXSolutionGroup(this));  
+            ShapingTargetGroups.Add(new VCXSolutionGroup(this));
+            
         }
         
-        ShapeResult Parse(VCXModuleFile moduleFile)
+        public void Shape(VCXModuleFile moduleFile)
         {
-            return new CPPModuleAST(ShapeProject, moduleFile.FilePath).ParseAndProcessModule();
+            preparationController.Prepare(moduleFile.Result.FileContent);
+            preparationController.Visitor.VisitorController.OnVisitorProcess += moduleFile.Result.VisitorProcess;
         }
     }
 }

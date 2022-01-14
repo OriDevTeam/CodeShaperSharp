@@ -1,4 +1,5 @@
 ﻿// System Namespaces
+
 using System.Collections.Generic;
 
 
@@ -10,11 +11,13 @@ using System.Collections.Generic;
 
 
 
-namespace Lib.Shaping.Interfaces
+namespace Lib.Shapers.Interfaces
 {
     public interface IShapeVariable
     {
+        public string Name { get; set; }
+        
         public string ProcessVariable();
-        public string ProcessVariable(Dictionary<string, IShapeVariable> variables, List<string> arguments = null);
+        public string ProcessVariable(List<IShapeVariable> variables, List<string> arguments = null);
     }
 }

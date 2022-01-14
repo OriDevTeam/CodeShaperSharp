@@ -1,12 +1,12 @@
 ﻿// System Namespaces
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 // Application Namespaces
 using Lib.Shaping.Expressions.Interfaces;
-using Lib.Shaping.Interfaces;
 using Lib.Shaping.Variables;
+using Lib.Shapers.Interfaces;
 
 
 // Library Namespaces
@@ -21,7 +21,7 @@ namespace Lib.Shaping.Expressions
         private const string LocalPattern = @"#@\{(.*?)\}";
         private const PcreOptions LocalPatternFlags = PcreOptions.Ungreedy;
 
-        public string ProcessExpression(string expression, Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        public string ProcessExpression(string expression, List<IShapeVariable> variables, List<string> arguments = null)
         {
             var processedExpression = expression;
 
@@ -30,10 +30,12 @@ namespace Lib.Shaping.Expressions
                 var varmatch = match.Groups[0].Value;
                 var variable = match.Groups[1].Value;
 
-                if (!variables.ContainsKey(variable))
+                var exprVar = variables.FirstOrDefault(v => v.Name == variable);
+                
+                if (exprVar == null)
                     continue;
 
-                var variableValue = variables[variable].ProcessVariable(variables);
+                var variableValue = exprVar.ProcessVariable(variables);
 
                 processedExpression = processedExpression.Replace(varmatch, variableValue);
             }

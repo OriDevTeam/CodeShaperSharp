@@ -33,8 +33,7 @@ namespace Lib.Managers
             {
                 var config = ShapingConfiguration.Load(filePath);
                 var shapeProject = new ShapeProject(config);
-                // shapeProject.Load();
-                
+
                 configs.Add(new Tuple<ShapingConfiguration, ShapeProject>(config, shapeProject));
             }
 

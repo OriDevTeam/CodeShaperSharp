@@ -1,23 +1,21 @@
 ﻿// System Namespaces
-using System;
 using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
+using Lib.Shapers.Interfaces;
 using Lib.Shaping.Expressions.Interfaces;
-using Lib.Shaping.Interfaces;
 
 
 // Library Namespaces
-using PCRE;
+
 
 
 namespace Lib.Shaping.Expressions
 {
     public static class Groups
     {
-        public static string ProcessExpressionsGroup(ExpressionsGroup expressionsGroup, string expression, Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        public static string ProcessExpressionsGroup(ExpressionsGroup expressionsGroup, string expression, List<IShapeVariable> variables, List<string> arguments = null)
         {
             if (expressionsGroup == ExpressionsGroup.ActionsExpressions)
                 return ProcessActionsExpressions(expression, variables, arguments);
@@ -26,7 +24,7 @@ namespace Lib.Shaping.Expressions
         
         }
 
-        public static string ProcessActionsExpressions(string expression, Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        public static string ProcessActionsExpressions(string expression, List<IShapeVariable> variables, List<string> arguments = null)
         {
             var expressionProcessors = new List<IActionExpressions>
             {

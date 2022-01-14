@@ -1,22 +1,22 @@
 ﻿// System Namespaces
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
-using Lib.Shaping.Interfaces;
+using Lib.Shapers.Interfaces;
 
 
 // Library Namespaces
-using Newtonsoft.Json;
+
 
 
 namespace Lib.Shaping.Variables
 {
     public class ShapeInteger : IShapeVariable
     {
+        public string Name { get; set; }
+        
         private int _value;
 
         public ShapeInteger(int value)
@@ -28,8 +28,14 @@ namespace Lib.Shaping.Variables
         {
             return Convert.ToString(_value);
         }
+        
 
         public string ProcessVariable()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ProcessVariable(List<IShapeVariable> variables, List<string> arguments = null)
         {
             throw new NotImplementedException();
         }

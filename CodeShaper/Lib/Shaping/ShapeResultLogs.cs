@@ -78,7 +78,7 @@ namespace Lib.Shaping
 
                 Directory.CreateDirectory(directory);
 
-                var path = string.Format(@"{0}\{1}_{2}.rep.log", directory, i, replacement.Item1.Key);
+                var path = string.Format(@"{0}\{1}_{2}.rep.log", directory, i, replacement.Item1);
                 var content = string.Format("From:\n{0}\n\n\nTo:\n{1}\n",
                                              replacement.Item2, replacement.Item3);
 
@@ -94,7 +94,7 @@ namespace Lib.Shaping
 
                 Directory.CreateDirectory(directory);
 
-                var path = string.Format(@"{0}\{1}_{2}.add.log", directory, i, addition.Item1.Key);
+                var path = string.Format(@"{0}\{1}_{2}.add.log", directory, i, addition.Item1);
                 var content = string.Format("From:\n{0}\n\n\nTo:\n{1}\n",
                                              addition.Item2, addition.Item3);
 
@@ -110,7 +110,7 @@ namespace Lib.Shaping
 
                 Directory.CreateDirectory(directory);
 
-                var path = string.Format(@"{0}\{1}_{2}.sub.log", directory, i, subtraction.Item1.Key);
+                var path = string.Format(@"{0}\{1}_{2}.sub.log", directory, i, subtraction.Item1);
                 var content = string.Format("From:\n{0}\n\n\nTo:\n{1}\n",
                                              subtraction.Item2, subtraction.Item3);
 

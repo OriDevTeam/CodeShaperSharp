@@ -3,21 +3,19 @@ using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
+using Lib.Shapers.Interfaces;
 using Lib.Shaping.Expressions.Interfaces;
-using Lib.Shaping.Interfaces;
 
 
 // Library Namespaces
-using PCRE;
+
 
 
 namespace Lib.Shaping.Operations
 {
     public class ResolverExpressions : IActionExpressions
     {
-
-        public string ProcessExpression(string expression, Dictionary<string, IShapeVariable> variables, List<string> arguments)
+        public string ProcessExpression(string expression, List<IShapeVariable> variables, List<string> arguments)
         {
             throw new System.NotImplementedException();
         }
@@ -25,15 +23,15 @@ namespace Lib.Shaping.Operations
 
     public static class ResolvingExtensions
     {
-        public static Dictionary<string, IShapeVariable> GetAllResolverVariables(this KeyValuePair<string, Builder> builderKVP)
+        public static List<IShapeVariable> GetAllResolverVariables(this IShapeActionsBuilder builder)
         {
-            var variables = new Dictionary<string, IShapeVariable>();
+            var variables = new List<IShapeVariable>();
 
-            var builder = builderKVP.Value;
-
-            if (builder.Actions != null)
-                foreach (var resolver in builder.Actions.Resolvers)
-                    variables.Add(resolver.Key, resolver.Value);
+            if (builder.Actions == null)
+                return variables;
+            
+            foreach (var resolver in builder.Actions.Resolvers)
+                variables.Add(resolver);
 
             return variables;
         }

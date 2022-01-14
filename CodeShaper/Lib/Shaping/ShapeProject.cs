@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 // Application Namespaces
 using Lib.Configurations;
+using Lib.Shapers.CPP;
+using Lib.Shapers.Interfaces;
+using Lib.Shaping.Interfaces;
 
 
 // Library Namespaces
@@ -14,11 +17,13 @@ using PCRE;
 
 namespace Lib.Shaping
 {
-    public class ShapeProject
+    public class ShapeProject : IShapeProject
     {
-        public ShapeProjectConfiguration Configuration;
-        public readonly List<ShapePatch> Patches;
+        public Type Patch => typeof(CPPPatch);
         
+        public ShapeProjectConfiguration Configuration;
+        public readonly List<IShapePatch<Enum>> Patches;
+
         public event EventHandler<string> SavingShapedFile;
 
         public ShapeProject(ShapingConfiguration shapingConfiguration)
@@ -26,21 +31,21 @@ namespace Lib.Shaping
             Patches = ParsePatches(shapingConfiguration.ShapeProjectDirectory);
         }
 
-        private List<ShapePatch> ParsePatches(string projectDirectory)
+        private List<IShapePatch<Enum>> ParsePatches(string projectDirectory)
         {
-            var patches = new List<ShapePatch>();
+            var patches = new List<IShapePatch<Enum>>();
 
             if (!Directory.Exists(projectDirectory))
                 throw new Exception();
 
             var configurationPath = projectDirectory + @"\settings.hjson";
-            Configuration = new(configurationPath);
+            Configuration = new ShapeProjectConfiguration(configurationPath);
 
             var projectsPath = projectDirectory + @"\projects\";
 
-            foreach (string file in Directory.EnumerateFiles(projectDirectory, "projects/*.hjson", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(projectDirectory, "projects/*.hjson", SearchOption.AllDirectories))
             {
-                var shapePath = new ShapePatch(file);
+                var shapePath = Activator.CreateInstance(Patch, file) as IShapePatch<Enum>;
 
                 patches.Add(shapePath);
             }
@@ -68,7 +73,7 @@ namespace Lib.Shaping
         {
             foreach (var patch in Patches)
             {
-                var match = PcreRegex.IsMatch(module, patch.Patch.FileSearch);
+                var match = PcreRegex.IsMatch(module, patch.Header.FileSearch);
 
                 if (match)
                     return true;
@@ -89,7 +94,7 @@ namespace Lib.Shaping
             int count = 0;
 
             foreach (var patch in shapeProject.Patches)
-                count += patch.Patch.Actions.Replacements.Count;
+                count += patch.Header.Actions.Replacers.Count;
 
             return count;
         }
@@ -99,7 +104,7 @@ namespace Lib.Shaping
             int count = 0;
 
             foreach (var patch in shapeProject.Patches)
-                count += patch.Patch.Actions.Additions.Count;
+                count += patch.Header.Actions.Adders.Count;
 
             return count;
         }
@@ -109,7 +114,7 @@ namespace Lib.Shaping
             int count = 0;
 
             foreach (var patch in shapeProject.Patches)
-                count += patch.Patch.Actions.Subtractions.Count;
+                count += patch.Header.Actions.Subtracters.Count;
 
             return count;
         }

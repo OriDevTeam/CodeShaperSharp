@@ -1,10 +1,9 @@
 ﻿// System Namespaces
 using System.Collections.Generic;
-
+using Lib.Shapers.Interfaces;
 
 // Applications Namespaces
 using Lib.Shaping.Expressions;
-using Lib.Shaping.Interfaces;
 using Lib.Shaping.Variables;
 
 
@@ -20,10 +19,10 @@ namespace LibTestsCLI
         {
             var rawExpression = "#{test_builder}";
 
-            var variables = new Dictionary<string, IShapeVariable>()
+            var variables = new List<IShapeVariable>()
             {
-                { "test_builder", new ShapeString("vartest") },
-                { "var2", new ShapeString("vartest2") }
+                new ShapeString("test_builder", "vartest"),
+                new ShapeString("var2","vartest2")
             };
 
             var builderExpression = new BuilderExpressions();
@@ -37,10 +36,10 @@ namespace LibTestsCLI
         {
             var rawExpression = "#!{test_resolver}(arg1) #!{test_resolver}(arg1, #{var2}, #{test_resolver})";
 
-            var variables = new Dictionary<string, IShapeVariable>()
+            var variables = new List<IShapeVariable>()
             {
-                { "test_resolver", new ShapeString("vartest") },
-                { "var2", new ShapeString("vartest2") }
+                new ShapeString("test_resolver", "vartest"),
+                new ShapeString("var2", "vartest2")
             };
 
             var resolverExpression = new ResolverExpressions();

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
-using Lib.AST.ANTLR;
-using Lib.AST.ANTLR.CPP14;
+using Lib.AST.Interfaces;
+using Lib.Shapers.Interfaces;
+
 
 // Library Namespaces
 using PCRE;
@@ -16,16 +16,18 @@ namespace Lib.Shaping.Operations
 {
     internal static class Replacing
     {
-        public static List<KeyValuePair<string, Replacement>> ProcessReplacing(ref string context, CPPModule module, string fileName, ShapeProject shapeProject, Location location)
+        public static List<IShapeActionsReplacer> ProcessReplacing(
+            ref string context, IASTVisitor visitor, string fileName,
+            List<IShapePatch<Enum>> patches, Enum location)
         {
-            var processedReplacements = new List<KeyValuePair<string, Replacement>>();
+            var processedReplacements = new List<IShapeActionsReplacer>();
 
-            var replacements = GetReplacements(module, fileName, shapeProject, location);
+            var replacements = GetReplacements(visitor, fileName, patches, location);
 
             if (replacements.Count > 0)
                 foreach (var replacement in replacements)
                 {
-                    if (HasMatch(module, context, replacement.Value))
+                    if (HasMatch(context, replacement))
                     {
                         processedReplacements.Add(replacement);
                         context = ReplaceMatches(context, replacement);
@@ -36,7 +38,7 @@ namespace Lib.Shaping.Operations
         }
 
 
-        public static bool HasMatch(CPPModule module, string definition, Replacement replacement)
+        private static bool HasMatch(string definition, IShapeActionsReplacer replacement)
         {
             foreach (var match in replacement.From)
                 if (PcreRegex.IsMatch(definition, match))
@@ -46,46 +48,45 @@ namespace Lib.Shaping.Operations
         }
 
 
-        public static Dictionary<string, Replacement> GetReplacements(CPPModule module, string FileName, ShapeProject shapeProject, Location location)
+        private static List<IShapeActionsReplacer> GetReplacements(
+            IASTVisitor visitor, string FileName,
+            List<IShapePatch<Enum>> patches, Enum location)
         {
-            var replacements = new Dictionary<string, Replacement>();
+            var replacements = new List<IShapeActionsReplacer>();
 
-            foreach (var patch in shapeProject.Patches)
+            foreach (var patch in patches)
             {
                 if (!Matching.MatchesFile(FileName, patch))
                     continue;
 
-                foreach (var replacement in patch.Patch.Actions.Replacements)
+                foreach (var replacer in patch.Header.Actions.Replacers)
                 {
-                    var rep = replacement.Value;
-
-                    if (rep.Location != location)
+                    if (!Equals(replacer.Location, location))
                         continue;
 
-                    if (rep.ReferenceLocation != Location.None)
-                        if (!PcreRegex.IsMatch(module.Dictionary[rep.ReferenceLocation], rep.Reference))
+                    if (replacer.ReferenceLocation != null)
+                        if (!PcreRegex.IsMatch(visitor.VisitorController.LocationsContent[replacer.ReferenceLocation],
+                                replacer.Reference))
                             continue;
 
-                    replacements.Add(replacement.Key, replacement.Value);
+                    replacements.Add(replacer);
                 }
             }
 
             return replacements;
         }
 
-        public static string ReplaceMatches(string definition, KeyValuePair<string, Replacement> replacement)
+        private static string ReplaceMatches(string definition, IShapeActionsReplacer replacement)
         {
             var result = definition;
 
-            foreach (var match in replacement.Value.From)
+            foreach (var match in replacement.From)
             {
                 var regex = new PcreRegex(match);
 
-                result = regex.Replace(result, replacement.Value.To);
+                result = regex.Replace(result, replacement.To);
             }
-
-            Console.WriteLine(" - Applied '{0}'", replacement.Key);
-
+            
             return result;
         }
     }

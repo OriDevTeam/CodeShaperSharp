@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 
 
 // Application Namespaces
-using Lib.Shaping;
 using Lib.Shaping.Target.Interfaces;
 
 

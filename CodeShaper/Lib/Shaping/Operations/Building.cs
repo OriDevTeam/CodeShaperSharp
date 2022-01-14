@@ -6,13 +6,10 @@ using System.Runtime.Serialization;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
-using Lib.AST.ANTLR;
-using Lib.AST.ANTLR.CPP14;
-using Lib.Shaping.Interfaces;
+using Lib.AST.Interfaces;
+using Lib.Shapers.Interfaces;
 using Lib.Shaping.Variables;
 using Lib.Utility.Extensions;
-
 
 
 // Library Namespaces
@@ -29,56 +26,51 @@ namespace Lib.Shaping.Operations
         /// </summary>
         /// <param name="builder">Builder to check</param>
         /// <returns>Whether its the last builder or not</returns>
-        internal static bool IsLastBuilder(Builder builder)
+        internal static bool IsLastBuilder(IShapeActionsBuilder builder)
         {
-            if (builder == GetLastBuilder(builder.RootBuilder.Value))
-                return true;
-
-            return false;
+            return builder == GetLastBuilder(builder.RootBuilder);
         }
 
-        internal static Builder GetLastBuilder(Builder builder)
+        private static IShapeActionsBuilder GetLastBuilder(IShapeActionsBuilder builder)
         {
-            if (builder.Actions == null)
-                return builder;
+            while (true)
+            {
+                if (builder.Actions == null) 
+                    return builder;
 
-            List<KeyValuePair<string, Builder>> tempBuilders = new();
+                var tempBuilders = builder.Actions.Builders.ToList();
 
-            foreach (var childBuilder in builder.Actions.Builders)
-                tempBuilders.Add(childBuilder);
+                var lastParentChildBuilder = tempBuilders[tempBuilders.Count - 1];
 
-
-            KeyValuePair<string, Builder> lastParentChildBuilder = tempBuilders[tempBuilders.Count - 1];
-
-
-            return GetLastBuilder(lastParentChildBuilder.Value);
+                builder = lastParentChildBuilder;
+            }
         }
 
-        public static bool ShouldEnter(Builder builder, CPPModule module, Location location)
+        private static bool ShouldEnter(IShapeActionsBuilder builder, IASTVisitor visitor, Enum location)
         {
-            if (builder.Location != location)
+            if (!Equals(builder.Location, location))
                 return false;
 
-            Location loc;
-            if (builder.ReferenceLocation != Location.None)
-                loc = builder.ReferenceLocation;
-            else
-                loc = location;
+            var loc = builder.ReferenceLocation ?? location;
 
-            if (builder.Reference != null)
+            if (builder.Reference == null) 
+                return true;
+            
+            var regex = new PcreRegex(builder.Reference, PcreOptionsExtensions.FromString(builder.ReferenceFlags));
+            var match = regex.Match(visitor.VisitorController.LocationsContent[loc]);
+
+            if (!match.Success)
+                return false;
+
+            for (var i = 1; i < match.Groups.Count; i++)
             {
-
-                var regex = new PcreRegex(builder.Reference, PcreOptionsExtensions.FromString(builder.ReferenceFlags));
-                var match = regex.Match(module.Dictionary[loc]);
-
-                if (!match.Success)
-                    return false;
-
-                for (int i = 1; i < match.Groups.Count; i++)
-                {
-                    var groupName = regex.PatternInfo.GroupNames[i - 1];
-                    builder.LocalVariables.Add(groupName, new ShapeString(match.Groups[i]));
-                }
+                var groupName = regex.PatternInfo.GroupNames[i - 1];
+                builder.LocalVariables.Add(
+                    new ShapeString( match.Groups[i])
+                    {
+                        
+                    }
+                );
             }
 
             return true;
@@ -87,39 +79,36 @@ namespace Lib.Shaping.Operations
 
     public static class BuildingExtensions
     {
-        public static Dictionary<K, V> Merge<K, V>(IEnumerable<Dictionary<K, V>> dictionaries)
+        private static Dictionary<TK, TV> Merge<TK, TV>(IEnumerable<Dictionary<TK, TV>> dictionaries)
         {
             return dictionaries.SelectMany(x => x)
                             .ToDictionary(x => x.Key, y => y.Value);
         }
-
-        public static Dictionary<string, IShapeVariable> GetAllVariables(this KeyValuePair<string, Builder> builderKVP)
+        
+        public static List<IShapeVariable> GetAllVariables(this IShapeActionsBuilder builder)
         {
-            return Merge(new List<Dictionary<string, IShapeVariable>>()
-            {
-                builderKVP.GetAllResolverVariables(),
-                builderKVP.GetAllBuilderVariables(),
-                builderKVP.GetAllMakerVariables()
-            });
+            return builder.GetAllResolverVariables()
+                .Concat(builder.GetAllBuilderVariables())
+                .Concat(builder.GetAllMakerVariables())
+                .ToList();
+            
         }
 
-        public static Dictionary<string, IShapeVariable> GetAllBuilderVariables(this KeyValuePair<string, Builder> builderKVP)
+        private static List<IShapeVariable> GetAllBuilderVariables(this IShapeActionsBuilder builder)
         {
-            var variables = new Dictionary<string, IShapeVariable>();
-
-            var builder = builderKVP.Value;
-
+            var variables = new List<IShapeVariable>();
+            
             if (builder.Actions != null)
                 foreach (var childBuilder in builder.Actions.Builders)
                 {
-                    variables.Add(childBuilder.Key, childBuilder.Value);
+                    variables.Add(childBuilder);
 
-                    foreach (var var in GetAllBuilderVariables(childBuilder))
-                        variables.Add(var.Key, var.Value);
+                    foreach (var variable in GetAllBuilderVariables(childBuilder))
+                        variables.Add(variable);
                 }
 
-            foreach (var localVariable in builder.LocalVariables)
-                variables.Add(localVariable.Key, localVariable.Value);
+            foreach (var variable in builder.LocalVariables)
+                variables.Add(variable);
 
             return variables;
         }

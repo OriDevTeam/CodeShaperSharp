@@ -14,6 +14,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
+using Lib.Shaping.Target.Interfaces;
 
 
 namespace AvaloniaUI.Views
@@ -32,7 +33,7 @@ namespace AvaloniaUI.Views
 #endif
             Title = string.Format("{0} - {1}",
                 ShapingOperationsManager.ActiveShapingOperation.ShapeProject.Configuration.Configuration.Name,
-                ((VCXSolutionTarget)ShapingOperationsManager.ActiveShapingOperation.ShapingTarget).SolutionInformation.Name
+                ((IShapingTarget)ShapingOperationsManager.ActiveShapingOperation.ShapingTarget).Name
             );
             
             LogsBox = this.FindControl<TextBox>("LogsBox");

@@ -1,10 +1,9 @@
 ﻿// System Namespaces
-
 using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Shaping.Interfaces;
+using Lib.Shapers.Interfaces;
 
 
 // Library Namespaces
@@ -29,7 +28,7 @@ namespace Lib.Shaping.Expressions
             return args;
         }
 
-        public static List<string> ProcessGroupExpressions(ExpressionsGroup group, string expression, Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        public static List<string> ProcessGroupExpressions(ExpressionsGroup group, string expression, List<IShapeVariable> variables, List<string> arguments = null)
         {
             var args = ProcessExpressions(expression);
 

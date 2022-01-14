@@ -1,12 +1,11 @@
 ﻿// System Namespaces
 using System.Collections.Generic;
+using System.Linq;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
+using Lib.Shapers.Interfaces;
 using Lib.Shaping.Expressions.Interfaces;
-using Lib.Shaping.Interfaces;
-using Lib.Shaping.Variables;
 
 
 // Library Namespaces
@@ -21,7 +20,7 @@ namespace Lib.Shaping.Expressions
         private const string MakerPattern = @"#%\{(.*?)\}\((.*?)\)";
         private const PcreOptions MakerPatternFlags = PcreOptions.None;
 
-        public string ProcessExpression(string expression, Dictionary<string, IShapeVariable> variables, List<string> arguments = null)
+        public string ProcessExpression(string expression, List<IShapeVariable> variables, List<string> arguments = null)
         {
             var processedExpression = expression;
 
@@ -33,19 +32,21 @@ namespace Lib.Shaping.Expressions
                 var variable = match.Groups[1].Value;
                 var args = match.Groups[2].Value;
 
-                if (!variables.ContainsKey(variable))
+                var exprVar = variables.FirstOrDefault(v => v.Name == variable);
+                
+                if (exprVar == null)
                     continue;
-
-                var maker = (Maker)variables[variable];
+                
+                var maker = (IShapeActionsMaker)exprVar;
 
                 var processedLocalArguments = ArgumentsExpressions.ProcessGroupExpressions(ExpressionsGroup.ActionsExpressions, args, variables);
 
-                ProcessPrepareExpression(maker, variables, processedLocalArguments);
+                // ProcessPrepareExpression(maker, variables, processedLocalArguments);
 
-                foreach (var localVariable in maker.LocalVariables)
-                    variables.Add(localVariable.Key, localVariable.Value);
+                // foreach (var localVariable in maker.LocalVariables)
+                //    variables.Add(localVariable.Key, localVariable.Value);
 
-                var processedMake = ProcessMakeExpression(maker, variables, arguments);
+                // var processedMake = ProcessMakeExpression(maker, variables, arguments);
 
                 /*
                 var regexPrepare = new PcreRegex(args, maker.Prepare);
@@ -56,16 +57,16 @@ namespace Lib.Shaping.Expressions
                 }
                 */
 
-                var variableValue = variables[variable].ProcessVariable(variables, processedLocalArguments);
+                // var variableValue = variables[variable].ProcessVariable(variables, processedLocalArguments);
 
-                processedExpression = processedExpression.Replace(varmatch, variableValue);
+                // processedExpression = processedExpression.Replace(varmatch, variableValue);
             }
 
             return processedExpression;
         }
 
-        
-        public string ProcessPrepareExpression(Maker maker, Dictionary<string, IShapeVariable> variables, List<string> arguments)
+
+        private string ProcessPrepareExpression(IShapeActionsMaker maker, List<IShapeVariable> variables, List<string> arguments)
         {
             var regex = new PcreRegex(maker.Prepare);
 
@@ -76,21 +77,14 @@ namespace Lib.Shaping.Expressions
                 if (!match.Success)
                     continue;
 
-
                 for (int i = 1; i < match.Groups.Count; i++)
                 {
                     var groupName = regex.PatternInfo.GroupNames[i - 1];
-                    maker.LocalVariables.Add(groupName, new ShapeString(match.Groups[i]));
+                    // maker.Locals.Add(new ShapeString(groupName, match.Groups[i]));
                 }
             }
 
             return "";
         }
-
-        public string ProcessMakeExpression(Maker maker, Dictionary<string, IShapeVariable> variables, List<string> arguments)
-        {
-            return "";
-        }
-        
     }
 }

@@ -1,7 +1,6 @@
 ﻿// System Namespaces
 using System.Diagnostics;
-using Lib.AST.ANTLR;
-using Lib.AST.ANTLR.CPP;
+
 
 // Application Namespaces
 using Lib.Configurations;
@@ -29,7 +28,7 @@ namespace Lib.Shaping
             ShapingConfiguration = shapingConfiguration;
 
             ShapeProject = shapeProject;
-            ShapingTarget = new VCXSolutionTarget<CPPASTVisitor>(shapingConfiguration.SourceDirectory, shapeProject);
+            ShapingTarget = new VCXSolutionTarget(shapingConfiguration.SourceDirectory, shapeProject);
         }
         
         public ShapingOperation(ShapingConfiguration shapingConfiguration, IShapingTarget shapingTarget)
@@ -53,5 +52,6 @@ namespace Lib.Shaping
         {
             Stopwatch.Stop();
         }
+        
     }
 }

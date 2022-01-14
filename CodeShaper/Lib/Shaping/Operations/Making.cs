@@ -3,12 +3,10 @@ using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
-using Lib.Shaping.Interfaces;
+using Lib.Shapers.Interfaces;
 
 
 // Library Namespaces
-using PCRE;
 
 
 namespace Lib.Shaping.Operations
@@ -19,15 +17,15 @@ namespace Lib.Shaping.Operations
 
     public static class MakingExtensions
     {
-        public static Dictionary<string, IShapeVariable> GetAllMakerVariables(this KeyValuePair<string, Builder> builderKVP)
+        public static List<IShapeVariable> GetAllMakerVariables(this IShapeActionsBuilder builder)
         {
-            var variables = new Dictionary<string, IShapeVariable>();
+            var variables = new List<IShapeVariable>();
 
-            var builder = builderKVP.Value;
-
-            if (builder.Actions != null)
-                foreach (var maker in builder.Actions.Makers)
-                    variables.Add(maker.Key, maker.Value);
+            if (builder.Actions == null) 
+                return variables;
+            
+            foreach (var maker in builder.Actions.Makers)
+                variables.Add(maker);
 
             return variables;
         }

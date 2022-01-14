@@ -20,11 +20,11 @@ namespace Lib.AST.ANTLR.CPP
     public class CPPASTVisitor : CPP14ParserBaseVisitor<object>, IASTVisitor
     {
         public string Name => "CPP14 ANtlr4 AST Visitor";
-        public ASTVisitorController<Location> VisitorController { get; }
+        public ASTVisitorController<Enum> VisitorController { get; }
 
         public CPPASTVisitor(AntlrInputStream inputStream)
         {
-            VisitorController = new ASTVisitorController<Location>(inputStream);
+            VisitorController = new ASTVisitorController<Enum>(inputStream);
         }
         
         public void Visit()

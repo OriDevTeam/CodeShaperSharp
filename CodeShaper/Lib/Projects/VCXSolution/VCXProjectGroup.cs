@@ -1,13 +1,11 @@
 ﻿// System Namespaces
 using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 
 // Application Namespaces
 using Lib.Settings;
-using Lib.Shaping;
 using Lib.Shaping.Target.Interfaces;
 
 
@@ -25,9 +23,9 @@ namespace Lib.Projects.VCXSolution
         
         public event EventHandler<IShapingTargetGroup> OnShapingGroupLoad;
         public event EventHandler<IShapingTargetFile> OnShapingTargetFileLoad;
-        
-        public VCXSolutionTarget SolutionTarget { get; }
-        public MVCXProject Project { get; }
+
+        private VCXSolutionTarget SolutionTarget { get; }
+        private MVCXProject Project { get; }
 
         public VCXProjectGroup(VCXSolutionTarget solutionTarget, MVCXProject project)
         {
@@ -43,8 +41,8 @@ namespace Lib.Projects.VCXSolution
         {
             
         }
-        
-        public void LoadFiles()
+
+        private void LoadFiles()
         {
             foreach (var header in Project.includes)
             {

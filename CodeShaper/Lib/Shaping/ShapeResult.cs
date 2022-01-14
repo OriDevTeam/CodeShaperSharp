@@ -4,10 +4,9 @@ using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.AST.ANTLR;
-using Lib.AST.ANTLR.CPP14;
-using Lib.Shapers.CPP;
 using Lib.Shaping.Operations;
+using Lib.AST.Interfaces;
+using Lib.Shapers.Interfaces;
 
 
 // Library Namespaces
@@ -21,11 +20,11 @@ namespace Lib.Shaping
         public string FileName { get; set; }
         public string FileContent { get; set; }
 
-        public Dictionary<string, Builder> Builders { get; set; } = new();
+        public List<IShapeActionsBuilder> Builders { get; set; } = new();
 
-        public List<Tuple<KeyValuePair<string, Replacement>, string, string>> Replacements { get; set; } = new();
-        public List<Tuple<KeyValuePair<string, Addition>, string, string>> Additions { get; set; } = new();
-        public List<Tuple<KeyValuePair<string, Subtraction>, string, string>> Subtractions { get; set; } = new();
+        public List<Tuple<IShapeActionsReplacer, string, string>> Replacements { get; set; } = new();
+        public List<Tuple<IShapeActionsAdder, string, string>> Additions { get; set; } = new();
+        public List<Tuple<IShapeActionsSubtracter, string, string>> Subtractions { get; set; } = new();
 
         public ShapeProject ShapeProject { get; set; }
 
@@ -36,53 +35,57 @@ namespace Lib.Shaping
             FileName = fileName;
             FileContent = fileContent;
 
-            Builders = Building.GetTopBuilders(FileName, ShapeProject);
+            Builders = Building.GetTopBuilders(FileName, ShapeProject.Patches);
         }
 
-        public void Process(CPPModule module, string context, Location location)
+        public void VisitorProcess(object sender, Enum location)
         {
+            var visitor = (IASTVisitor)sender;
+            var context = visitor.VisitorController.LocationsContent[location];
+            
             foreach (var builder in Builders)
             {
-                if (builder.ProcessBuilder(module, context, location))
-                    ProcessBuilderReplacementsAdditionsSubtractions(builder, module, context, location);
+                if (builder.ProcessBuilder(visitor, location))
+                    ProcessBuilderReplacementsAdditionsSubtractions(builder, visitor, context, location);
             }
 
-            ProcessReplacementsAdditionsSubtractions(module, context, location);
+            ProcessReplacementsAdditionsSubtractions(visitor, context, location);
         }
 
-        public void ProcessBuilderReplacementsAdditionsSubtractions(
-            KeyValuePair<string, Builder> builder,
-            CPPModule module, string context, Location location)
+        private void ProcessBuilderReplacementsAdditionsSubtractions(
+            IShapeActionsBuilder builder,
+            IASTVisitor visitor, string context, Enum location)
         {
             var activeBuilder = builder;
 
-            if (builder.Value.ActiveBuilder.Value != null)
-                activeBuilder = builder.Value.ActiveBuilder;
+            if (builder.ActiveBuilder != null)
+                activeBuilder = builder.ActiveBuilder;
 
-            if (activeBuilder.Value.Actions == null)
+            if (activeBuilder.Actions == null)
                 return;
-
-
 
             throw new Exception();
         }
 
-        private void ProcessReplacementsAdditionsSubtractions(CPPModule module, string context, Location location)
+        private void ProcessReplacementsAdditionsSubtractions(
+            IASTVisitor visitor, string context, Enum location)
         {
+            var patches = ShapeProject.Patches;
+            
             var newContext = context;
-
-            foreach (var replacement in Replacing.ProcessReplacing(ref newContext, module, FileName, ShapeProject, location))
-                Replacements.Add(new Tuple<KeyValuePair<string, Replacement>, string, string>(replacement, context, newContext));
+            
+            foreach (var replacer in Replacing.ProcessReplacing(ref newContext, visitor, FileName, patches, location))
+                Replacements.Add(new Tuple<IShapeActionsReplacer, string, string>(replacer, context, newContext));
 
             var addContext = newContext;
 
-            foreach (var addition in Adding.ProcessAdding(ref addContext, module, FileName, ShapeProject, location))
-                Additions.Add(new Tuple<KeyValuePair<string, Addition>, string, string>(addition, newContext, addContext));
+            foreach (var addition in Adding.ProcessAdding(ref addContext, visitor, FileName, patches, location))
+                Additions.Add(new Tuple<IShapeActionsAdder, string, string>(addition, newContext, addContext));
 
             var subContext = addContext;
 
-            foreach (var subtraction in Subtracting.ProcessSubtractions(ref subContext, module, FileName, ShapeProject, location))
-                Subtractions.Add(new Tuple<KeyValuePair<string, Subtraction>, string, string>(subtraction, addContext, subContext));
+            foreach (var subtracter in Subtracting.ProcessSubtractions(ref subContext, visitor, FileName, patches, location))
+                Subtractions.Add(new Tuple<IShapeActionsSubtracter, string, string>(subtracter, addContext, subContext));
 
             if (context == subContext)
                 return;
@@ -92,16 +95,7 @@ namespace Lib.Shaping
 
         public bool HasChanges()
         {
-            if (Replacements.Count > 0)
-                return true;
-
-            if (Additions.Count > 0)
-                return true;
-
-            if (Subtractions.Count > 0)
-                return true;
-
-            return false;
+            return Subtractions.Count > 0 || Replacements.Count > 0 || Additions.Count > 0;
         }
     }
 }

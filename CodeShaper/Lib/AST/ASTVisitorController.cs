@@ -15,7 +15,7 @@ using Antlr4.Runtime.Tree;
 
 namespace Lib.AST
 {
-    public class ASTVisitorController<T> where T: Enum
+    public class ASTVisitorController<T> where T : Enum
     {
         private AntlrInputStream InputStream { get; }
         public Dictionary<T, string> LocationsContent { get; private set; } = new();
@@ -71,12 +71,12 @@ namespace Lib.AST
             return new object();
         }
 
-        internal object ProcessVisit([NotNull] IParseTree tree, T location)
+        private object ProcessVisit([NotNull] IParseTree tree, T location)
         {
             return new object();
         }
-        
-        internal object ProcessVisit([NotNull] ParserRuleContext context, T location)
+
+        private object ProcessVisit([NotNull] ParserRuleContext context, T location)
         {
             CurrentContext = context;
             

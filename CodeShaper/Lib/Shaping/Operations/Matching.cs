@@ -1,12 +1,12 @@
 ﻿// System Namespaces
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
-using Lib.AST.ANTLR;
-using Lib.AST.ANTLR.CPP14;
+using Lib.AST.Interfaces;
+using Lib.Shapers.Interfaces;
 using Lib.Utility.Extensions;
 
 
@@ -19,35 +19,30 @@ namespace Lib.Shaping.Operations
 
     public static class Matching
     {
-        public static bool MatchesFile(string fileName, ShapePatch patch)
+        public static bool MatchesFile<T>(string fileName, IShapePatch<T> patchOld) where T : Enum
         {
-            return PcreRegex.IsMatch(fileName, patch.Patch.FileSearch);
+            return PcreRegex.IsMatch(fileName, patchOld.Header.FileSearch);
         }
     }
 
     public static partial class Building
     {
-        public static Dictionary<string, Builder> GetTopBuilders(string fileName, ShapeProject shapeProject)
+        public static List<IShapeActionsBuilder> GetTopBuilders(string fileName, List<IShapePatch<Enum>> patches)
         {
-            var builders = new Dictionary<string, Builder>();
+            var builders = new List<IShapeActionsBuilder>();
 
-            foreach (var patch in shapeProject.Patches)
+            foreach (var patch in patches)
             {
                 if (!Matching.MatchesFile(fileName, patch))
                     continue;
 
-                foreach (var builder in patch.Patch.Actions.Builders)
-                {
-                    var bui = builder.Value;
-                    builders.Add(builder.Key, builder.Value);
-                }
+                foreach (IShapeActionsBuilder builder in patch.Header.Actions.Builders)
+                    builders.Add(builder);
             }
 
             foreach (var builder in builders)
             {
-                var bui = builder.Value;
-
-                bui.RootBuilder = builder;
+                builder.RootBuilder = builder;
 
                 PrepareChildrenBuilders(builder);
             }
@@ -55,89 +50,86 @@ namespace Lib.Shaping.Operations
             return builders;
         }
 
-        private static void PrepareChildrenBuilders(KeyValuePair<string, Builder> parentKVP)
+        private static void PrepareChildrenBuilders(IShapeActionsBuilder parent)
         {
-            var parent = parentKVP.Value;
-
             if (parent.Actions == null)
                 return;
 
             foreach (var childBuilder in parent.Actions.Builders)
             {
-                var childBui = childBuilder.Value;
+                var childBui = childBuilder;
 
-                childBui.ParentBuilder = parentKVP;
+                childBui.ParentBuilder = parent;
                 childBui.RootBuilder = parent.RootBuilder;
 
                 PrepareChildrenBuilders(childBuilder);
             }
         }
 
-        public static bool ProcessBuilder(this KeyValuePair<string, Builder> builderKVP, CPPModule module, string context, Location location)
+        public static bool ProcessBuilder(this IShapeActionsBuilder builder, IASTVisitor visitor, Enum location)
         {
+            var context = visitor.VisitorController.LocationsContent[location];
+            
             var build = false;
 
-            var builder = builderKVP.Value;
-
-            if (builder.ActiveBuilder.Value == null)
+            if (builder.ActiveBuilder == null)
             {
-                if (ShouldEnter(builder, module, location))
+                if (ShouldEnter(builder, visitor, location))
                 {
-                    builder.ActiveBuilder = builderKVP;
+                    builder.ActiveBuilder = builder;
 
                     builder.Context = context;
                 }
             }
 
-            if (builder.ActiveBuilder.Value != null)
+            if (builder.ActiveBuilder != null)
             {
-                builder.ActiveBuilder = ProcessNextBuilder(builderKVP.Value.ActiveBuilder, module, context, location, ref build);
+                builder.ActiveBuilder = ProcessNextBuilder(builder.ActiveBuilder, visitor, context, location, ref build);
             }
 
             return build;
         }
 
-        public static KeyValuePair<string, Builder> ProcessNextBuilder(this KeyValuePair<string, Builder> builderKVP, CPPModule module, string context, Location location, ref bool build)
+        private static IShapeActionsBuilder ProcessNextBuilder(
+            this IShapeActionsBuilder builder, IASTVisitor visitor,
+            string context, Enum location, ref bool build)
         {
             build = false;
 
-            var activeBuilder = builderKVP.Value.ActiveBuilder;
+            var activeBuilder = builder.ActiveBuilder;
 
-            var builder = builderKVP.Value;
+            IShapeActionsBuilder nextBuilder;
 
-
-            KeyValuePair<string, Builder> nextBuilder = new();
-
-            if (builder.ActiveBuilder.Value != null)
+            if (builder.ActiveBuilder != null)
             {
-                nextBuilder = builder.ActiveBuilder.GetNextBuilder(module, location);
+                nextBuilder = builder.ActiveBuilder.GetNextBuilder(visitor, location);
 
-                if (nextBuilder.Value != null)
+                if (nextBuilder != null)
                 {
-                    if (ShouldEnter(nextBuilder.Value, module, location))
+                    if (ShouldEnter(nextBuilder, visitor, location))
                     {
                         activeBuilder = nextBuilder;
-                        activeBuilder.Value.Context = context;
-                        activeBuilder.Value.ActiveBuilder = activeBuilder;
-                        activeBuilder = ProcessNextBuilder(activeBuilder, module, context, location, ref build);
+                        activeBuilder.Context = context;
+                        activeBuilder.ActiveBuilder = activeBuilder;
+                        activeBuilder = ProcessNextBuilder(activeBuilder, visitor, context, location, ref build);
                     }
                 }
             }
 
-            if (builder.ActiveBuilder.Value.IsLastDepthBuilder())
+            if (builder.ActiveBuilder.IsLastDepthBuilder())
             {
-                var vars = builderKVP.GetAllVariables();
+                var vars = builder.GetAllVariables();
 
-                builder.ActiveBuilder.Value.Result = builderKVP.Value.ProcessVariable(vars);
+                builder.ActiveBuilder.Result = builder.ProcessVariable(vars);
                 build = true;
             }
 
-            if (builder.ActiveBuilder.Value.IsLastBranchBuilder())
+            if (builder.ActiveBuilder.IsLastBranchBuilder())
             {
-                var vars = builderKVP.GetAllVariables();
+                var vars = builder.GetAllVariables();
 
-                builder.RootBuilder.Value.Result = builderKVP.Value.RootBuilder.Value.ProcessVariable(vars);
-                builder.ActiveBuilder = new KeyValuePair<string, Builder>();
+                builder.RootBuilder.Result = builder.RootBuilder.ProcessVariable(vars);
+                builder.ActiveBuilder = null;
                 build = true;
                 return builder.ActiveBuilder;
             }
@@ -145,37 +137,32 @@ namespace Lib.Shaping.Operations
             return activeBuilder;
         }
 
-
-        public static KeyValuePair<string, Builder> GetNextBuilder(this KeyValuePair<string, Builder> builderKVP, CPPModule module, Location location)
+        private static IShapeActionsBuilder GetNextBuilder(this IShapeActionsBuilder builder,
+            IASTVisitor visitor, Enum location)
         {
-            var builder = builderKVP.Value;
-
             if (builder.Actions != null)
                 return builder.Actions.Builders.FirstOrDefault();
-            else if (builder.ParentBuilder.Key != null)
-                return builder.ParentBuilder.Value.Actions.Builders.Next(x => x.Value == builder);
+            else if (builder.ParentBuilder != null)
+                return builder.ParentBuilder.Actions.Builders.Next(x => x == builder);
 
-            return new KeyValuePair<string, Builder>();
+            return null;
         }
 
-        public static bool IsLastBranchBuilder(this Builder builder)
+        private static bool IsLastBranchBuilder(this IShapeActionsBuilder builder)
         {
-            if (builder.ParentBuilder.Value == null)
+            if (builder.ParentBuilder == null)
                 return false;
 
-            var tempBuilders = new List<Builder>();
-            foreach (var childBuilders in builder.ParentBuilder.Value.Actions.Builders)
-                tempBuilders.Add(childBuilders.Value);
+            var tempBuilders = new List<IShapeActionsBuilder>();
+            foreach (var childBuilders in builder.ParentBuilder.Actions.Builders)
+                tempBuilders.Add(childBuilders);
 
             var lastBuilder = tempBuilders[tempBuilders.Count - 1];
 
-            if (builder == lastBuilder)
-                return true;
-
-            return false;
+            return builder == lastBuilder;
         }
 
-        public static bool IsLastDepthBuilder(this Builder builder)
+        private static bool IsLastDepthBuilder(this IShapeActionsBuilder builder)
         {
             if (builder.Actions == null)
                 return true;

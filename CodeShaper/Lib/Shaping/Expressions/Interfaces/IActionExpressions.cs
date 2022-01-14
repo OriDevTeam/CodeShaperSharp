@@ -1,12 +1,9 @@
 ﻿// System Namespaces
-using System;
 using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
-using Lib.Shaping.Expressions.Interfaces;
-using Lib.Shaping.Interfaces;
+using Lib.Shapers.Interfaces;
 
 
 // Library Namespaces
@@ -17,6 +14,6 @@ namespace Lib.Shaping.Expressions.Interfaces
 {
     public interface IActionExpressions
     {
-        public string ProcessExpression(string expression, Dictionary<string, IShapeVariable> variables, List<string> arguments);
+        public string ProcessExpression(string expression, List<IShapeVariable> variables, List<string> arguments);
     }
 }

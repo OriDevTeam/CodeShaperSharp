@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
-using Lib.AST.ANTLR;
-using Lib.AST.ANTLR.CPP14;
+using Lib.AST.Interfaces;
+using Lib.Shapers.Interfaces;
+
 
 // Library Namespaces
 using PCRE;
@@ -16,63 +16,63 @@ namespace Lib.Shaping.Operations
 {
     internal static class Adding
     {
-        public static List<KeyValuePair<string, Addition>> ProcessAdding(
-            ref string context, CPPModule module, string fileName, ShapeProject shapeProject, Location location)
+        public static List<IShapeActionsAdder> ProcessAdding(
+            ref string context, IASTVisitor visitor, string fileName,
+            List<IShapePatch<Enum>> patches, Enum location)
         {
-            var processedAdditions = new List<KeyValuePair<string, Addition>>();
+            var processedAdditions = new List<IShapeActionsAdder>();
 
-            var additions = GetAdditions(module, fileName, shapeProject, location);
+            var adders = GetAdditions(visitor, fileName, patches, location);
 
-            if (additions.Count > 0)
-                foreach (var addition in additions)
-                {
-                    processedAdditions.Add(addition);
-                    context = AddMatches(context, addition);
-                }
+            if (adders.Count <= 0)
+                return processedAdditions;
+            
+            foreach (var adder in adders)
+            {
+                processedAdditions.Add(adder);
+                context = AddMatches(context, adder);
+            }
 
             return processedAdditions;
         }
 
-        public static Dictionary<string, Addition> GetAdditions(CPPModule module, string fileName, ShapeProject shapeProject, Location location)
+        private static List<IShapeActionsAdder> GetAdditions(
+            IASTVisitor visitor, string fileName,
+            List<IShapePatch<Enum>> patches, Enum location)
         {
-            var additions = new Dictionary<string, Addition>();
+            var additions = new List<IShapeActionsAdder>();
 
-            foreach (var patch in shapeProject.Patches)
+            foreach (var patch in patches)
             {
                 if (!Matching.MatchesFile(fileName, patch))
                     continue;
 
-                foreach (var addition in patch.Patch.Actions.Additions)
+                foreach (var adder in patch.Header.Actions.Adders)
                 {
-                    var add = addition.Value;
-
-                    if (add.Location != location)
+                    if (!Equals(adder.Location, location))
                         continue;
 
-                    if (add.ReferenceLocation != Location.None)
-                        if (!PcreRegex.IsMatch(module.Dictionary[add.ReferenceLocation], add.Reference))
+                    if (adder.ReferenceLocation != null)
+                        if (!PcreRegex.IsMatch(visitor.VisitorController.LocationsContent[adder.ReferenceLocation],
+                                adder.Reference))
                             continue;
 
-                    additions.Add(addition.Key, addition.Value);
+                    additions.Add(adder);
                 }
             }
 
             return additions;
         }
 
-        public static string AddMatches(string definition, KeyValuePair<string, Addition> addition)
+        private static string AddMatches(string definition, IShapeActionsAdder adder)
         {
             var result = definition;
 
-            var add = addition.Value;
-
-            if (add.Order == "before")
-                result = add.Code + result;
+            if (adder.Order == "before")
+                result = adder.Code + result;
             else
-                result += add.Code;
-
-            Console.WriteLine(" - Added '{0}'", addition.Key);
-
+                result += adder.Code;
+            
             return result;
         }
     }

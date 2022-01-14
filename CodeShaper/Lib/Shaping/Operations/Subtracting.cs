@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Shapers.CPP;
-using Lib.AST.ANTLR;
-using Lib.AST.ANTLR.CPP14;
+using Lib.AST.Interfaces;
+using Lib.Shapers.Interfaces;
+
 
 // Library Namespaces
 using PCRE;
@@ -17,11 +17,13 @@ namespace Lib.Shaping.Operations
 
     internal static class Subtracting
     {
-        public static List<KeyValuePair<string, Subtraction>> ProcessSubtractions(ref string context, CPPModule module, string fileName, ShapeProject shapeProject, Location location)
+        public static List<IShapeActionsSubtracter> ProcessSubtractions(
+            ref string context, IASTVisitor visitor,
+            string fileName, List<IShapePatch<Enum>> patches, Enum location)
         {
-            var processedSubtractions = new List<KeyValuePair<string, Subtraction>>();
+            var processedSubtractions = new List<IShapeActionsSubtracter>();
 
-            var subtractions = GetSubtractions(module, fileName, shapeProject, location);
+            var subtractions = GetSubtractions(visitor, fileName, patches, location);
 
             if (subtractions.Count > 0)
                 foreach (var subtraction in subtractions)
@@ -33,40 +35,39 @@ namespace Lib.Shaping.Operations
             return processedSubtractions;
         }
 
-        public static Dictionary<string, Subtraction> GetSubtractions(CPPModule module, string FileName, ShapeProject shapeProject, Location location)
+        private static List<IShapeActionsSubtracter> GetSubtractions(
+            IASTVisitor visitor, string fileName,
+            List<IShapePatch<Enum>> patches, Enum location)
         {
-            var subtractions = new Dictionary<string, Subtraction>();
+            var subtractions = new List<IShapeActionsSubtracter>();
 
-            foreach (var patch in shapeProject.Patches)
+            foreach (var patch in patches)
             {
-                if (!Matching.MatchesFile(FileName, patch))
+                if (!Matching.MatchesFile(fileName, patch))
                     continue;
 
-                foreach (var subtraction in patch.Patch.Actions.Subtractions)
+                foreach (var subtracter in patch.Header.Actions.Subtracters)
                 {
-                    var sub = subtraction.Value;
-
-                    if (sub.Location != location)
+                    if (!Equals(subtracter.Location, location))
                         continue;
 
-                    if (sub.ReferenceLocation != Location.None)
-                        if (!PcreRegex.IsMatch(module.Dictionary[sub.ReferenceLocation], sub.Reference))
+                    if (subtracter.ReferenceLocation != null)
+                        if (!PcreRegex.IsMatch(
+                                visitor.VisitorController.LocationsContent[subtracter.ReferenceLocation],
+                                subtracter.Reference))
                             continue;
 
-                    subtractions.Add(subtraction.Key, subtraction.Value);
+                    subtractions.Add(subtracter);
                 }
             }
 
             return subtractions;
         }
 
-        public static string SubtractMatches(string definition, KeyValuePair<string, Subtraction> subtraction)
+        private static string SubtractMatches(string definition, IShapeActionsSubtracter subtraction)
         {
-            var sub = subtraction.Value;
             var result = ""; // definition.Replace(sub.Reference, definition);
-
-            Console.WriteLine(" - Subtracted '{0}'", subtraction.Key);
-
+            
             return result;
         }
     }
