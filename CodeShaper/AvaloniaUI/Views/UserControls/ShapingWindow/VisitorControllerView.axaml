@@ -1,0 +1,104 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
+             x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.VisitorControllerView"
+             MinWidth="700" MinHeight="75">
+    
+    <Design.DataContext>
+        <shapingWindow:VisitorControllerViewModel />
+    </Design.DataContext>
+    
+    <Panel>
+        <Border Margin="5"
+                VerticalAlignment="Bottom"
+                Background="Transparent"
+                BorderBrush="Gray"
+                BorderThickness="2"
+                CornerRadius="5">
+            <Panel>
+                
+                <Border>
+                                                
+                    <Grid RowDefinitions="Auto, Auto">
+                 
+                        <Panel Grid.Row="1">
+                                                     
+                            <Grid RowDefinitions="*, Auto" ShowGridLines="False"
+                                  HorizontalAlignment="Stretch">
+                                
+                                <TextBlock x:Name="VisitorLocationText" Grid.Row="0" Margin="5, 2"
+                                           Text="Visitor Location"
+                                           VerticalAlignment="Top">
+                                </TextBlock>
+                                
+                                <TextBlock x:Name="TimeElapsedText" Grid.Row="0" Margin="5, 2"
+                                           Text="Time Elapsed"
+                                           VerticalAlignment="Top"
+                                           HorizontalAlignment="Right">
+                                </TextBlock>
+                                
+                                <WrapPanel Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                                    <Button x:Name="PreviousButton" IsEnabled="False" Padding="5, 3" Margin="2">
+                                       <WrapPanel>
+                                           <PathIcon Data="{StaticResource PreviousRegular}"
+                                                     Width="16" Height="16"
+                                                     VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                           <TextBlock Text="Previous" Margin="4, 0"></TextBlock>
+                                       </WrapPanel>
+                                    </Button>
+                                
+                                    <Button x:Name="PlayButton" Padding="5, 3" Margin="2" Command="{Binding PlayPauseCommand}">
+                                        <WrapPanel>
+                                            <PathIcon x:Name="PlayButtonIcon" Data="{StaticResource PlayRegular}"
+                                                      Width="16" Height="16"
+                                                      VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                            <TextBlock x:Name="PlayButtonText" Text="Play" Margin="4, 0"></TextBlock>
+                                        </WrapPanel>
+                                    </Button>
+                                    
+                                    <Button Padding="5, 3" Margin="2" Command="{Binding StopCommand}">
+                                        <WrapPanel>
+                                            <PathIcon Data="{StaticResource StopRegular}"
+                                                      Width="16" Height="16"
+                                                      VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                            <TextBlock Text="Stop" Margin="4, 0"></TextBlock>
+                                        </WrapPanel>
+                                    </Button>
+                                    
+                                    <Button Padding="5, 3" Margin="2">
+                                        <WrapPanel>
+                                            <PathIcon Data="{StaticResource NextRegular}"
+                                                      Width="16" Height="16"
+                                                      VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                            <TextBlock Text="Next" Margin="4, 0"></TextBlock>
+                                        </WrapPanel>
+                                    </Button>
+                                    
+                                    <TextBlock Margin="5, 5"
+                                               x:Name="FileNameText"
+                                               Text="File Name"
+                                               VerticalAlignment="Top"
+                                               HorizontalAlignment="Right">
+                                    </TextBlock>
+                                </WrapPanel>
+                                
+                                <TextBlock Grid.Row="1" Margin="5, 5"
+                                           x:Name="VisitorNameText"
+                                           Text="AST Visitor Name"
+                                           VerticalAlignment="Top"
+                                           HorizontalAlignment="Right">
+                                </TextBlock>
+                            </Grid>
+                         </Panel>
+                     
+                        </Grid>
+                        
+                </Border>
+                
+            </Panel>
+        </Border>
+    </Panel>
+    
+</UserControl>

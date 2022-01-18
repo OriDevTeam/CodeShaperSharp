@@ -1,7 +1,6 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="using:AvaloniaUI.ViewModels"
-        xmlns:editTextEditor="clr-namespace:AvaloniaUI.Views.UserControls.EditTextEditor"
         xmlns:uc="clr-namespace:AvaloniaUI.Views.UserControls.ShapingWindow"
         xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
         x:Class="AvaloniaUI.Views.ShapingWindow"
@@ -34,7 +33,7 @@
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
         
-        <Grid RowDefinitions="40, *, 100" ShowGridLines="False">
+        <Grid RowDefinitions="40, *, 10, 100" ShowGridLines="False">
             
             <Panel Grid.Row="0">
                 <Border MinWidth="50"
@@ -48,32 +47,50 @@
                         
                         
                         <Menu DockPanel.Dock="Top">
+                            
                             <MenuItem Header="_File">
                                 <MenuItem Header="_Open..."/>
                                 <Separator/>
                                 <MenuItem Header="_Exit"/>
                             </MenuItem>
+                            
                             <MenuItem Header="_Edit">
                                 <MenuItem Header="Copy"/>
                                 <MenuItem Header="Paste"/>
                             </MenuItem>
+                            
                             <MenuItem Header="_Actions">
                                 <MenuItem Header="Previous" Icon="{StaticResource PreviousRegular}"/>
                                 <MenuItem Header="Pause" Icon="{StaticResource PauseRegular}"/>
                                 <MenuItem Header="Stop" Icon="{StaticResource StopRegular}"/>
                                 <MenuItem Header="Pause" Icon="{StaticResource PauseRegular}"/>
                                 <MenuItem Header="Forward" Icon="{StaticResource NextRegular}"/>
+                                <Separator/>
+                                <CheckBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <TextBlock Text="Pause visitor after a visit"></TextBlock>
+                                </CheckBox>
+                                <CheckBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <TextBlock Text="Pause visitor on BRM hit"></TextBlock>
+                                </CheckBox>
+                                <CheckBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <TextBlock Text="Pause shaping on file change"></TextBlock>
+                                </CheckBox>
                             </MenuItem>
+                            
+                            <MenuItem Header="Settings">
+                            </MenuItem>
+                            
                         </Menu>
+                        
                     </DockPanel>
                 </Border>
             </Panel>
             
-             <Grid Grid.Row="1"
-                   RowDefinitions="*" ColumnDefinitions="200, *" ShowGridLines="False">
+             <Grid Grid.Row="1" MinHeight="300"
+                   RowDefinitions="*" ColumnDefinitions="200, *, 200" ShowGridLines="False">
             
                 <Border Grid.Row="0" Grid.Column="0" Margin="5, 5, 0, 5">
-                    <uc:ActionToolBox></uc:ActionToolBox>
+                    <uc:ActionToolBox/>
                 </Border>
                  
                 <Grid Grid.Row="0" Grid.Column="1" RowDefinitions="*, Auto" ShowGridLines="False" VerticalAlignment="Stretch">
@@ -85,6 +102,19 @@
                             BorderThickness="2"
                             CornerRadius="5">
                         <TabControl VerticalAlignment="Stretch">
+                            
+                            <TabItem>
+                                <TabItem.Header>
+                                    <TextBlock VerticalAlignment="Center">Visitor</TextBlock>
+                                </TabItem.Header>
+                                
+                                <Panel VerticalAlignment="Stretch">
+                                    <uc:VisitorTreeView>
+                                        <shapingWindow:VisitorTreeViewModel/>
+                                    </uc:VisitorTreeView>
+                                </Panel>
+                                
+                            </TabItem>
                             
                             <TabItem>
                                 <TabItem.Header>
@@ -101,47 +131,6 @@
                             
                             <TabItem>
                                 <TabItem.Header>
-                                    <TextBlock VerticalAlignment="Center">Visitor</TextBlock>
-                                </TabItem.Header>
-
-                                
-                                    <Panel VerticalAlignment="Stretch">
-                                                    
-                                        <Grid ColumnDefinitions="*, Auto, *" RowDefinitions="*" VerticalAlignment="Stretch" >
-                                    
-                                            <Border Grid.Row="0" Grid.Column="0" 
-                                                    Margin="5"
-                                                    VerticalAlignment="Stretch"
-                                                    Background="Transparent"
-                                                    BorderBrush="Gray"
-                                                    BorderThickness="2"
-                                                    CornerRadius="1">
-                                    
-                                                <editTextEditor:TextEditorUserControl/>
-                                    
-                                            </Border>
-                                
-                                            <GridSplitter Grid.Row="0" Grid.Column="1" Cursor="IBeam"></GridSplitter>
-                                
-                                            <Border Grid.Row="0" Grid.Column="2"
-                                                    Margin="5"
-                                                    VerticalAlignment="Stretch"
-                                                    Background="Transparent"
-                                                    BorderBrush="Gray"
-                                                    BorderThickness="2"
-                                                    CornerRadius="1">
-                                                
-                                                <editTextEditor:TextEditorUserControl />
-                                    
-                                            </Border>
-                                    
-                                        </Grid>
-                                
-                                    </Panel>
-                            </TabItem>
-                            
-                            <TabItem>
-                                <TabItem.Header>
                                     <TextBlock VerticalAlignment="Stretch">Actions</TextBlock>
                                 </TabItem.Header>
                                 
@@ -151,105 +140,30 @@
                                     </uc:ActionsTreeView>
                                 </Panel>
                             </TabItem>
+                            
                         
-                    </TabControl>
+                        </TabControl>
                     
                     </Border>
                     
                     <Panel Grid.Row="1">
-                        <Border Margin="5"
-                                VerticalAlignment="Bottom"
-                                Background="Transparent"
-                                BorderBrush="Gray"
-                                BorderThickness="2"
-                                CornerRadius="5">
-                            <Panel>
-                                
-                                <Border>
-                                                                
-                                    <Grid RowDefinitions="Auto, Auto">
-                                 
-                                        <Panel Grid.Row="1">
-                                                                     
-                                            <Grid RowDefinitions="*, Auto"
-                                                  HorizontalAlignment="Stretch">
-                                                <TextBlock Grid.Row="0" Margin="5, 2"
-                                                           Text="Visitor State: Visiting 'Location'"
-                                                           VerticalAlignment="Top">
-                                                </TextBlock>
-                                                
-                                                <TextBlock Grid.Row="0" Margin="5, 2"
-                                                           x:Name="TimeElapsedText"
-                                                           Text="Time Elapsed: 00:00:00"
-                                                           VerticalAlignment="Top"
-                                                           HorizontalAlignment="Right">
-                                                </TextBlock>
-                                                
-                                                <WrapPanel Grid.Row="1"
-                                                           VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                                                    <Button IsEnabled="False" 
-                                                        Padding="5, 3" Margin="2"
-                                                        VerticalAlignment="Bottom">
-                                                   <WrapPanel>
-                                                       <PathIcon Data="{StaticResource PreviousRegular}"
-                                                                 Width="16" Height="16"
-                                                                 VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                                       <TextBlock Text="Previous" Margin="4, 0"></TextBlock>
-                                                   </WrapPanel>
-                                                    </Button>
-                                                
-                                                    <Button IsEnabled="False" Padding="5, 3" Margin="2">
-                                                        <WrapPanel>
-                                                            <PathIcon Data="{StaticResource PlayRegular}"
-                                                                      Width="16" Height="16"
-                                                                      VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                                            <TextBlock Text="Play" Margin="4, 0"></TextBlock>
-                                                        </WrapPanel>
-                                                    </Button>
-                                                    
-                                                    <Button IsEnabled="False" Padding="5, 3" Margin="2">
-                                                        <WrapPanel>
-                                                            <PathIcon Data="{StaticResource PauseRegular}"
-                                                                      Width="16" Height="16"
-                                                                      VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                                            <TextBlock Text="Pause" Margin="4, 0"></TextBlock>
-                                                        </WrapPanel>
-                                                    </Button>
-                                                    
-                                                    <Button Padding="5, 3" Margin="2">
-                                                        <WrapPanel>
-                                                            <PathIcon Data="{StaticResource StopRegular}"
-                                                                      Width="16" Height="16"
-                                                                      VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                                            <TextBlock Text="Stop" Margin="4, 0"></TextBlock>
-                                                        </WrapPanel>
-                                                    </Button>
-                                                    
-                                                    <Button Padding="5, 3" Margin="2">
-                                                        <WrapPanel>
-                                                            <PathIcon Data="{StaticResource NextRegular}"
-                                                                      Width="16" Height="16"
-                                                                      VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                                            <TextBlock Text="Next" Margin="4, 0"></TextBlock>
-                                                        </WrapPanel>
-                                                    </Button>
-                                                </WrapPanel>
-                                            </Grid>
-                                         </Panel>
-                                     
-                                        </Grid>
-                                        
-                                </Border>
-                                
-                            </Panel>
-                        </Border>
+                        <uc:VisitorControllerView>
+                            <shapingWindow:VisitorControllerViewModel/>
+                        </uc:VisitorControllerView>
                     </Panel> 
                     
                 </Grid>
+                
+                 <Border Grid.Row="0" Grid.Column="2" Margin="0, 5, 0, 5">
+                     <uc:ActionsFlowTreeView/>
+                 </Border>
                  
              </Grid>
             
-            <Panel Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <GridSplitter Grid.Row="2"></GridSplitter>
+            
+            <Panel Grid.Row="3" MinHeight="100"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Border Margin="2"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"
@@ -264,7 +178,8 @@
                     </TextBox>
                 </Border>
             </Panel>
-        </Grid> 
+            
+        </Grid>
         
     </Panel>
     

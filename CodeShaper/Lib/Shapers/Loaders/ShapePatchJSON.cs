@@ -9,57 +9,46 @@ using System.Collections.ObjectModel;
 using Lib.Shapers.Interfaces;
 using Lib.Shaping.Expressions;
 using Lib.Utility.Extensions;
+using Lib.AST;
+using Lib.AST.Interfaces;
 
 
 // Library Namespaces
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Antlr4.Runtime;
 using PCRE;
 
 
 namespace Lib.Shapers.Loaders
 {
-
-    public class ShapePatchJSON<TLocation> : IShapePatch<TLocation> where TLocation : Enum
+    
+    
+    public abstract class ShapePatchJSON<TLocation> : IShapePatch
     {
-        private string filePath;
+        private string FilePath;
         private string fileContent;
 
-        public ShapePatchHeader<ShapeActions<TLocation>>? Header { get; set; }
+        public string Name { get; set; }
+        public ASTPreparationController PreparationController { get; set; }
+        public IShapePatchHeader Header { get; set; }
 
         public ShapePatchJSON(string filePath)
         {
-            this.filePath = filePath;
+            FilePath = filePath;
             fileContent = File.ReadAllText(filePath);
 
-            var hjsonPatch = Hjson.HjsonValue.Load(this.filePath).ToString();
+            Name = Path.GetFileNameWithoutExtension(filePath);
             
-            Header = JsonConvert.DeserializeObject<ShapePatchHeader<ShapeActions<TLocation>>>(hjsonPatch);
+            var hjsonPatch = Hjson.HjsonValue.Load(filePath).ToString();
+            
+            ShapePatchSettings.Location = typeof(TLocation);
 
-            foreach (var shapeActionsReplacer in Header!.Actions.Replacers)
-            {
-                var replacer = (Replacer)shapeActionsReplacer;
-                if (replacer.ExtensionData.Count > 0)
-                    Console.WriteLine();
-            }
-
-            foreach (var shapeActionsAdder in Header.Actions.Adders)
-            {
-                var adder = (Adder)shapeActionsAdder;
-                if (adder.ExtensionData.Count > 0)
-                    Console.WriteLine();
-            }
-
-            foreach (var shapeActionsSubtracter in Header.Actions.Subtracters)
-            {
-                var subtracter = (Subtracter)shapeActionsSubtracter;
-                if (subtracter.ExtensionData.Count > 0)
-                    Console.WriteLine();
-            }
+            Header = JsonConvert.DeserializeObject<ShapePatchHeader>(hjsonPatch);
         }
     }
     
-    public class ShapePatchHeader<TActions> : IShapePatchHeader<TActions>
+    public class ShapePatchHeader : IShapePatchHeader
     {
         [JsonProperty("project")]
         public string Project { get; set; }
@@ -70,34 +59,44 @@ namespace Lib.Shapers.Loaders
 
         [JsonRequired]
         [JsonProperty("actions")]
-        public TActions Actions { get; set; }
+        public IShapeActions Actions { get; set; }
+
+        public ShapePatchHeader(ShapeActions actions)
+        {
+            Actions = actions;
+        }
     }
     
-    public class ShapeActions<TLocation> where TLocation : Enum
+    [JsonObject]
+    public class ShapeActions : IShapeActions
     {
         [JsonConverter(typeof(BuilderConverter))]
         [JsonProperty("builders")]
-        public ObservableCollection<Builder<TLocation>> Builders { get; set; }
+        public ObservableCollection<IShapeActionsBuilder> Builders { get; set; }
         
+        [JsonConverter(typeof(MakerConverter))]
+        [JsonProperty("makers")]
+        public ObservableCollection<IShapeActionsMaker> Makers { get; set; }
         
-        [JsonProperty("makers"), JsonConverter(typeof(MakerConverter))]
-        public ObservableCollection<IShapeActionsMaker> Makers { get; }
-        
+        [JsonConverter(typeof(ResolverConverter))]
         [JsonProperty("resolvers")]
-        public ObservableCollection<IShapeActionsResolver> Resolvers { get; }
+        public ObservableCollection<IShapeActionsResolver> Resolvers { get; set; }
         
-        [JsonProperty("replacements", ItemConverterType = typeof(ReplacementConverter))]
-        public ObservableCollection<IShapeActionsReplacer> Replacers { get; }
+        [JsonConverter(typeof(ReplacementConverter))]
+        [JsonProperty("replacements")]
+        public ObservableCollection<IShapeActionsReplacer> Replacers { get; set; }
         
+        [JsonConverter(typeof(AdderConverter))]
         [JsonProperty("adders")]
-        public ObservableCollection<IShapeActionsAdder> Adders { get; }
+        public ObservableCollection<IShapeActionsAdder> Adders { get; set; }
         
+        [JsonConverter(typeof(SubtracterConverter))]
         [JsonProperty("subtractions")]
-        public ObservableCollection<IShapeActionsSubtracter> Subtracters { get; }
+        public ObservableCollection<IShapeActionsSubtracter> Subtracters { get; set; }
     }
     
     
-    public class Builder<TLocation> where TLocation : Enum
+    public class Builder : IShapeActionsBuilder
     {
         public string Name { get; set; }
         
@@ -125,7 +124,7 @@ namespace Lib.Shapers.Loaders
         public string Build { get; set; }
 
         [JsonProperty("actions")]
-        public IShapeActions<Enum> Actions { get; set; }
+        public IShapeActions Actions { get; set; }
         
         public IShapeActionsBuilder RootBuilder { get; set; }
 
@@ -151,6 +150,11 @@ namespace Lib.Shapers.Loaders
         public string ProcessVariable()
         {
             throw new NotImplementedException();
+        }
+
+        public Builder(ShapeActions actions)
+        {
+            Actions = actions;
         }
     }
     
@@ -245,6 +249,11 @@ namespace Lib.Shapers.Loaders
         {
             throw new NotImplementedException();
         }
+
+        public Maker()
+        {
+            
+        }
     }
     
     public class Replacer : IShapeActionsReplacer
@@ -268,9 +277,6 @@ namespace Lib.Shapers.Loaders
         [JsonRequired]
         [JsonProperty("to")]
         public string To { get; set; }
-
-        [JsonExtensionData]
-        public Dictionary<string, JToken> ExtensionData = new();
     }
     
     
@@ -297,13 +303,12 @@ namespace Lib.Shapers.Loaders
         [JsonRequired]
         [JsonProperty("code")]
         public string Code { get; set; }
-
-        [JsonExtensionData]
-        public readonly Dictionary<string, JToken> ExtensionData = new();
     }
     
     public class Subtracter : IShapeActionsSubtracter
     {
+        public string Name { get; set; }
+        
         [JsonRequired]
         [JsonProperty("location")]
         public Enum? Location { get; set; }
@@ -317,9 +322,6 @@ namespace Lib.Shapers.Loaders
 
         [JsonProperty("remove_usages")]
         public bool RemoveUsages { get; set; }
-
-        [JsonExtensionData]
-        public readonly Dictionary<string, JToken> ExtensionData = new();
     }
 
     public class BuilderConverter : JsonConverter
@@ -331,32 +333,27 @@ namespace Lib.Shapers.Loaders
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            var builderType = objectType.GetGenericArguments()[0];
-            var locationType = objectType.GetGenericArguments()[0].GetGenericArguments()[0];
-
             var obj = JObject.Load(reader);
 
-            var builders = new ObservableCollection<Builder<Enum>>();
+            var builders = new ObservableCollection<IShapeActionsBuilder>();
 
             foreach (var (key, value) in obj)
             {
-                var builder = new Builder<Enum>();
-
-                if (builder == null)
-                    continue;
+                var actions = JsonConvert.DeserializeObject<ShapeActions>(value.Value<JObject>("actions").ToString());
                 
-                builder.Name = key;
-                builder.Reference = value.Value<string>("reference");
-                builder.Location = value.Value<string>("reference").ToEnum(locationType);
-                builder.ReferenceLocation = value.Value<string>("reference_location").ToEnum(locationType);
-                builder.ReferenceFlags = value.Value<string>("reference_flags");
-                builder.Match = value.Value<string>("match");
-                builder.Prepare = value.Value<string>("prepare");
-                builder.Build = value.Value<string>("build");
-
-                // builder.Actions = value.Value<IShapeActions<Enum>>("actions")
+                var builder = new Builder(actions)
+                {
+                    Name = key,
+                    Reference = value.Value<string>("reference"),
+                    Location = value.Value<string>("reference").ToEnum(ShapePatchSettings.Location),
+                    ReferenceLocation = value.Value<string>("reference_location").ToEnum(ShapePatchSettings.Location),
+                    ReferenceFlags = value.Value<string>("reference_flags"),
+                    Match = value.Value<string>("match"),
+                    Prepare = value.Value<string>("prepare"),
+                    Build = value.Value<string>("build"),
+                };
                 
-                builders.Add((Builder<Enum>)builder);
+                builders.Add(builder);
             }
 
             return builders;
@@ -364,10 +361,52 @@ namespace Lib.Shapers.Loaders
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(Builder<Enum>);
+            return objectType == typeof(Builder);
         }
     }
-    
+
+    public class ResolverConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+
+            var resolvers = new ObservableCollection<IShapeActionsResolver>();
+
+            foreach (var (key, value) in obj)
+            {
+                var resolver = new Resolver
+                {
+                    Name = key,
+                    Index = value.Value<string>("index"),
+                    Default = value.Value<string>("default"),
+                    Mode = value.Value<ResolverMode>("make"),
+                };
+                
+                var listStr = value.Value<JArray>("list")?.ToString();
+                if (listStr != null)
+                    resolver.List = JsonConvert.DeserializeObject<List<string>>(listStr);
+
+                var casesStr = value.Value<JObject>("cases")?.ToString();
+                if (casesStr != null)
+                    resolver.Cases = JsonConvert.DeserializeObject<Dictionary<string, string>>(casesStr);
+
+                resolvers.Add(resolver);
+            }
+
+            return resolvers;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Resolver);
+        }
+    }
     
     public class MakerConverter : JsonConverter
     {
@@ -378,12 +417,29 @@ namespace Lib.Shapers.Loaders
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            var obj = JObject.Load(reader);
+
+            var makers = new ObservableCollection<IShapeActionsMaker>();
+
+            foreach (var (key, value) in obj)
+            {
+                var maker = new Maker
+                {
+                    Name = key,
+                    Prepare = value.Value<string>("prepare"),
+                    Locals = value.Value<Dictionary<string, Dictionary<string, string>>>("reference"),
+                    Make = value.Value<string>("make")
+                };
+
+                makers.Add(maker);
+            }
+
+            return makers;
         }
 
         public override bool CanConvert(Type objectType)
         {
-            throw new NotImplementedException();
+            return objectType == typeof(Maker);
         }
     }
     
@@ -398,46 +454,123 @@ namespace Lib.Shapers.Loaders
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            JObject obj = JObject.Load(reader);
+            var obj = JObject.Load(reader);
 
-            var props = new List<string> { "to", "from", "location", "reference_location", "reference" };
-            var replacement = new Replacer
+            var replacers = new ObservableCollection<IShapeActionsReplacer>();
+
+            foreach (var (key, value) in obj)
             {
-                To = (string)obj.Property("to")?.Value,
-                Reference = (string)obj.Property("reference")?.Value,
-                // Location = ((string)obj.Property("location")?.Value).ToEnum<TLocation>(),
-                // ReferenceLocation = ((string)obj.Property("reference_location")?.Value).ToEnum<TLocation>()
-            };
-
-            var from = obj.Property("from");
-
-            if (from != null)
-            {
-                switch (@from.Value.Type)
+                var replacer = new Replacer
                 {
-                    case JTokenType.String:
-                        replacement.From = new string[] { (string)@from?.Value };
-                        break;
-                    case JTokenType.Array:
-                        replacement.From = @from?.Value.ToObject<string[]>();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    Name = key,
+                };
+
+                replacer.Location = value.Value<string>("location").ToEnum(ShapePatchSettings.Location);
+                replacer.Reference = value.Value<string>("reference");
+                replacer.ReferenceLocation =
+                    value.Value<string>("reference_location").ToEnum(ShapePatchSettings.Location);
+                replacer.To = value.Value<string>("to");
+                
+                var from = obj.Property("from");
+
+                if (from != null)
+                {
+                    switch (@from.Value.Type)
+                    {
+                        case JTokenType.String:
+                            replacer.From = new string[] { (string)@from?.Value };
+                            break;
+                        case JTokenType.Array:
+                            replacer.From = @from?.Value.ToObject<string[]>();
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
+                
+                replacers.Add(replacer);
             }
 
-            foreach (var prop in obj.Properties())
-            {
-                if (!props.Contains(prop.Name))
-                    replacement.ExtensionData.Add(prop.Name, prop.Value);
-            }
-
-            return replacement;
+            return replacers;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
+        }
+    }
+    
+    public class AdderConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+
+            var adders = new ObservableCollection<Adder>();
+
+            foreach (var (key, value) in obj)
+            {
+                var adder = new Adder
+                {
+                    Name = key,
+                    Reference = value.Value<string>("reference"),
+                    Location = value.Value<string>("reference").ToEnum(ShapePatchSettings.Location),
+                    ReferenceLocation = value.Value<string>("reference_location").ToEnum(ShapePatchSettings.Location),
+                    Order = value.Value<string>("order"),
+                    Except = value.Value<string>("except"),
+                    Code = value.Value<string>("code")
+                };
+                
+                adders.Add(adder);
+            }
+
+            return adders;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Adder);
+        }
+    }
+    
+    public class SubtracterConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+
+            var subtracters = new ObservableCollection<Subtracter>();
+
+            foreach (var (key, value) in obj)
+            {
+                var subtracter = new Subtracter
+                {
+                    Name = key,
+                    Reference = value.Value<string>("reference"),
+                    Location = value.Value<string>("reference").ToEnum(ShapePatchSettings.Location),
+                    ReferenceLocation = value.Value<string>("reference_location").ToEnum(ShapePatchSettings.Location),
+                    RemoveUsages = value.Value<bool>("remove_usages"),
+                };
+                
+                subtracters.Add(subtracter);
+            }
+
+            return subtracters;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Subtracter);
         }
     }
 }

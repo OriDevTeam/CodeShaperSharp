@@ -8,7 +8,6 @@ using Lib.Shapers.CPP;
 
 
 // Library Namespaces
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using PCRE;
@@ -21,26 +20,15 @@ namespace Lib.AST.ANTLR.CPP
     {
         public string Name => "CPP14 ANtlr4 AST Visitor";
         public ASTVisitorController<Enum> VisitorController { get; }
-
-        public CPPASTVisitor(AntlrInputStream inputStream)
+        
+        public ASTPreparationController PreparationController { get; }
+        
+        public CPPASTVisitor(ASTPreparationController preparationController)
         {
-            VisitorController = new ASTVisitorController<Enum>(inputStream);
+            PreparationController = preparationController;
+            VisitorController = new ASTVisitorController<Enum>(preparationController);
         }
         
-        public void Visit()
-        {
-            throw new NotImplementedException();
-        }
-        
-        public override object VisitErrorNode(IErrorNode node)
-        {
-            VisitorController.State = VisitorState.Stop;
-            
-            Log.Error($"ERROR: Visitor cannot parse node {node}");
-
-            return base.VisitErrorNode(node);
-        }
-
         public override object Visit(IParseTree tree)
         {
             var allText = VisitorController.AllText();
@@ -63,6 +51,15 @@ namespace Lib.AST.ANTLR.CPP
                 VisitorController.ProcessCustomVisit(match.Value, Location.Include);
         }
         
+        public override object VisitErrorNode(IErrorNode node)
+        {
+            VisitorController.State = VisitorState.Stop;
+            
+            Log.Error($"ERROR: Visitor cannot parse node {node}");
+
+            return base.VisitErrorNode(node);
+        }
+
         public override object VisitDeclaration([NotNull] CPP14Parser.DeclarationContext context)
         {
             return VisitorController.ProcessVisit(context,

@@ -2,29 +2,36 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 
 
 // Application Namespaces
-using Lib.Shapers.Loaders;
+using Lib.AST;
+using Lib.AST.Interfaces;
 
 
 // Library Namespaces
+using Antlr4.Runtime;
 
 
 namespace Lib.Shapers.Interfaces
 {
-    public interface IShapePatch<TLocation> where TLocation : Enum
+    public interface IShapePatch
     {
-        public ShapePatchHeader<ShapeActions<TLocation>>? Header { get; set; }
+        public string Name { get; set; }
+        
+        public ASTPreparationController PreparationController { get; }
+        
+        public IShapePatchHeader Header { get; set; }
     }
 
-    public interface IShapePatchHeader<TActions>
+    public interface IShapePatchHeader
     {
         string FileSearch { get; set; }
-        public TActions Actions { get; set; }
+        public IShapeActions Actions { get; set; }
     }
 
-    public interface IShapeActions<TLocation> where TLocation : Enum
+    public interface IShapeActions
     {
         public ObservableCollection<IShapeActionsBuilder> Builders { get; }
         public ObservableCollection<IShapeActionsMaker> Makers { get; }
@@ -51,7 +58,7 @@ namespace Lib.Shapers.Interfaces
         
         public string Build { get; set; }
         
-        public IShapeActions<Enum> Actions { get; set; }
+        public IShapeActions Actions { get; set; }
         
         public IShapeActionsBuilder RootBuilder { get; set; }
 
@@ -132,7 +139,10 @@ namespace Lib.Shapers.Interfaces
     
     public enum ResolverMode
     {
+        [EnumMember(Value = "list")]
         List,
+        
+        [EnumMember(Value = "switch")]
         Switch
     }
 }

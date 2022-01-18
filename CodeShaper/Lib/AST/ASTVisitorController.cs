@@ -15,12 +15,15 @@ using Antlr4.Runtime.Tree;
 
 namespace Lib.AST
 {
-    public class ASTVisitorController<T> where T : Enum
+    public class ASTVisitorController<TLocation> where TLocation : Enum
     {
-        private AntlrInputStream InputStream { get; }
-        public Dictionary<T, string> LocationsContent { get; private set; } = new();
+        public Dictionary<TLocation, string> LocationsContent { get; private set; } = new();
+        
+        public TLocation CurrentLocation { get; private set; }
+        
+        public ASTPreparationController PreparationController { get; }
 
-        public event EventHandler<T> OnVisitorProcess;
+        public event EventHandler<TLocation> OnVisitorProcess;
         
         private VisitorState state;
         public VisitorState State
@@ -32,72 +35,71 @@ namespace Lib.AST
                 state = value;
             }
         }
-
-        private IParseTreeVisitor<object> Visitor { get; }
+        
         private ParserRuleContext CurrentContext { get; set; }
 
-        public ASTVisitorController(AntlrInputStream inputStream)
+        public ASTVisitorController(ASTPreparationController preparationController)
         {
-            InputStream = inputStream;
+            PreparationController = preparationController;
         }
         
-        public ASTVisitorController(IParseTreeVisitor<object> visitor)
+        
+        internal object ProcessCustomVisit([NotNull] IParseTree tree, string text, TLocation location, Delegate visit)
         {
-            Visitor = visitor;
+            return ProcessVisit(text, location);
         }
         
-        internal object ProcessCustomVisit([NotNull] IParseTree tree, string text, T location, Delegate visit)
-        {
-            return ProcessVisit(tree, location);
-        }
-        
-        internal object ProcessCustomVisit([NotNull] ParserRuleContext context, string text, T location, Delegate visit)
+        internal object ProcessCustomVisit([NotNull] ParserRuleContext context, string text, TLocation location, Delegate visit)
         {
             return ProcessVisit(context, location);
         }
         
-        internal void ProcessCustomVisit(string visitText, T location)
+        internal void ProcessCustomVisit(string visitText, TLocation location)
         {
             LocationsContent[location] = visitText;
+
+            ProcessVisit(visitText, location);
         }
 
-        internal object ProcessVisit([NotNull] IParseTree tree, T location, Delegate visit)
+        internal object ProcessVisit([NotNull] IParseTree tree, TLocation location, Delegate visit)
         {
             return new object();
         }
         
-        internal object ProcessVisit([NotNull] ParserRuleContext context, T location, Delegate visit)
+        internal object ProcessVisit([NotNull] ParserRuleContext context, TLocation location, Delegate visit)
         {
             return new object();
         }
-
-        private object ProcessVisit([NotNull] IParseTree tree, T location)
-        {
-            return new object();
-        }
-
-        private object ProcessVisit([NotNull] ParserRuleContext context, T location)
+        
+        private object ProcessVisit([NotNull] ParserRuleContext context, TLocation location)
         {
             CurrentContext = context;
             
             var contextText = GetText(context);
 
-            LocationsContent[location] = contextText;
+            return ProcessVisit(contextText, location);
+        }
+
+        private object ProcessVisit(string visit, TLocation location)
+        {
+            LocationsContent[location] = visit;
+            
+            return ProcessVisitorState(location);
+        }
+        
+        private object ProcessVisitorState(TLocation location)
+        {
+            CurrentLocation = location;
             
             OnVisitorProcess?.Invoke(this, location);
 
-            return ProcessVisitorState();
-        }
-        
-        private object ProcessVisitorState()
-        {
             switch (State)
             {
                 case VisitorState.Stop:
                     break;
                 
                 case VisitorState.Play:
-                    return Visitor.Visit(CurrentContext);
+                    return PreparationController.Visitor.Visit(CurrentContext);
 
                 case VisitorState.Pause:
                     break;
@@ -117,7 +119,10 @@ namespace Lib.AST
 
         private void ProcessStateChange()
         {
-            Visitor.Visit(CurrentContext);
+            if (CurrentContext == null)
+                CurrentContext = PreparationController.MakeRootContext();
+
+            PreparationController.Visitor.Visit(CurrentContext);
         }
         
         internal string GetText(ParserRuleContext context)
@@ -134,12 +139,12 @@ namespace Lib.AST
                 return "";
 
             var interval = new Interval(start, stop);
-            return InputStream.GetText(interval);
+            return PreparationController.InputStream.GetText(interval);
         }
 
         internal string AllText()
         {
-            return InputStream.GetText(new Interval(0, InputStream.Size));
+            return PreparationController.InputStream.GetText(new Interval(0, PreparationController.InputStream.Size));
         }
     }
     
@@ -148,7 +153,7 @@ namespace Lib.AST
         // Stops the visitor completely
         Stop,
         
-        // Processes the visitor visit
+        // Processes the visitor visits
         Play,
         
         // Pauses the visitor

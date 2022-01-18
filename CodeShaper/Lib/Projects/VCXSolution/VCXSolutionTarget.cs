@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 
 
 // Application Namespaces
-using Lib.AST;
-using Lib.AST.ANTLR.CPP;
 using Lib.Settings;
 using Lib.Shaping;
 using Lib.Shaping.Target.Interfaces;
@@ -15,33 +13,34 @@ using Lib.Shaping.Target.Interfaces;
 
 namespace Lib.Projects.VCXSolution
 {
-    public class VCXSolutionTarget : IShapingTarget
+    public partial class VCXSolutionTarget : IShapingTarget
     {
         public string Name => SolutionInformation.Name;
         
         public ObservableCollection<IShapingTargetGroup> ShapingTargetGroups { get; } = new();
+        public IShapingTargetFile SelectedTargetFile { get; private set; }
 
         public readonly MVCXSolution SolutionInformation;
-        public readonly ShapeProject ShapeProject;
-        private readonly ASTPreparationController<CPP14Lexer, CPP14Parser, CPPASTVisitor> preparationController;
 
-        public VCXSolutionTarget(string solutionPath, ShapeProject shapeProject)
+        private readonly ShapingOperation ShapingOperation;
+        
+        public readonly ShapeProject ShapeProject;
+
+        public VCXSolutionTarget(ShapingOperation shapingOperation)
         {
-            ShapeProject = shapeProject;
-            SolutionInformation = new MVCXSolution(solutionPath);
-            preparationController = new ASTPreparationController<CPP14Lexer, CPP14Parser, CPPASTVisitor>();
+            ShapingOperation = shapingOperation;
+            
+            SolutionInformation = new MVCXSolution(ShapingOperation.ShapingConfiguration.SourceDirectory);
         }
 
         public void Load()
         {
-            ShapingTargetGroups.Add(new VCXSolutionGroup(this));
-            
+            ShapingTargetGroups.Add(new VCXSolutionGroup(ShapingOperation, this, null));
         }
-        
-        public void Shape(VCXModuleFile moduleFile)
+
+        public void Shape(VCXTargetFile target)
         {
-            preparationController.Prepare(moduleFile.Result.FileContent);
-            preparationController.Visitor.VisitorController.OnVisitorProcess += moduleFile.Result.VisitorProcess;
+            SelectedTargetFile = target;
         }
     }
 }

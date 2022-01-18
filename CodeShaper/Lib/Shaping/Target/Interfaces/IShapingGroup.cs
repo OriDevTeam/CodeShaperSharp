@@ -18,7 +18,8 @@ namespace Lib.Shaping.Target.Interfaces
         
         public ObservableCollection<IShapingTargetGroup> ShapingTargetGroups { get; }
         public ObservableCollection<IShapingTargetFile> ShapingTargetFiles { get; }
-        
+        IShapingTargetGroup ParentGroup { get; set; }
+
         public event EventHandler<IShapingTargetGroup> OnShapingGroupLoad;
         public event EventHandler<IShapingTargetFile> OnShapingTargetFileLoad;
 

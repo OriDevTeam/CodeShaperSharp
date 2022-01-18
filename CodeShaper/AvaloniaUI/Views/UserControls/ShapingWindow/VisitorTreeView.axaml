@@ -1,0 +1,49 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:editTextEditor="clr-namespace:AvaloniaUI.Views.UserControls.EditTextEditor"
+             xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.VisitorTreeView">
+    
+    <Design.DataContext>
+        <shapingWindow:VisitorTreeViewModel/>
+    </Design.DataContext>
+    
+    <Panel>
+    
+        <Grid ColumnDefinitions="*, Auto, *" RowDefinitions="*" VerticalAlignment="Stretch" >
+                                    
+            <Border Grid.Row="0" Grid.Column="0" 
+                    Margin="5"
+                    VerticalAlignment="Stretch"
+                    Background="Transparent"
+                    BorderBrush="Gray"
+                    BorderThickness="2"
+                    CornerRadius="1">
+                                    
+                <editTextEditor:TextEditorUserControl x:Name="OriginalTextEditor"/>
+                                    
+            </Border>
+                                
+            <GridSplitter Grid.Row="0" Grid.Column="1" Cursor="IBeam"></GridSplitter>
+                                
+            <Border Grid.Row="0" Grid.Column="2"
+                    Margin="5"
+                    VerticalAlignment="Stretch"
+                    Background="Transparent"
+                    BorderBrush="Gray"
+                    BorderThickness="2"
+                    CornerRadius="1">
+                                                
+                <editTextEditor:TextEditorUserControl x:Name="TargetTextEditor"/>
+                                    
+            </Border>
+                                    
+        </Grid>
+
+        
+    </Panel>
+    
+</UserControl>

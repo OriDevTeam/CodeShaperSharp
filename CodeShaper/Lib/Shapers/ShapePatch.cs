@@ -7,7 +7,7 @@ using System.IO;
 
 // Application Namespaces
 using Lib.Shapers.Interfaces;
-
+using Lib.Shapers.Loaders;
 
 
 // Library Namespaces
@@ -16,12 +16,22 @@ using Lib.Shapers.Interfaces;
 
 namespace Lib.Shapers
 {
-    public class ShapePatch<TLocation> where TLocation : Enum, IShapePatch<TLocation>
+    /// <summary>
+    /// Holds static information for shape patch loading, which works sort
+    /// of like an hack to make passing Location enum easier for the converters
+    /// </summary>
+    public static class ShapePatchSettings
+    {
+        public static Type Location;
+    }
+    
+    /*
+    public class ShapePatch : IShapePatch
     {
         private readonly string filePath;
         private string fileContent;
 
-        private ShapeHeader header;
+        private ShapeHeader Header;
         
         public ShapePatch(string filePath)
         {
@@ -37,7 +47,7 @@ namespace Lib.Shapers
             // header = JsonConvert.DeserializeObject<ShapeHeader>(hjsonPatch);
         }
 
-        public class ShapeHeader
+        private class ShapeHeader : IShapePatchHeader<ShapeActions>
         {
             public string FileSearch { get; set; }
 
@@ -57,9 +67,9 @@ namespace Lib.Shapers
 
         public class Builder
         {
-            public TLocation? Location;
+            public Enum? Location;
             
-            public TLocation? ReferenceLocation;
+            public Enum? ReferenceLocation;
             
             public string Reference;
             
@@ -99,9 +109,9 @@ namespace Lib.Shapers
     
         public class Replacer
         {
-            public TLocation? Location;
+            public Enum? Location;
             
-            public TLocation? ReferenceLocation;
+            public Enum? ReferenceLocation;
             
             public string Reference;
             
@@ -112,11 +122,11 @@ namespace Lib.Shapers
 
         public class Adder
         {
-            public TLocation? Location;
+            public Enum? Location;
             
             public string Order;
             
-            public TLocation? ReferenceLocation;
+            public Enum? ReferenceLocation;
             
             public string Reference;
             
@@ -127,13 +137,14 @@ namespace Lib.Shapers
 
         public class Subtracter
         {
-            public TLocation? Location;
+            public Enum? Location;
 
-            public TLocation? ReferenceLocation;
+            public Enum? ReferenceLocation;
             
             public string Reference;
             
             public bool RemoveUsages;
         }
     }
+    */
 }

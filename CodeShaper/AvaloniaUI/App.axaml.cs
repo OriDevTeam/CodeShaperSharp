@@ -9,6 +9,7 @@ using Lib.Managers;
 
 // Library Namespaces
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
@@ -19,7 +20,8 @@ namespace AvaloniaUI
     {
         public override void Initialize()
         {
-            InitializeLib();
+            if (!Design.IsDesignMode)
+                InitializeLib();
             
             AvaloniaXamlLoader.Load(this);
         }

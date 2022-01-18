@@ -1,7 +1,8 @@
 ﻿// System Namespaces
 using System;
 using System.Collections.Generic;
-
+using System.IO;
+using Lib.AST;
 
 // Application Namespaces
 using Lib.Shaping.Operations;
@@ -17,44 +18,48 @@ namespace Lib.Shaping
 {
     public partial class ShapeResult
     {
+        public string FilePath { get; }
         public string FileName { get; set; }
         public string FileContent { get; set; }
+        
+        private ShapeProject ShapeProject { get; }
 
         public List<IShapeActionsBuilder> Builders { get; set; } = new();
 
         public List<Tuple<IShapeActionsReplacer, string, string>> Replacements { get; set; } = new();
         public List<Tuple<IShapeActionsAdder, string, string>> Additions { get; set; } = new();
         public List<Tuple<IShapeActionsSubtracter, string, string>> Subtractions { get; set; } = new();
+        
 
-        public ShapeProject ShapeProject { get; set; }
 
-
-        public ShapeResult(ShapeProject shapeProject, string fileContent, string fileName)
+        public ShapeResult(ShapeProject shapeProject, string filePath)
         {
             ShapeProject = shapeProject;
-            FileName = fileName;
-            FileContent = fileContent;
+
+            FilePath = filePath;
+            FileName = Path.GetFileName(filePath);;
+            FileContent = File.ReadAllText(filePath);
 
             Builders = Building.GetTopBuilders(FileName, ShapeProject.Patches);
         }
 
         public void VisitorProcess(object sender, Enum location)
         {
-            var visitor = (IASTVisitor)sender;
-            var context = visitor.VisitorController.LocationsContent[location];
+            var visitorController = (ASTVisitorController<Enum>)sender;
+            var context = visitorController.LocationsContent[location];
             
             foreach (var builder in Builders)
             {
-                if (builder.ProcessBuilder(visitor, location))
-                    ProcessBuilderReplacementsAdditionsSubtractions(builder, visitor, context, location);
+                if (builder.ProcessBuilder(visitorController.PreparationController.Visitor, location))
+                    ProcessBuilderReplacementsAdditionsSubtractions(builder, visitorController.PreparationController.Visitor, location);
             }
 
-            ProcessReplacementsAdditionsSubtractions(visitor, context, location);
+            ProcessReplacementsAdditionsSubtractions(visitorController.PreparationController.Visitor, context, location);
         }
 
+
         private void ProcessBuilderReplacementsAdditionsSubtractions(
-            IShapeActionsBuilder builder,
-            IASTVisitor visitor, string context, Enum location)
+            IShapeActionsBuilder builder, IASTVisitor visitor, Enum location)
         {
             var activeBuilder = builder;
 

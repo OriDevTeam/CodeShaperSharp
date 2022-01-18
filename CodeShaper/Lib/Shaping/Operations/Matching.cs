@@ -19,7 +19,7 @@ namespace Lib.Shaping.Operations
 
     public static class Matching
     {
-        public static bool MatchesFile<T>(string fileName, IShapePatch<T> patchOld) where T : Enum
+        public static bool MatchesFile(string fileName, IShapePatch patchOld)
         {
             return PcreRegex.IsMatch(fileName, patchOld.Header.FileSearch);
         }
@@ -27,7 +27,7 @@ namespace Lib.Shaping.Operations
 
     public static partial class Building
     {
-        public static List<IShapeActionsBuilder> GetTopBuilders(string fileName, List<IShapePatch<Enum>> patches)
+        public static List<IShapeActionsBuilder> GetTopBuilders(string fileName, List<IShapePatch> patches)
         {
             var builders = new List<IShapeActionsBuilder>();
 
@@ -36,7 +36,7 @@ namespace Lib.Shaping.Operations
                 if (!Matching.MatchesFile(fileName, patch))
                     continue;
 
-                foreach (IShapeActionsBuilder builder in patch.Header.Actions.Builders)
+                foreach (var builder in patch.Header.Actions.Builders)
                     builders.Add(builder);
             }
 
@@ -52,7 +52,7 @@ namespace Lib.Shaping.Operations
 
         private static void PrepareChildrenBuilders(IShapeActionsBuilder parent)
         {
-            if (parent.Actions == null)
+            if (parent.Actions?.Builders == null)
                 return;
 
             foreach (var childBuilder in parent.Actions.Builders)

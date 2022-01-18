@@ -1,12 +1,17 @@
 ﻿// System Namespaces
+using System;
 using System.Runtime.Serialization;
 
 
 // Application Namespaces
 using Lib.Shapers.Loaders;
+using Lib.AST;
+using Lib.AST.ANTLR.CPP;
+using Lib.AST.Interfaces;
 
 
 // Library Namespaces
+using Antlr4.Runtime;
 
 
 namespace Lib.Shapers.CPP
@@ -15,6 +20,9 @@ namespace Lib.Shapers.CPP
     {
         public CPPPatch(string filePath) : base(filePath)
         {
+            // var type = typeof(ASTPreparationController<CPP14Lexer, CPP14Parser, CPPASTVisitor>);
+            // PreparationController = (ASTPreparationController<Lexer, Parser, IASTVisitor>)Activator.CreateInstance(type);
+            PreparationController = new ASTPreparationController(typeof(CPP14Lexer), typeof(CPP14Parser), typeof(CPPASTVisitor));
         }
     }
 

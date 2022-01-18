@@ -14,13 +14,11 @@ namespace AvaloniaUI.ViewModels.UserControls.ShapingWindow
 {
     public class TargetTreeViewModel : ViewModelBase
     {
-        public ObservableCollection<IShapingTargetGroup> Groups { get; }
+        public static ObservableCollection<IShapingTargetGroup> Groups =>
+            ShapingOperationsManager.ActiveShapingOperation.ShapingTarget.ShapingTargetGroups;
 
         public TargetTreeViewModel()
         {
-            
-            Groups = ShapingOperationsManager.ActiveShapingOperation.ShapingTarget.ShapingTargetGroups;
         }
-        
     }
 }

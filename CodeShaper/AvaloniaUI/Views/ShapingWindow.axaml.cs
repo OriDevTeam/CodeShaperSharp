@@ -4,7 +4,6 @@ using System;
 
 // Application Namespaces
 using AvaloniaUI.ViewModels;
-using Lib.Projects.VCXSolution;
 using Lib.Managers;
 
 
@@ -14,15 +13,12 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
-using Lib.Shaping.Target.Interfaces;
 
 
 namespace AvaloniaUI.Views
 {
     public class ShapingWindow : ReactiveWindow<ShapingViewModel>
     {
-        public TextBox LogsBox { get; }
-        private TextBlock TimeElapsedTextBox { get; }
         private DispatcherTimer UpdateTimer { get; }
         
         public ShapingWindow()
@@ -33,38 +29,45 @@ namespace AvaloniaUI.Views
 #endif
             Title = string.Format("{0} - {1}",
                 ShapingOperationsManager.ActiveShapingOperation.ShapeProject.Configuration.Configuration.Name,
-                ((IShapingTarget)ShapingOperationsManager.ActiveShapingOperation.ShapingTarget).Name
+                ShapingOperationsManager.ActiveShapingOperation.ShapingTarget.Name
             );
             
-            LogsBox = this.FindControl<TextBox>("LogsBox");
+            BindControls();
             
             UpdateTimer = new DispatcherTimer()
             {
                 Interval = new TimeSpan(100),
             };
             
-            LogsBox = this.FindControl<TextBox>("LogsBox");
-
-            TimeElapsedTextBox = this.FindControl<TextBlock>("TimeElapsedText");
-            
             UpdateTimer.Tick += UpdateEvent;
             UpdateTimer.Start();
-        }
-
-        private void UpdateEvent(object? sender, EventArgs e)
-        {
-            ShapingUpdate();
-            LogsBox.Text = LoggingManager.Messages.ToString();
-        }
-
-        private void ShapingUpdate()
-        {
-            TimeElapsedTextBox.Text = $"Time Elapsed: {ShapingOperationsManager.ActiveShapingOperation.Stopwatch.Elapsed}";
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
         }
+        
+        private void BindControls()
+        {
+            LogsBox = this.FindControl<TextBox>("LogsBox");
+        }
+        
+        private void UpdateEvent(object? sender, EventArgs e)
+        {
+            var messages = LoggingManager.Messages.ToString();
+
+            if (LogsBox.Text != null && messages == LogsBox.Text)
+                return;
+            
+            var gotoEnd = LogsBox.CaretIndex == LogsBox.Text?.Length || LogsBox.Text == null;
+
+            LogsBox.Text = LoggingManager.Messages.ToString();
+            
+            if (gotoEnd)
+                LogsBox.CaretIndex = LogsBox.Text.Length;
+        }
+
+        private TextBox LogsBox { get; set; }
     }
 }

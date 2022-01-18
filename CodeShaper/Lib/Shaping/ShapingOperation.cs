@@ -14,13 +14,15 @@ using Serilog;
 
 namespace Lib.Shaping
 {
-    public class ShapingOperation
+    public partial class ShapingOperation
     {
         public ShapeProject ShapeProject { get; }
         public IShapingTarget ShapingTarget { get; }
         
-        private ShapingConfiguration ShapingConfiguration { get; }
-
+        public ShapingConfiguration ShapingConfiguration { get; }
+    
+        public ShapingOperationsController OperationsController { get; }
+        
         public Stopwatch Stopwatch { get; } = new();
 
         public ShapingOperation(ShapingConfiguration shapingConfiguration, ShapeProject shapeProject)
@@ -28,28 +30,27 @@ namespace Lib.Shaping
             ShapingConfiguration = shapingConfiguration;
 
             ShapeProject = shapeProject;
-            ShapingTarget = new VCXSolutionTarget(shapingConfiguration.SourceDirectory, shapeProject);
+            ShapingTarget = new VCXSolutionTarget(this);
+            
+            OperationsController = new ShapingOperationsController(this);
+            
+            Log.Information($"Ready to start shapping");
         }
         
-        public ShapingOperation(ShapingConfiguration shapingConfiguration, IShapingTarget shapingTarget)
-        {
-            ShapingConfiguration = shapingConfiguration;
-            
-            ShapeProject = new ShapeProject(shapingConfiguration);
-            ShapingTarget = shapingTarget;
-        }
-
         public void Start()
         {
-            Log.Information("Started Shaping {0}", ShapeProject.Configuration.Configuration.Name);
+            Log.Information($"Started Shaping {ShapeProject.Configuration.Configuration.Name}");
             Stopwatch.Start();
 
             ShapeProject.Load();
             ShapingTarget.Load();
+            
+            Log.Information($"Loaded Shape Project and Shaping Target");
         }
-
+        
         private void Stop()
         {
+            Log.Information($"Stopped Shaping {ShapeProject.Configuration.Configuration.Name}");
             Stopwatch.Stop();
         }
         

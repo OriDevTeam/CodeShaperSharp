@@ -22,7 +22,7 @@ namespace Lib.Shaping
         public Type Patch => typeof(CPPPatch);
         
         public ShapeProjectConfiguration Configuration;
-        public readonly List<IShapePatch<Enum>> Patches;
+        public readonly List<IShapePatch> Patches;
 
         public event EventHandler<string> SavingShapedFile;
 
@@ -31,9 +31,9 @@ namespace Lib.Shaping
             Patches = ParsePatches(shapingConfiguration.ShapeProjectDirectory);
         }
 
-        private List<IShapePatch<Enum>> ParsePatches(string projectDirectory)
+        private List<IShapePatch> ParsePatches(string projectDirectory)
         {
-            var patches = new List<IShapePatch<Enum>>();
+            var patches = new List<IShapePatch>();
 
             if (!Directory.Exists(projectDirectory))
                 throw new Exception();
@@ -45,14 +45,14 @@ namespace Lib.Shaping
 
             foreach (var file in Directory.EnumerateFiles(projectDirectory, "projects/*.hjson", SearchOption.AllDirectories))
             {
-                var shapePath = Activator.CreateInstance(Patch, file) as IShapePatch<Enum>;
-
-                patches.Add(shapePath);
+                var patch = (IShapePatch)Activator.CreateInstance(Patch, file);
+                
+                patches.Add(patch);
             }
 
             return patches;
         }
-        
+
         /*
         public List<ShapeResult> Shape(VCXSolution vcxProject, ShapingConfiguration config)
         {
@@ -69,17 +69,17 @@ namespace Lib.Shaping
         }
         */
 
-        internal bool ShouldLoad(string module)
+        internal IShapePatch MatchingShapePatch(string fileName)
         {
             foreach (var patch in Patches)
             {
-                var match = PcreRegex.IsMatch(module, patch.Header.FileSearch);
+                var match = PcreRegex.IsMatch(fileName, patch.Header.FileSearch);
 
                 if (match)
-                    return true;
+                    return patch;
             }
 
-            return false;
+            return null;
         }
 
         public void Load()

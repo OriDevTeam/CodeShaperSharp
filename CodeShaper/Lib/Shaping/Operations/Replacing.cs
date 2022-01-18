@@ -18,7 +18,7 @@ namespace Lib.Shaping.Operations
     {
         public static List<IShapeActionsReplacer> ProcessReplacing(
             ref string context, IASTVisitor visitor, string fileName,
-            List<IShapePatch<Enum>> patches, Enum location)
+            List<IShapePatch> patches, Enum location)
         {
             var processedReplacements = new List<IShapeActionsReplacer>();
 
@@ -50,7 +50,7 @@ namespace Lib.Shaping.Operations
 
         private static List<IShapeActionsReplacer> GetReplacements(
             IASTVisitor visitor, string FileName,
-            List<IShapePatch<Enum>> patches, Enum location)
+            List<IShapePatch> patches, Enum location)
         {
             var replacements = new List<IShapeActionsReplacer>();
 

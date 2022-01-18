@@ -18,7 +18,7 @@ namespace Lib.Shaping.Operations
     {
         public static List<IShapeActionsAdder> ProcessAdding(
             ref string context, IASTVisitor visitor, string fileName,
-            List<IShapePatch<Enum>> patches, Enum location)
+            List<IShapePatch> patches, Enum location)
         {
             var processedAdditions = new List<IShapeActionsAdder>();
 
@@ -38,13 +38,16 @@ namespace Lib.Shaping.Operations
 
         private static List<IShapeActionsAdder> GetAdditions(
             IASTVisitor visitor, string fileName,
-            List<IShapePatch<Enum>> patches, Enum location)
+            List<IShapePatch> patches, Enum location)
         {
             var additions = new List<IShapeActionsAdder>();
 
             foreach (var patch in patches)
             {
                 if (!Matching.MatchesFile(fileName, patch))
+                    continue;
+                
+                if (patch.Header.Actions.Adders == null)
                     continue;
 
                 foreach (var adder in patch.Header.Actions.Adders)

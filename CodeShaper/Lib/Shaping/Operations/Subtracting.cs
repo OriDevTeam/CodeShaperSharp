@@ -19,7 +19,7 @@ namespace Lib.Shaping.Operations
     {
         public static List<IShapeActionsSubtracter> ProcessSubtractions(
             ref string context, IASTVisitor visitor,
-            string fileName, List<IShapePatch<Enum>> patches, Enum location)
+            string fileName, List<IShapePatch> patches, Enum location)
         {
             var processedSubtractions = new List<IShapeActionsSubtracter>();
 
@@ -37,7 +37,7 @@ namespace Lib.Shaping.Operations
 
         private static List<IShapeActionsSubtracter> GetSubtractions(
             IASTVisitor visitor, string fileName,
-            List<IShapePatch<Enum>> patches, Enum location)
+            List<IShapePatch> patches, Enum location)
         {
             var subtractions = new List<IShapeActionsSubtracter>();
 
@@ -45,7 +45,10 @@ namespace Lib.Shaping.Operations
             {
                 if (!Matching.MatchesFile(fileName, patch))
                     continue;
-
+                
+                if (patch.Header.Actions.Subtracters == null)
+                    continue;
+                
                 foreach (var subtracter in patch.Header.Actions.Subtracters)
                 {
                     if (!Equals(subtracter.Location, location))

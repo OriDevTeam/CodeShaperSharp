@@ -13,36 +13,50 @@ using Serilog;
 
 namespace Lib.AST
 {
-    public class ASTPreparationController<TLexer, TParser, TVisitor>
+    public class ASTPreparationController
     {
-        private AntlrInputStream InputStream { get; set; }
+        public AntlrInputStream InputStream { get; set; }
         private Lexer Lexer { get; set; }
         private Parser Parser { get; set; }
         public IASTVisitor Visitor { get; set; }
+
+        private Type TypeLexer { get; }
+        private Type TypeParser { get; }
+        private Type TypeVisitor { get; }
         
-        public ASTPreparationController()
+        public ParserRuleContext RootContextTree { get; set; }
+        public RootFinder RootFinder { get; private set; }
+
+        public ASTPreparationController(Type lexer, Type parser, Type visitor)
         {
+            TypeLexer = lexer;
+            TypeParser = parser;
+            TypeVisitor = visitor;
         }
         
         public void Prepare(string fileContent)
         {
             InputStream = new AntlrInputStream(fileContent);
             
-            Lexer = Activator.CreateInstance(typeof(TLexer), InputStream) as Lexer;
+            Lexer = (Lexer)Activator.CreateInstance(TypeLexer, InputStream);
             var tokens = new CommonTokenStream(Lexer);
+
+            RootFinder = new RootFinder();
             
-            Parser = Activator.CreateInstance(typeof(TParser), tokens) as Parser;
+            Parser = (Parser)Activator.CreateInstance(TypeParser, tokens);
+            Parser?.AddParseListener(RootFinder);
             Parser!.BuildParseTree = true;
             
-            Visitor = Activator.CreateInstance(typeof(TVisitor), InputStream, tokens) as IASTVisitor;
+            Visitor = (IASTVisitor)Activator.CreateInstance(TypeVisitor, this);
         }
 
-        public void Visit()
+        public ParserRuleContext MakeRootContext()
         {
             Log.Information("Logs: ");
-            var contextTree = Parser.GetInvokingContext(0);
-
-            Visitor!.Visit(contextTree);
+            
+            return ((CPP14Parser)Parser).translationUnit();
+            
+            // return RootFinder.RootRuleContext;
         }
     }
 }

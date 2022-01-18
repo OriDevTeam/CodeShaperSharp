@@ -7,18 +7,31 @@
 // Library Namespaces
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using AvaloniaUI.Models;
+using Lib.Shapers.Loaders;
 
 
 namespace AvaloniaUI.Views.UserControls.ShapingWindow
 {
-    public class ActionToolBox : ReactiveUserControl<ActionModel>
+    public class ActionToolBox : UserControl
     {
-        public ActionModel? Action;
+        public static ActionToolBox? Instance { get; private set; }
+
+        private object? selectedAction;
+        public object? SelectedAction
+        {
+            get => selectedAction;
+
+            set
+            {
+                selectedAction = value;
+                RefreshToolBox();
+            }
+        }
 
         public ActionToolBox()
         {
+            Instance = this;
+            
             InitializeComponent();
         }
 
@@ -33,18 +46,27 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
         {
             NameTextBox = new TextBox
             {
-                Text = Action?.Name,
+                Text = "",
                 IsVisible = true
             };
 
             ActionTextBox = new TextBox
             {
-                Text = Action?.Action,
+                Text = "",
                 IsVisible = true
             };
+
+            ActionNameText = this.Find<TextBlock>("actionNameText");
+        }
+
+        private void RefreshToolBox()
+        {
+            if (selectedAction is Builder builder)
+                ActionNameText.Text = builder.Name;
         }
 
         private TextBox NameTextBox { get; set; }
         private TextBox ActionTextBox { get; set; }
+        private TextBlock ActionNameText { get; set; }
     }
 }
