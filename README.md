@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://icyber.me/images/ugK.png" width="300"/>
+<img src="Data/logo/CodeShaper-logos_transparent_cut.png" width="300"/>
 </p>
 
 ### PROJECT IN DEVELOPMENT
@@ -8,7 +8,9 @@ ___
  A tool to automate code changes using Regex and Antlr4
 
 - Regex PCRE compliant using [PCRE.NET](https://github.com/ltrzesniewski/pcre-net)
-- Antlr4 using [CPP14 Grammar](https://github.com/antlr/grammars-v4/tree/master/cpp)
+- Antlr4 Grammars:
+  - [CPP14 Grammars](https://github.com/antlr/grammars-v4/tree/master/cpp) 
+  - [CSharp6 Grammars](https://github.com/antlr/grammars-v4/tree/master/csharp) (implementation in progress)
 
 ### Shaping
 To shape a source code, you need a Shaping Project and a Source (only a Visual Studio Solution in C++ is supported)
