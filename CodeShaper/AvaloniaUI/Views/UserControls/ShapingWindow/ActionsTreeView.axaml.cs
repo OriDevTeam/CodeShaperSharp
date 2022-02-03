@@ -2,10 +2,7 @@
 
 
 // Application Namespaces
-
-using System;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using AvaloniaUI.ViewModels.UserControls.ShapingWindow;
 
 
@@ -38,7 +35,7 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
             if (selectionChangedEventArgs.AddedItems.Count < 1)
                 return;
 
-            ActionToolBox.Instance.SelectedAction = selectionChangedEventArgs.AddedItems[0];
+            ActionToolBoxView.Instance.SelectedAction = selectionChangedEventArgs.AddedItems[0];
         }
     }
 }

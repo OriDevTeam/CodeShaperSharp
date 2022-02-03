@@ -1,28 +1,23 @@
 ﻿// System Namespaces
-using System;
 using System.Runtime.Serialization;
 
 
 // Application Namespaces
+using Lib.AST.ANTLR.CPP14;
+using Lib.AST.Controllers;
 using Lib.Shapers.Loaders;
-using Lib.AST;
-using Lib.AST.ANTLR.CPP;
-using Lib.AST.Interfaces;
 
 
 // Library Namespaces
-using Antlr4.Runtime;
 
 
-namespace Lib.Shapers.CPP
+namespace Lib.Shapers.Patches
 {
-    public class CPPPatch : ShapePatchJSON<Location>
+    public class CPP14Patch : ShapePatchJSON<Location>
     {
-        public CPPPatch(string filePath) : base(filePath)
+        public CPP14Patch(string filePath) : base(filePath)
         {
-            // var type = typeof(ASTPreparationController<CPP14Lexer, CPP14Parser, CPPASTVisitor>);
-            // PreparationController = (ASTPreparationController<Lexer, Parser, IASTVisitor>)Activator.CreateInstance(type);
-            PreparationController = new ASTPreparationController(typeof(CPP14Lexer), typeof(CPP14Parser), typeof(CPPASTVisitor));
+            PreparationController = new ASTPreparationController(new CPPASTSet());
         }
     }
 

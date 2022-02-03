@@ -10,9 +10,10 @@ using Lib.Configurations;
 // Library Namespaces
 
 
-namespace Lib.Shaping
+namespace Lib.Shaping.Result.Logging
 {
-    public partial class ShapeResult
+    /*
+    public class ShapeResultLogging
     {
         public void Save(string filePath, ShapingConfiguration configuration)
         {
@@ -118,4 +119,5 @@ namespace Lib.Shaping
             }
         }
     }
+    */
 }

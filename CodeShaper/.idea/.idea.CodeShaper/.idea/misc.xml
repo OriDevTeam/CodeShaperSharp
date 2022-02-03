@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ANTLRGenerationPreferences">
+    <option name="perGrammarGenerationSettings">
+      <list>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="*" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="" />
+          <option name="libDir" value="" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="" />
+          <option name="language" value="CSharp" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/Lib/AST/ANTLR/CSharp/Grammars/CSharpParser.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper" />
+          <option name="libDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper\Lib\AST\ANTLR\CSharp\Grammars" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="Lib.AST.ANTLR.CSharp.Generated" />
+          <option name="language" value="CSharp" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/Lib/AST/ANTLR/CSharp/Grammars/CSharpLexer.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper" />
+          <option name="libDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper\Lib\AST\ANTLR\CSharp\Grammars" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="Lib.AST.ANTLR.CSharp.Generated" />
+          <option name="language" value="CSharp" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/Lib/AST/ANTLR/CPP14/Grammars/CPP14Lexer.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper" />
+          <option name="libDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper\Lib\AST\ANTLR\CPP14\Grammars" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="Lib.AST.ANTLR.CPP14.Generated" />
+          <option name="language" value="CSharp" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/Lib/AST/ANTLR/CPP14/Grammars/CPP14Parser.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper" />
+          <option name="libDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper\Lib\AST\ANTLR\CPP14\Grammars" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="Lib.AST.ANTLR.CPP14.Generated" />
+          <option name="language" value="CSharp" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/Lib/AST/ANTLR/CSharp6/Grammars/CSharpPreprocessorParser.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper" />
+          <option name="libDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper\Lib\AST\ANTLR\CSharp6\Grammars" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="Lib.AST.ANTLR.CSharp6.Generated" />
+          <option name="language" value="CSharp" />
+          <option name="generateListener" value="false" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/Lib/AST/ANTLR/CSharp6/Grammars/CSharpParser.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper" />
+          <option name="libDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper\Lib\AST\ANTLR\CSharp6\Grammars" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="Lib.AST.ANTLR.CSharp6.Generated" />
+          <option name="language" value="CSharp" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/Lib/AST/ANTLR/CSharp6/Grammars/CSharpLexer.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper" />
+          <option name="libDir" value="G:\Projectos\Miscelaneous Projects\CodeShaper\CodeShaper\Lib\AST\ANTLR\CSharp6\Grammars" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="Lib.AST.ANTLR.CSharp6.Generated" />
+          <option name="language" value="CSharp" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+      </list>
+    </option>
+  </component>
+</project>

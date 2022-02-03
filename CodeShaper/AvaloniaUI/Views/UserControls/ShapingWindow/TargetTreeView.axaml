@@ -8,7 +8,8 @@
              x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.TargetTreeView">
     
     <Design.DataContext>
-        <shapingWindow:TargetTreeViewModel/>
+        <shapingWindow:TargetTreeViewModel>
+        </shapingWindow:TargetTreeViewModel>
     </Design.DataContext>
 
     <Border Margin="5"

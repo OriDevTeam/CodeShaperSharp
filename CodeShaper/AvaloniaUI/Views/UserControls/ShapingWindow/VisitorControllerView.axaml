@@ -1,7 +1,5 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
              x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.VisitorControllerView"
              MinWidth="700" MinHeight="75">
@@ -29,12 +27,12 @@
                                   HorizontalAlignment="Stretch">
                                 
                                 <TextBlock x:Name="VisitorLocationText" Grid.Row="0" Margin="5, 2"
-                                           Text="Visitor Location"
+                                           Text="Ready to start visiting"
                                            VerticalAlignment="Top">
                                 </TextBlock>
                                 
                                 <TextBlock x:Name="TimeElapsedText" Grid.Row="0" Margin="5, 2"
-                                           Text="Time Elapsed"
+                                           Text=""
                                            VerticalAlignment="Top"
                                            HorizontalAlignment="Right">
                                 </TextBlock>
@@ -78,7 +76,6 @@
                                     
                                     <TextBlock Margin="5, 5"
                                                x:Name="FileNameText"
-                                               Text="File Name"
                                                VerticalAlignment="Top"
                                                HorizontalAlignment="Right">
                                     </TextBlock>
@@ -86,7 +83,6 @@
                                 
                                 <TextBlock Grid.Row="1" Margin="5, 5"
                                            x:Name="VisitorNameText"
-                                           Text="AST Visitor Name"
                                            VerticalAlignment="Top"
                                            HorizontalAlignment="Right">
                                 </TextBlock>

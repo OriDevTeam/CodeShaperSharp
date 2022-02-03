@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 // Application Namespaces
 using Lib.Settings;
-using Lib.Shapers.CPP;
 using Lib.Shaping;
 
 

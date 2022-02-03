@@ -1,0 +1,92 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:shapingWindow="clr-namespace:AvaloniaUI.Views.UserControls.ShapingWindow"
+             xmlns:shapingWindow1="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
+             xmlns:visitorTabItem="clr-namespace:AvaloniaUI.Views.UserControls.ShapingWindow.VisitorTabItem"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.VisitorTabItemView">
+
+    <Border Margin="5"
+            VerticalAlignment="Stretch"
+            Background="Transparent"
+            BorderBrush="Gray"
+            BorderThickness="2"
+            CornerRadius="1">
+        
+            
+        <TabControl VerticalAlignment="Stretch">
+                            
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock VerticalAlignment="Center">Changes</TextBlock>
+                </TabItem.Header>
+                                
+                <Panel VerticalAlignment="Stretch">
+                    <shapingWindow:VisitorTreeView>
+                        <shapingWindow1:VisitorTreeViewModel/>
+                    </shapingWindow:VisitorTreeView>
+                </Panel>
+                                
+            </TabItem>
+            
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock VerticalAlignment="Center">Information</TextBlock>
+                </TabItem.Header>
+                                
+                <Panel VerticalAlignment="Stretch">
+                    <visitorTabItem:InformationTreeView>
+                    </visitorTabItem:InformationTreeView>
+                </Panel>
+                                
+            </TabItem>
+            
+        </TabControl>
+        
+    </Border>
+    
+    <UserControl.Styles>
+
+        <Style Selector="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="TabControl WrapPanel">
+            <Setter Property="Background" Value="Gray"/>
+        </Style>
+
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="MinHeight" Value="25"></Setter>
+            <Setter Property="Background" Value="Gray"/>
+            <Setter Property="Foreground" Value="#F0F0F0"/>
+            <Setter Property="Margin" Value="0 0 0 0"/>
+            <Setter Property="Padding" Value="10 0"/>
+        </Style>
+        <Style Selector="TabItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Gray"/>
+        </Style>
+
+        <Style Selector="TabItem:focus">
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Margin" Value="5 0 0 0"/>
+            <Setter Property="Padding" Value="5 0"/>
+        </Style>
+        <Style Selector="TabItem:focus /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Gray"/>
+        </Style>
+
+        <Style Selector="TabItem:selected">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0 0 0 0"/>
+            <Setter Property="Padding" Value="5 0"/>
+        </Style>
+        <Style Selector="TabItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+    </UserControl.Styles>
+    
+</UserControl>

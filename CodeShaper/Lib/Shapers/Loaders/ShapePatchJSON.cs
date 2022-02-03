@@ -10,13 +10,11 @@ using Lib.Shapers.Interfaces;
 using Lib.Shaping.Expressions;
 using Lib.Utility.Extensions;
 using Lib.AST;
-using Lib.AST.Interfaces;
-
+using Lib.AST.Controllers;
 
 // Library Namespaces
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Antlr4.Runtime;
 using PCRE;
 
 
@@ -470,24 +468,16 @@ namespace Lib.Shapers.Loaders
                 replacer.ReferenceLocation =
                     value.Value<string>("reference_location").ToEnum(ShapePatchSettings.Location);
                 replacer.To = value.Value<string>("to");
-                
-                var from = obj.Property("from");
 
-                if (from != null)
+                try
                 {
-                    switch (@from.Value.Type)
-                    {
-                        case JTokenType.String:
-                            replacer.From = new string[] { (string)@from?.Value };
-                            break;
-                        case JTokenType.Array:
-                            replacer.From = @from?.Value.ToObject<string[]>();
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                    replacer.From = new[]{ value.Value<string>("from") };
                 }
-                
+                catch (Exception e)
+                {
+                    replacer.From = value.Value<string[]>("from");
+                }
+
                 replacers.Add(replacer);
             }
 

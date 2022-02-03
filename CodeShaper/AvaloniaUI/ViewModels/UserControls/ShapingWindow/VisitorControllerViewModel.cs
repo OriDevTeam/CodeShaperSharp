@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 // Application Namespaces
 using AvaloniaUI.Views.UserControls.ShapingWindow;
-using Lib.AST;
+using Lib.AST.Controllers;
 
 
 // Library Namespaces
@@ -15,8 +15,7 @@ namespace AvaloniaUI.ViewModels.UserControls.ShapingWindow
 {
     public class VisitorControllerViewModel : ViewModelBase
     {
-        
-        
+
         public VisitorControllerViewModel()
         {
             CreateCommands();

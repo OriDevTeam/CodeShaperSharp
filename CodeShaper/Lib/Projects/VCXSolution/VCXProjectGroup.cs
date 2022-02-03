@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 
 // Application Namespaces
 using Lib.Settings;
+using Lib.Settings.Target;
 using Lib.Shaping;
 using Lib.Shaping.Target.Interfaces;
 

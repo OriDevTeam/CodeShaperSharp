@@ -1,11 +1,9 @@
 ﻿// System Namespaces
+using System.Linq;
 
 
 // Application Namespaces
-
-using System.Linq;
-using JetBrains.Util;
-using Lib.AST;
+using Lib.AST.Controllers;
 using Lib.Shaping.Target.Interfaces;
 using Lib.Utility.Extensions;
 
@@ -130,7 +128,7 @@ namespace Lib.Shaping
                 if (CurrentTargetFile == null)
                     return VisitorState.Stop;
                 
-                return CurrentTargetFile.ShapePatch.PreparationController.Visitor.VisitorController.State;
+                return CurrentTargetFile.ShapePatch.PreparationController.ASTSet.Visitor.VisitorController.State;
             }
             set
             {
@@ -144,7 +142,7 @@ namespace Lib.Shaping
                     CurrentTargetFile = nextTargetFile;
                 }
 
-                var visitorController = CurrentTargetFile.ShapePatch.PreparationController.Visitor.VisitorController;
+                var visitorController = CurrentTargetFile.ShapePatch.PreparationController.ASTSet.Visitor.VisitorController;
 
                 visitorController.State = value;
             }

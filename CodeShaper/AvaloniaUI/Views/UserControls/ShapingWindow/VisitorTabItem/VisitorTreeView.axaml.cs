@@ -10,12 +10,12 @@ using Lib.Managers;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
-
+using AvaloniaUI.ViewModels.UserControls.ShapingWindow;
 
 
 namespace AvaloniaUI.Views.UserControls.ShapingWindow
 {
-    public class VisitorTreeView : ReactiveUserControl<VisitorTreeView>
+    public class VisitorTreeView : ReactiveUserControl<VisitorTreeViewModel>
     {
         public static VisitorTreeView? Instance { get; private set; }
         

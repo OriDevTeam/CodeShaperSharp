@@ -1,0 +1,74 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:shapingWindow="clr-namespace:AvaloniaUI.Views.UserControls.ShapingWindow"
+             xmlns:shapingWindow1="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="400"
+             x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.HeaderMenuView">
+    
+    <Design.DataContext>
+        <shapingWindow1:HeaderMenuViewModel/>
+    </Design.DataContext>
+    
+    <Panel>
+    
+        <Border MinWidth="200" MinHeight="30"
+                Height="30"
+                Margin="5"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Stretch"
+                Background="Transparent"
+                BorderBrush="Gray"
+                BorderThickness="2"
+                CornerRadius="1">
+            <DockPanel>
+                
+                <Menu DockPanel.Dock="Top">
+                    
+                    <MenuItem Header="_File">
+                        <MenuItem Header="_Open..."/>
+                        <Separator/>
+                        <MenuItem Header="_Exit"/>
+                    </MenuItem>
+                    
+                    <MenuItem Header="_Edit">
+                        <MenuItem Header="Copy"/>
+                        <MenuItem Header="Paste"/>
+                    </MenuItem>
+                    
+                    <MenuItem Header="_Visitor">
+                        
+                    </MenuItem>
+                    
+                    <MenuItem Header="_Actions">
+                        <MenuItem Header="Previous" Icon="{StaticResource PreviousRegular}"/>
+                        <MenuItem Header="Pause" Icon="{StaticResource PauseRegular}"/>
+                        <MenuItem Header="Stop" Icon="{StaticResource StopRegular}"/>
+                        <MenuItem Header="Pause" Icon="{StaticResource PauseRegular}"/>
+                        <MenuItem Header="Forward" Icon="{StaticResource NextRegular}"/>
+                        <Separator/>
+                        <CheckBox x:Name="PauseOnVisitCheckBox" Command="{Binding PauseOnVisitCommand}"
+                                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <TextBlock Text="Pause visitor after a visit"></TextBlock>
+                        </CheckBox>
+                        <CheckBox x:Name="PauseOnActionCheckBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <TextBlock Text="Pause visitor on action hit"></TextBlock>
+                        </CheckBox>
+                        <CheckBox x:Name="PauseOnFileChangeCheckBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <TextBlock Text="Pause shaping on file change"></TextBlock>
+                        </CheckBox>
+                    </MenuItem>
+                    
+                    <MenuItem Header="Settings">
+                    </MenuItem>
+                    
+                </Menu>
+                
+            </DockPanel>
+            
+        </Border>
+        
+    </Panel>
+    
+</UserControl>

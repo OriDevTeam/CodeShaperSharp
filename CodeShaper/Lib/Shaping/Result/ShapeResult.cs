@@ -2,21 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Lib.AST;
+
 
 // Application Namespaces
-using Lib.Shaping.Operations;
+using Lib.AST.Controllers;
 using Lib.AST.Interfaces;
 using Lib.Shapers.Interfaces;
+using Lib.Shaping.Operations;
 
 
 // Library Namespaces
 
 
-
-namespace Lib.Shaping
+namespace Lib.Shaping.Result
 {
-    public partial class ShapeResult
+    public class ShapeResult
     {
         public string FilePath { get; }
         public string FileName { get; set; }
@@ -24,13 +24,12 @@ namespace Lib.Shaping
         
         private ShapeProject ShapeProject { get; }
 
-        public List<IShapeActionsBuilder> Builders { get; set; } = new();
+        public List<IShapeActionsBuilder> Builders { get; set; }
 
         public List<Tuple<IShapeActionsReplacer, string, string>> Replacements { get; set; } = new();
         public List<Tuple<IShapeActionsAdder, string, string>> Additions { get; set; } = new();
         public List<Tuple<IShapeActionsSubtracter, string, string>> Subtractions { get; set; } = new();
         
-
 
         public ShapeResult(ShapeProject shapeProject, string filePath)
         {
@@ -50,11 +49,14 @@ namespace Lib.Shaping
             
             foreach (var builder in Builders)
             {
-                if (builder.ProcessBuilder(visitorController.PreparationController.Visitor, location))
-                    ProcessBuilderReplacementsAdditionsSubtractions(builder, visitorController.PreparationController.Visitor, location);
+                if (builder.ProcessBuilder(visitorController.PreparationController.ASTSet.Visitor, location))
+                    ProcessBuilderReplacementsAdditionsSubtractions(builder,
+                        visitorController.PreparationController.ASTSet.Visitor,
+                        location);
             }
 
-            ProcessReplacementsAdditionsSubtractions(visitorController.PreparationController.Visitor, context, location);
+            ProcessReplacementsAdditionsSubtractions(visitorController.PreparationController.ASTSet.Visitor,
+                context, location);
         }
 
 

@@ -7,6 +7,7 @@ using System.IO;
 using Lib.Shaping;
 using Lib.Shaping.Target.Interfaces;
 using Lib.Shapers.Interfaces;
+using Lib.Shaping.Result;
 
 
 // Library Namespaces
@@ -28,7 +29,7 @@ namespace Lib.Projects.VCXSolution
         
         public string FileContent { get; set; }
         
-        public ShapeResult Result;
+        public ShapeResult Result { get; }
         
 
         private readonly ShapingOperation ShapingOperation;
@@ -53,7 +54,7 @@ namespace Lib.Projects.VCXSolution
         public void LoadFile()
         {
             ShapePatch.PreparationController.Prepare(Result.FileContent);
-            ShapePatch.PreparationController.Visitor.VisitorController.OnVisitorProcess += Result.VisitorProcess;
+            ShapePatch.PreparationController.ASTSet.Visitor.VisitorController.OnVisitorProcess += Result.VisitorProcess;
         }
     }
 }

@@ -13,7 +13,7 @@ using System.Xml.Linq;
 // Library Namespaces
 
 
-namespace Lib.Settings
+namespace Lib.Settings.Target
 {
 
     public class MVCXSolution

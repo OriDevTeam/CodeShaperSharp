@@ -65,9 +65,10 @@ namespace Lib.Shaping.Operations
                         continue;
 
                     if (replacer.ReferenceLocation != null)
-                        if (!PcreRegex.IsMatch(visitor.VisitorController.LocationsContent[replacer.ReferenceLocation],
-                                replacer.Reference))
-                            continue;
+                        if (replacer.Reference != null)
+                            if (!PcreRegex.IsMatch(visitor.VisitorController.LocationsContent[replacer.ReferenceLocation],
+                                    replacer.Reference))
+                                continue;
 
                     replacements.Add(replacer);
                 }

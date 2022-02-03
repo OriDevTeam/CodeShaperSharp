@@ -24,7 +24,7 @@
                 Padding="0">
             
             <Panel>
-                <TextBlock x:Name="actionNameText" Text="Action Name"></TextBlock>
+                <TextBlock x:Name="ActionNameText" Text="Actions Tree"></TextBlock>
                 
                 <ItemsControl Items="{Binding }"></ItemsControl>
                 

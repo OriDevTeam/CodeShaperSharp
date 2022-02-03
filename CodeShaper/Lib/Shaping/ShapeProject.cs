@@ -6,8 +6,8 @@ using System.Collections.Generic;
 
 // Application Namespaces
 using Lib.Configurations;
-using Lib.Shapers.CPP;
 using Lib.Shapers.Interfaces;
+using Lib.Shapers.Patches;
 using Lib.Shaping.Interfaces;
 
 
@@ -19,7 +19,7 @@ namespace Lib.Shaping
 {
     public class ShapeProject : IShapeProject
     {
-        public Type Patch => typeof(CPPPatch);
+        public Type Patch => typeof(CPP14Patch);
         
         public ShapeProjectConfiguration Configuration;
         public readonly List<IShapePatch> Patches;

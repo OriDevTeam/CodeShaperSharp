@@ -32,6 +32,10 @@
         <DependentUpon>ListShapingConfiguration.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\UserControls\ShapingWindow\VisitorTabItem\VisitorTreeView.axaml.cs">
+        <DependentUpon>VisitorTreeView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
     <ItemGroup>
       <AvaloniaXaml Remove="Views\ShaperProjectDetailed.axaml" />

@@ -5,7 +5,7 @@
         xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
         x:Class="AvaloniaUI.Views.ShapingWindow"
         Title="Shaping Project"
-        MinWidth="1100" MinHeight="700"
+        MinWidth="1200" MinHeight="700"
         CanResize="True"
         FontFamily="Tahoma"
         FontStyle="Normal"
@@ -36,61 +36,18 @@
         <Grid RowDefinitions="40, *, 10, 100" ShowGridLines="False">
             
             <Panel Grid.Row="0">
-                <Border MinWidth="50"
-                        Margin="5"
-                        VerticalAlignment="Stretch"
-                        Background="Transparent"
-                        BorderBrush="Gray"
-                        BorderThickness="2"
-                        CornerRadius="1">
-                    <DockPanel>
-                        
-                        
-                        <Menu DockPanel.Dock="Top">
-                            
-                            <MenuItem Header="_File">
-                                <MenuItem Header="_Open..."/>
-                                <Separator/>
-                                <MenuItem Header="_Exit"/>
-                            </MenuItem>
-                            
-                            <MenuItem Header="_Edit">
-                                <MenuItem Header="Copy"/>
-                                <MenuItem Header="Paste"/>
-                            </MenuItem>
-                            
-                            <MenuItem Header="_Actions">
-                                <MenuItem Header="Previous" Icon="{StaticResource PreviousRegular}"/>
-                                <MenuItem Header="Pause" Icon="{StaticResource PauseRegular}"/>
-                                <MenuItem Header="Stop" Icon="{StaticResource StopRegular}"/>
-                                <MenuItem Header="Pause" Icon="{StaticResource PauseRegular}"/>
-                                <MenuItem Header="Forward" Icon="{StaticResource NextRegular}"/>
-                                <Separator/>
-                                <CheckBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <TextBlock Text="Pause visitor after a visit"></TextBlock>
-                                </CheckBox>
-                                <CheckBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <TextBlock Text="Pause visitor on BRM hit"></TextBlock>
-                                </CheckBox>
-                                <CheckBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <TextBlock Text="Pause shaping on file change"></TextBlock>
-                                </CheckBox>
-                            </MenuItem>
-                            
-                            <MenuItem Header="Settings">
-                            </MenuItem>
-                            
-                        </Menu>
-                        
-                    </DockPanel>
-                </Border>
+                <uc:HeaderMenuView>
+                    <shapingWindow:HeaderMenuViewModel/>
+                </uc:HeaderMenuView>
             </Panel>
             
              <Grid Grid.Row="1" MinHeight="300"
-                   RowDefinitions="*" ColumnDefinitions="200, *, 200" ShowGridLines="False">
+                   RowDefinitions="*" ColumnDefinitions="200, *, 300" ShowGridLines="False">
             
                 <Border Grid.Row="0" Grid.Column="0" Margin="5, 5, 0, 5">
-                    <uc:ActionToolBox/>
+                
+                    <uc:ActionsFlowTreeView/>
+                    
                 </Border>
                  
                 <Grid Grid.Row="0" Grid.Column="1" RowDefinitions="*, Auto" ShowGridLines="False" VerticalAlignment="Stretch">
@@ -109,9 +66,8 @@
                                 </TabItem.Header>
                                 
                                 <Panel VerticalAlignment="Stretch">
-                                    <uc:VisitorTreeView>
-                                        <shapingWindow:VisitorTreeViewModel/>
-                                    </uc:VisitorTreeView>
+                                    <uc:VisitorTabItemView>
+                                    </uc:VisitorTabItemView>
                                 </Panel>
                                 
                             </TabItem>
@@ -141,7 +97,18 @@
                                 </Panel>
                             </TabItem>
                             
-                        
+                            <TabItem>
+                                <TabItem.Header>
+                                    <TextBlock VerticalAlignment="Stretch">Results</TextBlock>
+                                </TabItem.Header>
+                                
+                                <Panel>
+                                    <uc:ResultsTreeView>
+                                        <shapingWindow:ResultsTreeViewModel/>
+                                    </uc:ResultsTreeView>
+                                </Panel>
+                            </TabItem>
+                            
                         </TabControl>
                     
                     </Border>
@@ -155,7 +122,11 @@
                 </Grid>
                 
                  <Border Grid.Row="0" Grid.Column="2" Margin="0, 5, 0, 5">
-                     <uc:ActionsFlowTreeView/>
+                     
+                     <uc:ActionToolBoxView>
+                         <shapingWindow:ActionToolBoxViewModel/>
+                     </uc:ActionToolBoxView>
+                     
                  </Border>
                  
              </Grid>
