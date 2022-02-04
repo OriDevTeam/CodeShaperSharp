@@ -11,6 +11,7 @@
         FontStyle="Normal"
         FontSize="14"
         Background="Transparent"
+        Icon="/Assets/logos/logo_only.ico"
         TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaToDecorationsHint="False"
         ExtendClientAreaChromeHints="NoChrome"

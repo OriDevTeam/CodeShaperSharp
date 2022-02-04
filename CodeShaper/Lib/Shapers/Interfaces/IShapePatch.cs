@@ -6,7 +6,6 @@ using System.Runtime.Serialization;
 
 
 // Application Namespaces
-using Lib.AST;
 using Lib.AST.Controllers;
 
 
@@ -26,6 +25,8 @@ namespace Lib.Shapers.Interfaces
 
     public interface IShapePatchHeader
     {
+        bool Enabled { get; set; }
+        string Alias { get; set; }
         string FileSearch { get; set; }
         public IShapeActions Actions { get; set; }
     }

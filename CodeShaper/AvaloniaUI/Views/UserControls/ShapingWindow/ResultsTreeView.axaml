@@ -2,13 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:shapingWindow1="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
+             xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.ResultsTreeView">
     
     <Design.DataContext>
-        <shapingWindow1:ResultsTreeViewModel>
-        </shapingWindow1:ResultsTreeViewModel>
+        <shapingWindow:ResultsTreeViewModel>
+        </shapingWindow:ResultsTreeViewModel>
     </Design.DataContext>
 
 
@@ -23,7 +23,7 @@
                 <TreeDataTemplate>
                     
                 </TreeDataTemplate>
-                
+               
                             
                 <DataTemplate>
                     <TextBlock Text="{Binding FileName}"></TextBlock>

@@ -2,9 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:shapingWindow="clr-namespace:AvaloniaUI.Views.UserControls.ShapingWindow"
-             xmlns:shapingWindow1="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
              xmlns:visitorTabItem="clr-namespace:AvaloniaUI.Views.UserControls.ShapingWindow.VisitorTabItem"
+             xmlns:visitorTabItem1="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow.VisitorTabItem"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.VisitorTabItemView">
 
@@ -24,20 +23,21 @@
                 </TabItem.Header>
                                 
                 <Panel VerticalAlignment="Stretch">
-                    <shapingWindow:VisitorTreeView>
-                        <shapingWindow1:VisitorTreeViewModel/>
-                    </shapingWindow:VisitorTreeView>
+                    <visitorTabItem:VisitorTreeView>
+                        <visitorTabItem1:VisitorTreeViewModel/>
+                    </visitorTabItem:VisitorTreeView>
                 </Panel>
                                 
             </TabItem>
             
             <TabItem>
                 <TabItem.Header>
-                    <TextBlock VerticalAlignment="Center">Information</TextBlock>
+                    <TextBlock VerticalAlignment="Center">Locations</TextBlock>
                 </TabItem.Header>
                                 
                 <Panel VerticalAlignment="Stretch">
                     <visitorTabItem:InformationTreeView>
+                        <visitorTabItem1:InformationTreeViewModel/>
                     </visitorTabItem:InformationTreeView>
                 </Panel>
                                 

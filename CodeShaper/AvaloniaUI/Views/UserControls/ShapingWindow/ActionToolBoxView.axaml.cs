@@ -16,7 +16,7 @@ using AvaloniaUI.ViewModels.UserControls.ShapingWindow;
 
 namespace AvaloniaUI.Views.UserControls.ShapingWindow
 {
-    public class ActionToolBoxView : ReactiveUserControl<ActionToolBoxView>
+    public class ActionToolBoxView : ReactiveUserControl<ActionToolBoxViewModel>
     {
         public static ActionToolBoxView? Instance { get; private set; }
 
@@ -54,13 +54,14 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
 
         private void RefreshToolBox()
         {
-            Fields.Clear();
+            Fields?.Clear();
 
             switch (selectedAction)
             {
                 case IShapeActionsBuilder builder:
-                    ActionNameText.Text = builder.Name;
-                
+                    if (ActionNameText != null) 
+                        ActionNameText.Text = builder.Name;
+
                     Fields = new ObservableCollection<Tuple<string, string>>
                     {
                         new("Name:", builder.Name ?? string.Empty),
@@ -80,8 +81,9 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
                     break;
                 
                 case IShapeActionsMaker maker:
-                    ActionNameText.Text = maker.Name;
-                
+                    if (ActionNameText != null) 
+                        ActionNameText.Text = maker.Name;
+
                     Fields = new ObservableCollection<Tuple<string, string>>
                     {
                         new("Name:", maker.Name ?? string.Empty),
@@ -94,13 +96,17 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
             }
         }
 
-        private ObservableCollection<Tuple<string, string>> Fields
+        private ObservableCollection<Tuple<string, string>>? Fields
         {
-            get => ActionToolBoxViewModel.Instance.Fields;
-            set => ActionToolBoxViewModel.Instance.Fields = value;
+            get => ViewModel?.Fields;
+            set
+            {
+                if (ViewModel != null) 
+                    ViewModel.Fields = value;
+            }
         }
 
-        private ListBox FieldsListBox { get; set; }
-        private TextBlock ActionNameText { get; set; }
+        private ListBox? FieldsListBox { get; set; }
+        private TextBlock? ActionNameText { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 
 
 // Application Namespaces
+using AvaloniaUI.ViewModels.UserControls.ShapingWindow.VisitorTabItem;
 using AvaloniaUI.Views.UserControls.EditTextEditor;
 using Lib.Managers;
 
@@ -10,10 +11,9 @@ using Lib.Managers;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
-using AvaloniaUI.ViewModels.UserControls.ShapingWindow;
 
 
-namespace AvaloniaUI.Views.UserControls.ShapingWindow
+namespace AvaloniaUI.Views.UserControls.ShapingWindow.VisitorTabItem
 {
     public class VisitorTreeView : ReactiveUserControl<VisitorTreeViewModel>
     {
@@ -39,16 +39,22 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
             TargetTextEditor = this.Find<TextEditorUserControl>("TargetTextEditor");
         }
         
-        public void Refresh()
+        internal void Refresh()
         {
+            ViewModel ??= (VisitorTreeViewModel?)Content;
+
             var currentTargetFile = ShapingOperationsManager.ActiveShapingOperation.OperationsController.CurrentTargetFile;
 
-            OriginalTextEditor.TextEditor!.Text = currentTargetFile.FileContent;
-            TargetTextEditor.TextEditor!.Text = currentTargetFile.FileContent;
+            if (OriginalTextEditor != null) 
+                OriginalTextEditor.TextEditor!.Text = currentTargetFile.FileContent;
+            
+            if (TargetTextEditor != null) 
+                TargetTextEditor.TextEditor!.Text = currentTargetFile.FileContent;
 
+            ViewModel?.HighlightCurrentLocation(TargetTextEditor);
         }
-        
-        private TextEditorUserControl OriginalTextEditor { get; set; }
-        private TextEditorUserControl TargetTextEditor { get; set; }
+
+        private TextEditorUserControl? OriginalTextEditor { get; set; }
+        private TextEditorUserControl? TargetTextEditor { get; set; }
     }
 }

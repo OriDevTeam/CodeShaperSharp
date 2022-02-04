@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="AvaloniaUI/App.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Assets/Assets.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
         <entry key="AvaloniaUI/Assets/Styles/Icons.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
         <entry key="AvaloniaUI/Views/Controls/ShaperView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
         <entry key="AvaloniaUI/Views/DialogWindow.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
@@ -29,6 +30,7 @@
         <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/TargetTreeView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
         <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/VisitorControllerView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
         <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/VisitorTabItem/InformationTreeView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
+        <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/VisitorTabItem/VisitorTreeView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
         <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/VisitorTabItemView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
         <entry key="AvaloniaUI/Views/UserControls/ShapingWindow/VisitorTreeView.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />
         <entry key="AvaloniaUI/Views/UserControls/TextEditor/TextEditorUserControl.axaml" value="AvaloniaUI/AvaloniaUI.csproj" />

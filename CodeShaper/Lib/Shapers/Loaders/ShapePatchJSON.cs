@@ -9,8 +9,8 @@ using System.Collections.ObjectModel;
 using Lib.Shapers.Interfaces;
 using Lib.Shaping.Expressions;
 using Lib.Utility.Extensions;
-using Lib.AST;
 using Lib.AST.Controllers;
+
 
 // Library Namespaces
 using Newtonsoft.Json;
@@ -48,6 +48,12 @@ namespace Lib.Shapers.Loaders
     
     public class ShapePatchHeader : IShapePatchHeader
     {
+        [JsonProperty("enabled")]
+        public bool Enabled { get; set; }
+        
+        [JsonProperty("alias")]
+        public string Alias { get; set; }
+        
         [JsonProperty("project")]
         public string Project { get; set; }
         
@@ -337,8 +343,12 @@ namespace Lib.Shapers.Loaders
 
             foreach (var (key, value) in obj)
             {
-                var actions = JsonConvert.DeserializeObject<ShapeActions>(value.Value<JObject>("actions").ToString());
-                
+                var jActions = value.Value<JObject>("actions");
+
+                ShapeActions actions = null;
+                if (jActions != null) 
+                    actions = JsonConvert.DeserializeObject<ShapeActions>(jActions.ToString());
+
                 var builder = new Builder(actions)
                 {
                     Name = key,

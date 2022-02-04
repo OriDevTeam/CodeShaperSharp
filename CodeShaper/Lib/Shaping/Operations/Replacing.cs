@@ -58,7 +58,10 @@ namespace Lib.Shaping.Operations
             {
                 if (!Matching.MatchesFile(FileName, patch))
                     continue;
-
+                
+                if (patch.Header.Actions.Replacers == null)
+                    continue;
+                
                 foreach (var replacer in patch.Header.Actions.Replacers)
                 {
                     if (!Equals(replacer.Location, location))

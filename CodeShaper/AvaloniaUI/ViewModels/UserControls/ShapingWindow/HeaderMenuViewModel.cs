@@ -4,8 +4,8 @@ using System.Windows.Input;
 
 // Application Namespaces
 using AvaloniaUI.Views.UserControls.ShapingWindow;
-using Lib.AST.Settings;
 using Lib.Managers;
+
 
 // Library Namespaces
 using ReactiveUI;

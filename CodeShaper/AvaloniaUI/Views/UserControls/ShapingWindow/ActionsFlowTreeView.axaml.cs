@@ -1,6 +1,13 @@
-﻿using Avalonia;
+﻿// System Namespaces
+
+
+// Application Namespaces
+
+
+// Library Namespaces
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+
 
 namespace AvaloniaUI.Views.UserControls.ShapingWindow
 {

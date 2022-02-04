@@ -1,7 +1,7 @@
 ﻿// System Namespaces
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 
 
 // Application Namespaces
@@ -16,19 +16,19 @@ using Lib.Shaping.Operations;
 
 namespace Lib.Shaping.Result
 {
-    public class ShapeResult
+    public partial class ShapeResult
     {
-        public string FilePath { get; }
+        private string FilePath { get; }
         public string FileName { get; set; }
-        public string FileContent { get; set; }
+        public string FileContent { get; private set; }
         
         private ShapeProject ShapeProject { get; }
 
-        public List<IShapeActionsBuilder> Builders { get; set; }
+        private List<IShapeActionsBuilder> Builders { get; }
 
-        public List<Tuple<IShapeActionsReplacer, string, string>> Replacements { get; set; } = new();
-        public List<Tuple<IShapeActionsAdder, string, string>> Additions { get; set; } = new();
-        public List<Tuple<IShapeActionsSubtracter, string, string>> Subtractions { get; set; } = new();
+        private List<Tuple<IShapeActionsReplacer, string, string>> Replacements { get; set; } = new();
+        private List<Tuple<IShapeActionsAdder, string, string>> Additions { get; set; } = new();
+        private List<Tuple<IShapeActionsSubtracter, string, string>> Subtractions { get; set; } = new();
         
 
         public ShapeResult(ShapeProject shapeProject, string filePath)

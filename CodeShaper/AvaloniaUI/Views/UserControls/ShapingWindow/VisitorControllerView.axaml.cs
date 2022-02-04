@@ -1,11 +1,12 @@
 ﻿// System Namespaces
 using System;
-using Avalonia;
+
 
 // Application Namespaces
-using Lib.AST;
 using Lib.Managers;
 using Lib.AST.Controllers;
+using AvaloniaUI.Views.UserControls.ShapingWindow.VisitorTabItem;
+using AvaloniaUI.ViewModels.UserControls.ShapingWindow;
 
 
 // Library Namespaces
@@ -18,10 +19,10 @@ using Avalonia.Threading;
 
 namespace AvaloniaUI.Views.UserControls.ShapingWindow
 {
-    public class VisitorControllerView : ReactiveUserControl<VisitorControllerView>
+    public class VisitorControllerView : ReactiveUserControl<VisitorControllerViewModel>
     {
         public static VisitorControllerView? Instance { get; set; }
-        
+
         private DispatcherTimer UpdateTimer { get; set; }
         
         public VisitorControllerView()
@@ -64,6 +65,7 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
         private void RefreshController()
         {
             VisitorTreeView.Instance?.Refresh();
+            InformationTreeView.Instance?.Refresh();
             
             var currentTargetFile = ShapingOperationsManager.ActiveShapingOperation.OperationsController.CurrentTargetFile;
             var visitorState = ShapingOperationsManager.ActiveShapingOperation.OperationsController.VisitorState;

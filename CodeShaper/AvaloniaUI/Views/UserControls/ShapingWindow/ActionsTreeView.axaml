@@ -23,7 +23,7 @@
                         BorderBrush="Gray"
                         BorderThickness="2"
                         CornerRadius="1">
-                    <TreeView x:Name="treeView" Items="{Binding Patches}">
+                    <TreeView x:Name="TreeView" Items="{Binding Patches}">
                         <TreeView.DataTemplates>
                             <TreeDataTemplate DataType="models:ShapePatchModel" ItemsSource="{Binding Header}">
                                 <TextBlock Text="{Binding Name}"></TextBlock>

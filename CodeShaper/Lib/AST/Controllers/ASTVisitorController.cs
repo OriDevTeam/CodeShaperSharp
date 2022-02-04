@@ -37,9 +37,9 @@ namespace Lib.AST.Controllers
                 state = value;
             }
         }
-        
-        private ParserRuleContext CurrentContext { get; set; }
-        private Delegate CurrentDelegate { get; set; }
+
+        public ParserRuleContext CurrentContext { get; set; }
+        internal Delegate CurrentDelegate { get; set; }
 
         public ASTVisitorController(ASTPreparationController preparationController)
         {

@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:editTextEditor="clr-namespace:AvaloniaUI.Views.UserControls.EditTextEditor"
              xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
+             xmlns:visitorTabItem="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow.VisitorTabItem"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.VisitorTreeView">
+             x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.VisitorTabItem.VisitorTreeView">
     
     <Design.DataContext>
-        <shapingWindow:VisitorTreeViewModel/>
+        <visitorTabItem:VisitorTreeViewModel/>
     </Design.DataContext>
     
     <Panel>

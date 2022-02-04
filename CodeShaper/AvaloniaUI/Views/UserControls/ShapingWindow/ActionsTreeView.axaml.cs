@@ -15,8 +15,7 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
 {
     public class ActionsTreeView : ReactiveUserControl<ActionsTreeViewModel>
     {
-        private TreeView actionsTreeViewControl { get; set; }
-        
+
         public ActionsTreeView()
         {
             InitializeComponent();
@@ -26,8 +25,8 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
         {
             AvaloniaXamlLoader.Load(this);
             
-            actionsTreeViewControl = this.Find<TreeView>("treeView");
-            actionsTreeViewControl.SelectionChanged += OnSelectionChanged;
+            ActionsTreeViewControl = this.Find<TreeView>("TreeView");
+            ActionsTreeViewControl.SelectionChanged += OnSelectionChanged;
         }
 
         private void OnSelectionChanged(object? sender, SelectionChangedEventArgs selectionChangedEventArgs)
@@ -35,7 +34,10 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
             if (selectionChangedEventArgs.AddedItems.Count < 1)
                 return;
 
-            ActionToolBoxView.Instance.SelectedAction = selectionChangedEventArgs.AddedItems[0];
+            if (ActionToolBoxView.Instance != null)
+                ActionToolBoxView.Instance.SelectedAction = selectionChangedEventArgs.AddedItems[0];
         }
+        
+        private TreeView ActionsTreeViewControl { get; set; }
     }
 }
