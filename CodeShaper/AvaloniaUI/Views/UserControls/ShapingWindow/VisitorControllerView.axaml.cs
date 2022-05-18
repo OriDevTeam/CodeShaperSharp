@@ -66,6 +66,7 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
         {
             VisitorTreeView.Instance?.Refresh();
             InformationTreeView.Instance?.Refresh();
+            ResultsTreeView.Instance?.Refresh();
             
             var currentTargetFile = ShapingOperationsManager.ActiveShapingOperation.OperationsController.CurrentTargetFile;
             var visitorState = ShapingOperationsManager.ActiveShapingOperation.OperationsController.VisitorState;

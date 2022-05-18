@@ -13,24 +13,25 @@ using Lib.Utility.Extensions;
 // Library Namespaces
 using EasyConsole;
 
+
 namespace CLI.Menu.Shaping
 {
     internal class ShapeProjectPage : MenuPage
     {
-        ShapingConfiguration ShapingConfiguration;
+        private readonly ShapingConfiguration shapingConfiguration;
 
-        public ShapeProjectPage(ConsoleProgram program) : base("Shape Project", program)
+        public ShapeProjectPage(Program program) : base("Shape Project", program)
         {
-            ShapingConfiguration = new();
+            shapingConfiguration = new ShapingConfiguration();
         }
 
         public override void Display()
         {
-            ((ConsoleProgram)Program).Display();
+            ConsoleProgram.Display();
 
-            var ptr = typeof(Page).GetMethod("Display").MethodHandle.GetFunctionPointer();
-            var basedisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
-            basedisplay();
+            var ptr = typeof(Page).GetMethod("Display")!.MethodHandle.GetFunctionPointer();
+            var baseDisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
+            baseDisplay?.Invoke();
 
             DisplayOptions();
 
@@ -44,30 +45,28 @@ namespace CLI.Menu.Shaping
             Output.WriteLine(ConsoleColor.Green, "Paths:");
 
             ConsoleExtensions.Write(ConsoleColor.Cyan, " - Source Files Directory: ");
-            ConsoleExtensions.Write(ConsoleColor.Magenta, string.IsNullOrEmpty(ShapingConfiguration.SourceDirectory) ?
-                "None" : ShapingConfiguration.SourceDirectory);
+            ConsoleExtensions.Write(ConsoleColor.Magenta, string.IsNullOrEmpty(shapingConfiguration.SourceDirectory) ?
+                "None" : shapingConfiguration.SourceDirectory);
             Console.WriteLine();
 
-            switch (ShapingConfiguration.ResultOptions)
+            switch (shapingConfiguration.ResultOptions)
             {
                 case ResultOptions.ReplaceOriginal:
                     break;
                 case ResultOptions.BackupAndReplaceMoveOriginal:
                     ConsoleExtensions.Write(ConsoleColor.Cyan, " - Backup Directory: ");
-                    ConsoleExtensions.Write(ConsoleColor.Magenta, string.IsNullOrEmpty(ShapingConfiguration.TargetDirectory) ?
-                        "None" : ShapingConfiguration.TargetDirectory);
+                    ConsoleExtensions.Write(ConsoleColor.Magenta, string.IsNullOrEmpty(shapingConfiguration.TargetDirectory) ?
+                        "None" : shapingConfiguration.TargetDirectory);
                     Console.WriteLine();
                     break;
                 case ResultOptions.CreateNew:
                     ConsoleExtensions.Write(ConsoleColor.Cyan, " - Shaped Files Directory: ");
-                    ConsoleExtensions.Write(ConsoleColor.Magenta, string.IsNullOrEmpty(ShapingConfiguration.BackupDirectory) ?
-                        "None" : ShapingConfiguration.BackupDirectory);
+                    ConsoleExtensions.Write(ConsoleColor.Magenta, string.IsNullOrEmpty(shapingConfiguration.BackupDirectory) ?
+                        "None" : shapingConfiguration.BackupDirectory);
                     Console.WriteLine();
                     break;
-                default:
-                    break;
             }
-            if (ShapingConfiguration.ResultOptions != ResultOptions.ReplaceOriginal)
+            if (shapingConfiguration.ResultOptions != ResultOptions.ReplaceOriginal)
             {
             }
 
@@ -75,7 +74,7 @@ namespace CLI.Menu.Shaping
             Output.WriteLine(ConsoleColor.Green, "Result Options:");
 
             ConsoleExtensions.Write(ConsoleColor.Cyan, " - On shaping files: ");
-            ConsoleExtensions.Write(ConsoleColor.Magenta, ShapingConfiguration.ResultOptions.ToEnumString());
+            ConsoleExtensions.Write(ConsoleColor.Magenta, shapingConfiguration.ResultOptions.ToEnumString());
         }
 
 
@@ -84,23 +83,23 @@ namespace CLI.Menu.Shaping
             Output.WriteLine("\n");
 
             Output.WriteLine(ConsoleColor.Yellow, "What to do?: ");
-            UserAction input = InputExtension.ReadEnumAttr<UserAction>("");
+            var input = InputExtension.ReadEnumAttr<UserAction>("");
 
             switch (input)
             {
                 case UserAction.SelectSourceProjectDirectory:
-                    ShapingConfiguration.SourceDirectory = FolderDialog.SelectDirectory("Select source project directory");
+                    shapingConfiguration.SourceDirectory = FolderDialog.SelectDirectory("Select source project directory");
                     break;
                 case UserAction.SelectTargetProjectDirectory:
                     var dir = FolderDialog.SelectDirectory("Select target/backup project directory");
-                    ShapingConfiguration.TargetDirectory = dir;
-                    ShapingConfiguration.BackupDirectory = dir;
+                    shapingConfiguration.TargetDirectory = dir;
+                    shapingConfiguration.BackupDirectory = dir;
                     break;
                 case UserAction.ChangeShapingResult:
-                    ShapingConfiguration.ResultOptions = InputResult();
+                    shapingConfiguration.ResultOptions = InputResult();
                     break;
                 case UserAction.ShapeSourceFiles:
-                    ((ConsoleProgram)Program).Make(ShapingConfiguration);
+                    ((ConsoleProgram)Program).Make(shapingConfiguration);
                     break;
                 case UserAction.GoBack:
                     Program.NavigateBack();
@@ -115,7 +114,7 @@ namespace CLI.Menu.Shaping
         private ResultOptions InputResult()
         {
             Console.Clear();
-            ((ConsoleProgram)Program).Display();
+            ConsoleProgram.Display();
 
             Output.WriteLine("");
             Output.WriteLine(ConsoleColor.Yellow, "What should be the result of shaping?");
@@ -124,7 +123,7 @@ namespace CLI.Menu.Shaping
             return input;
         }
 
-        public enum UserAction
+        private enum UserAction
         {
             [EnumMember(Value = "Select source project directory")]
             SelectSourceProjectDirectory,

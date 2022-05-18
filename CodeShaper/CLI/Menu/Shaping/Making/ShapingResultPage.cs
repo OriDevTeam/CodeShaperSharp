@@ -1,12 +1,8 @@
 ﻿// System Namespaces
 using System;
-using System.Diagnostics;
 
 
 // Application Namespaces
-using Lib.Configurations;
-using Lib.Shaping;
-using Lib.Projects;
 using CLI.Utility.Extensions;
 
 
@@ -18,16 +14,9 @@ namespace CLI.Menu.Shaping.Making
 {
     internal class ShapingResultPage : MenuPage
     {
-        public static ShapingConfiguration ShapingConfiguration;
-
-        public static VCXSolution VCXProject;
-        public static ShapeProject ShapeProject;
-
-        public static Stopwatch TimeWatch;
-
-        public ShapingResultPage(ConsoleProgram program) : base("Shaping Result", program,
+        public ShapingResultPage(Program program) : base("Shaping Result", program,
                 new Option("See Applied Patches", () => program.NavigateTo<ShapingAppliedPage>()),
-                new Option("See Unapplied Patches", () => program.NavigateTo<ShapingUnappliedPage>()),
+                new Option("See Unused Patches", () => program.NavigateTo<ShapingUnusedPage>()),
                 new Option("See Changes Detailed", () => program.NavigateTo<ShapingResultDetailed>())
             )
         {
@@ -41,42 +30,39 @@ namespace CLI.Menu.Shaping.Making
             this.InputOptions(Menu);
         }
 
-        public void DisplayProgram()
+        private static void DisplayProgram()
         {
-            ((ConsoleProgram)Program).Display();
-        }
-        
-        public void DisplayBase()
-        {
-            var ptr = typeof(Page).GetMethod("Display").MethodHandle.GetFunctionPointer();
-            var basedisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
-            basedisplay();
+            ConsoleProgram.Display();
         }
 
-        public void DisplayInformation()
+        private void DisplayBase()
+        {
+            var ptr = typeof(Page).GetMethod("Display")!.MethodHandle.GetFunctionPointer();
+            var baseDisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
+
+            baseDisplay?.Invoke();
+        }
+
+        private static void DisplayInformation()
         {
             DisplayResult();
             Console.WriteLine();
         }
 
-        public void DisplayResult()
+        private static void DisplayResult()
         {
-            int unparsedModules = 0;
-            int modules = 0;
+            var unparsedModules = 0;
+            var modules = 0;
 
-            var t = TimeWatch.Elapsed;
-            string time = string.Format("{0:D2} minutes, {1:D2} seconds, {2:D3} milliseconds",
-                        t.Minutes,
-                        t.Seconds,
-                        t.Milliseconds);
+            // var t = TimeWatch.Elapsed;
+            // var time = $"{t.Minutes:D2} minutes, {t.Seconds:D2} seconds, {t.Milliseconds:D3} milliseconds";
 
             Console.WriteLine();
-            Output.WriteLine(ConsoleColor.Cyan, "Time Elapsed: {0}", time);
+            // Output.WriteLine(ConsoleColor.Cyan, "Time Elapsed: {0}", time);
 
             Console.WriteLine();
-            ConsoleExtensions.Write(ConsoleColor.Green, string.Format("Parsed Modules: {0}\n", modules));
-            ConsoleExtensions.Write(ConsoleColor.Red, string.Format("Invalid Modules: {0}\n", unparsedModules));
-
+            ConsoleExtensions.Write(ConsoleColor.Green, $"Parsed Modules: {modules}\n");
+            ConsoleExtensions.Write(ConsoleColor.Red, $"Invalid Modules: {unparsedModules}\n");
         }
     }
 }

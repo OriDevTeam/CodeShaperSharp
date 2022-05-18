@@ -38,8 +38,10 @@ namespace Lib.AST.Controllers
             }
         }
 
+        private bool visiting;
+        
         public ParserRuleContext CurrentContext { get; set; }
-        internal Delegate CurrentDelegate { get; set; }
+        private Delegate CurrentDelegate { get; set; }
 
         public ASTVisitorController(ASTPreparationController preparationController)
         {
@@ -64,6 +66,7 @@ namespace Lib.AST.Controllers
                 LocationsContent[item1] = item2;
 
             // CurrentContext = tree;
+            visiting = true;
             
             CurrentDelegate = visit;
             
@@ -81,7 +84,7 @@ namespace Lib.AST.Controllers
             foreach (var (item1, item2) in customVisits)
                 LocationsContent[item1] = item2;
 
-            CurrentContext = context;
+            ProcessContextState(context);
             
             CurrentDelegate = visit;
             
@@ -100,7 +103,7 @@ namespace Lib.AST.Controllers
                 foreach (var (item1, item2) in customVisits)
                     LocationsContent[item1] = item2;
 
-            CurrentContext = context;
+            ProcessContextState(context);
             
             CurrentDelegate = visit;
             
@@ -113,11 +116,17 @@ namespace Lib.AST.Controllers
             
             LocationsContent[location] = contextText;
             
-            CurrentContext = context;
+            ProcessContextState(context);
 
             CurrentDelegate = visit;
             
             ProcessVisitorState(location);
+        }
+
+        private void ProcessContextState(ParserRuleContext context)
+        {
+            CurrentContext = context;
+            visiting = true;
         }
         
         private void ProcessVisitorState(TLocation location)
@@ -129,7 +138,7 @@ namespace Lib.AST.Controllers
             OnVisitorProcess?.Invoke(this, location);
             
             ProcessVisitorSettings();
-            
+
             switch (State)
             {
                 case VisitorState.Stop:
@@ -138,7 +147,7 @@ namespace Lib.AST.Controllers
                 
                 case VisitorState.Play:
                     ShapingOperationsManager.ActiveShapingOperation.Stopwatch.Start();
-                    CurrentDelegate.DynamicInvoke(CurrentContext);
+                    ProcessStateChange();
                     break;
 
                 case VisitorState.Pause:
@@ -154,6 +163,8 @@ namespace Lib.AST.Controllers
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            visiting = false;
         }
 
         private void ProcessVisitorSettings()
@@ -165,8 +176,12 @@ namespace Lib.AST.Controllers
         private void ProcessStateChange()
         {
             CurrentContext ??= PreparationController.ASTSet.GetRootContext();
+            CurrentDelegate ??= new Func<IParseTree, object>(PreparationController.ASTSet.Visitor.Visit);
+            
+            CurrentDelegate.DynamicInvoke(CurrentContext);
 
-            PreparationController.ASTSet.Visitor.Visit(CurrentContext);
+            if (!visiting)
+                Log.Information("Finished visiting");
         }
     }
 

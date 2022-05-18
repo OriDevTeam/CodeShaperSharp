@@ -1,11 +1,10 @@
 ﻿// System Namespaces
 using System;
-using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Shaping;
-using Lib.Projects;
+using Lib.Shaping.Interfaces;
+using Lib.Shaping.Target.Interfaces;
 using CLI.Utility.Extensions;
 
 
@@ -17,10 +16,7 @@ namespace CLI.Menu.Shaping.Making
 {
     internal class ShapingResultDetailed : MenuPage
     {
-        public static VCXSolution VCXProject;
-        public static ShapeProject ShapeProject;
-
-        public ShapingResultDetailed(ConsoleProgram program) : base("Changes detailed", program)
+        public ShapingResultDetailed(Program program) : base("Changes detailed", program)
         {
 
         }
@@ -33,24 +29,26 @@ namespace CLI.Menu.Shaping.Making
             this.InputOptions(Menu);
         }
 
-        public void DisplayProgram()
+        private void DisplayProgram()
         {
-            ((ConsoleProgram)Program).Display();
+            ConsoleProgram.Display();
 
-            var ptr = typeof(Page).GetMethod("Display").MethodHandle.GetFunctionPointer();
-            var basedisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
-            basedisplay();
+            var ptr = typeof(Page).GetMethod("Display")!.MethodHandle.GetFunctionPointer();
+            var baseDisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
+            
+            baseDisplay?.Invoke();
         }
 
-        public void DisplayResult()
+        private void DisplayResult()
         {
             DisplayModules();
         }
 
-        public void DisplayModules()
+        private static void DisplayModules()
         {
-            int idx = 0;
-
+            var idx = 0;
+            
+            /*
             var modules = new List<VCXModule>();
 
             foreach (var project in VCXProject.Projects)
@@ -74,14 +72,14 @@ namespace CLI.Menu.Shaping.Making
                 foreach (var mod in mods)
                 {
                     idx++;
-
-                    ConsoleExtensions.Write(ConsoleColor.Gray, "  " + idx + ". - " + mod.Name + "\n");
+                    ConsoleExtensions.Write(ConsoleColor.Gray, $"  {idx}. - {mod.Name}\n");
                     modules.Add(mod);
                 }
             }
-
+            */
+            
             Console.WriteLine();
-            Input.ReadInt("Type the number referent to module", 0, VCXProject.Modules.Count);
+            // Input.ReadInt("Type the number referent to module", 0, ShapingTarget.Modules.Count);
         }
     }
 }

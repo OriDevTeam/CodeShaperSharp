@@ -1,10 +1,11 @@
 ﻿// System Namespaces
 using System.Collections.Generic;
-using Lib.Shapers.Interfaces;
+
 
 // Applications Namespaces
 using Lib.Shaping.Expressions;
 using Lib.Shaping.Variables;
+using Lib.Shapers.Interfaces;
 
 
 // Library Namespaces

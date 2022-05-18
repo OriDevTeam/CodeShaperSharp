@@ -1,85 +1,90 @@
 ﻿// System Namespaces
 using System;
-using System.IO;
 using System.Collections.Generic;
 
 
 // Application Namespaces
-using Lib.Settings;
-using Lib.Shaping;
+using Lib.Shapers.Interfaces;
+using Lib.Shaping.Target.Interfaces;
 
 
 // Library Namespaces
 
 
 
-namespace Lib.Projects
+namespace Lib.Miscelaneous
 {
-    /*
+    
     public static class ReportProcessedExtensions
     {
-        public static int TotalProcessedReplacementCount(this VCXSolution vcxProject)
+        public static int TotalProcessedReplacementCount(this IShapingTarget shapingTarget)
         {
-            int count = 0;
+            var count = 0;
 
-            foreach (var module in vcxProject.Modules)
-                count += module.Result.Replacements.Count;
+            foreach (var group in shapingTarget.ShapingTargetGroups)
+                foreach (var file in group.ShapingTargetFiles)
+                    count += file.Result.Replacements.Count;
 
             return count;
         }
 
-        public static int TotalProcessedAdditionCount(this VCXSolution vcxProject)
+        public static int TotalProcessedAdditionCount(this IShapingTarget shapingTarget)
         {
-            int count = 0;
+            var count = 0;
 
-            foreach (var module in vcxProject.Modules)
-                count += module.Result.Additions.Count;
+            foreach (var group in shapingTarget.ShapingTargetGroups)
+                foreach (var file in group.ShapingTargetFiles)
+                    count += file.Result.Additions.Count;
 
             return count;
         }
 
-        public static int TotalProcessedSubtractionCount(this VCXSolution vcxProject)
+        public static int TotalProcessedSubtractionCount(this IShapingTarget shapingTarget)
         {
-            int count = 0;
+            var count = 0;
 
-            foreach (var module in vcxProject.Modules)
-                count += module.Result.Subtractions.Count;
+            foreach (var group in shapingTarget.ShapingTargetGroups)
+                foreach (var file in group.ShapingTargetFiles)
+                    count += file.Result.Subtractions.Count;
 
             return count;
         }
 
-        public static List<KeyValuePair<string, Replacement>> AppliedReplacements(this VCXSolution vcxProject)
+        public static List<IShapeActionsReplacer> AppliedReplacements(this IShapingTarget shapingTarget)
         {
-            var replacements = new List<KeyValuePair<string, Replacement>>();
-
-            foreach (var module in vcxProject.Modules)
-                foreach (var replacement in module.Result.Replacements)
-                    if (!replacements.Contains(replacement.Item1))
-                        replacements.Add(replacement.Item1);
-
+            var replacements = new List<IShapeActionsReplacer>();
+            
+            foreach (var group in shapingTarget.ShapingTargetGroups)
+                foreach (var file in group.ShapingTargetFiles)
+                    foreach (var (item1, item2, item3) in file.Result.Replacements)
+                        if (!replacements.Contains(item1))
+                            replacements.Add(item1);
+            
             return replacements;
         }
 
-        public static List<KeyValuePair<string, Addition>> AppliedAdditions(this VCXSolution vcxProject)
+        public static List<IShapeActionsAdder> AppliedAdditions(this IShapingTarget shapingTarget)
         {
-            var additions = new List<KeyValuePair<string, Addition>>();
-
-            foreach (var module in vcxProject.Modules)
-                foreach (var addition in module.Result.Additions)
-                    if (!additions.Contains(addition.Item1))
-                        additions.Add(addition.Item1);
-
+            var additions = new List<IShapeActionsAdder>();
+            
+            foreach (var group in shapingTarget.ShapingTargetGroups)
+                foreach (var file in group.ShapingTargetFiles)
+                    foreach (var (item1, item2, item3) in file.Result.Additions)
+                        if (!additions.Contains(item1))
+                            additions.Add(item1);
+            
             return additions;
         }
 
-        public static List<KeyValuePair<string, Subtraction>> AppliedSubtractions(this VCXSolution vcxProject)
+        public static List<IShapeActionsSubtracter> AppliedSubtractions(this IShapingTarget shapingTarget)
         {
-            var subtractions = new List<KeyValuePair<string, Subtraction>>();
+            var subtractions = new List<IShapeActionsSubtracter>();
 
-            foreach (var module in vcxProject.Modules)
-                foreach (var subtraction in module.Result.Subtractions)
-                    if (!subtractions.Contains(subtraction.Item1))
-                        subtractions.Add(subtraction.Item1);
+            foreach (var group in shapingTarget.ShapingTargetGroups)
+                foreach (var file in group.ShapingTargetFiles)
+                    foreach (var (item1, item2, item3) in file.Result.Subtractions)
+                        if (!subtractions.Contains(item1))
+                            subtractions.Add(item1);
 
             return subtractions;
         }
@@ -87,32 +92,36 @@ namespace Lib.Projects
 
     public static class ReportUnprocessedExtensions
     {
-        public static List<KeyValuePair<string, Replacement>> UnapliedReplacements(this VCXSolution vcxProject)
+        public static List<IShapeActionsReplacer> UnusedReplacements(this IShapingTarget shapingTarget)
         {
-            var applied = vcxProject.AppliedReplacements();
+            var applied = shapingTarget.AppliedReplacements();
 
-            var replacements = new List<KeyValuePair<string, Replacement>>();
-
-            foreach (var module in vcxProject.Modules)
-                foreach (var patch in vcxProject.ShapeProject.Patches)
-                {
-                    foreach (var replacement in patch.Patch.Actions.Replacements)
-                    {
-                        if(!applied.Contains(replacement))
-                            if (!replacements.Contains(replacement))
-                                replacements.Add(replacement);
-                    }
-                }
-
+            var replacements = new List<IShapeActionsReplacer>();
+            
+            /*
+            foreach (var group in shapingTarget.ShapingTargetGroups)
+                foreach (var file in group.ShapingTargetFiles)
+                        foreach (var patch in file.)
+                        {
+                            foreach (var replacement in patch.Patch.Actions.Replacements)
+                            {
+                                if(!applied.Contains(replacement))
+                                    if (!replacements.Contains(replacement))
+                                        replacements.Add(replacement);
+                            }
+                        }
+            */
+            
             return replacements;
         }
 
-        public static List<KeyValuePair<string, Addition>> UnapliedAdditions(this VCXSolution vcxProject)
+        public static List<IShapeActionsAdder> UnusedAdditions(this IShapingTarget shapingTarget)
         {
-            var applied = vcxProject.AppliedAdditions();
+            var applied = shapingTarget.AppliedAdditions();
 
-            var additions = new List<KeyValuePair<string, Addition>>();
-
+            var additions = new List<IShapeActionsAdder>();
+            
+            /*
             foreach (var module in vcxProject.Modules)
                 foreach (var patch in vcxProject.ShapeProject.Patches)
                 {
@@ -123,16 +132,18 @@ namespace Lib.Projects
                                 additions.Add(addition);
                     }
                 }
-
+            */
+            
             return additions;
         }
 
-        public static List<KeyValuePair<string, Subtraction>> UnapliedSubtractions(this VCXSolution vcxProject)
+        public static List<IShapeActionsSubtracter> UnusedSubtractions(this IShapingTarget shapingTarget)
         {
-            var applied = vcxProject.AppliedSubtractions();
+            var applied = shapingTarget.AppliedSubtractions();
 
-            var subtractions = new List<KeyValuePair<string, Subtraction>>();
-
+            var subtractions = new List<IShapeActionsSubtracter>();
+            
+            /*
             foreach (var module in vcxProject.Modules)
                 foreach (var patch in vcxProject.ShapeProject.Patches)
                 {
@@ -143,9 +154,9 @@ namespace Lib.Projects
                                 subtractions.Add(subtraction);
                     }
                 }
-
+            */
+            
             return subtractions;
         }
     }
-    */
 }

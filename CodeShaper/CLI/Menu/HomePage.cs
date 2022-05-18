@@ -2,6 +2,7 @@
 
 
 // Application Namespaces
+using CLI.Menu.Shaping;
 
 
 // Library Namespaces
@@ -12,14 +13,14 @@ namespace CLI.Menu
 {
     internal class HomePage : MenuPage
     {
-        public HomePage(ConsoleProgram program) : base("Home", program,
+        public HomePage(Program program) : base("Home", program,
             new Option("Shaper", () => program.NavigateTo<ShapePage>()))
         {
         }
 
         public override void Display()
         {
-            ((ConsoleProgram)Program).Display();
+            ConsoleProgram.Display();
             base.Display();
         }
     }

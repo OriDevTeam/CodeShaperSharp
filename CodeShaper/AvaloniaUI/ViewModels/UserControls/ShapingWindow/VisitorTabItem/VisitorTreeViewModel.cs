@@ -43,10 +43,10 @@ namespace AvaloniaUI.ViewModels.UserControls.ShapingWindow.VisitorTabItem
             if (textEditor == null)
                 return;
             
-            var offset = textEditor.Document.GetOffset(1, 5);
+            // var offset = textEditor.Document.GetOffset(1, 5);
 
-            var documentHighlighter = new DocumentHighlighter(textEditor.Document, null);
-            var result = documentHighlighter.HighlightLine(1);
+            // var documentHighlighter = new DocumentHighlighter(textEditor.Document, null);
+            // var result = documentHighlighter.HighlightLine(1);
         }
     }
 }

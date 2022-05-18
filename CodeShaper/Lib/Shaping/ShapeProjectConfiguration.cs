@@ -33,12 +33,22 @@ namespace Lib.Shaping
 
     public class ShapeProjectConfigurationFile
     {
+        [JsonRequired]
         [JsonProperty("name")]
         public string Name = "No Name";
+        
+        [JsonRequired]
+        [JsonProperty("target")]
+        public string Target;
+
+        [JsonRequired]
+        [JsonProperty("patch")]
+        public string Patch;
         
         [JsonProperty("projects")]
         public Projects Projects;
         
+        [JsonRequired]
         [JsonProperty("description")]
         public string Description;
     }

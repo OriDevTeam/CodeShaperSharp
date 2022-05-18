@@ -11,8 +11,7 @@ using System.Runtime.Serialization;
 using EasyConsole;
 
 
-
-namespace CLI.Menu
+namespace CLI.Utility.Extensions
 {
     public static class InputExtension
     {
@@ -35,9 +34,7 @@ namespace CLI.Menu
                 var field = enumType.GetField(name).GetCustomAttributes(typeof(EnumMemberAttribute), true);
 
                 if (field.Length > 0)
-                {
                     menu.Add(((EnumMemberAttribute[])field).Single().Value, () => { choice = (TEnum)value; });
-                }
                 else
                     menu.Add(Enum.GetName(type, value), () => { choice = (TEnum)value; });
             }

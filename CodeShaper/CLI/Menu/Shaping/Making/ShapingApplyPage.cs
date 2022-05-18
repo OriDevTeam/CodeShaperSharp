@@ -1,13 +1,12 @@
 ﻿// System Namespaces
 using System;
-using System.Threading;
-using System.Diagnostics;
+
 
 // Application Namespaces
-using Lib.Configurations;
+using Lib.Shaping.Target.Interfaces;
+using Lib.Managers;
+using Lib.Miscelaneous;
 using Lib.Shaping;
-using Lib.Projects;
-using Lib.Settings;
 using CLI.Utility.Extensions;
 
 
@@ -19,50 +18,41 @@ namespace CLI.Menu.Shaping.Making
 {
     internal class ShapingApplyPage : MenuPage
     {
-        public static ShapingConfiguration ShapingConfiguration;
-
-        public ShapingApplyPage(ConsoleProgram program) : base("Applying Shaping", program)
+        private static ShapingOperation ShapingOperation => ShapingOperationsManager.ActiveShapingOperation;
+        private static IShapingTarget ShapingTarget => ShapingOperationsManager.ActiveShapingOperation.ShapingTarget;
+        private static ShapeProject ShapeProject => ShapingOperationsManager.ActiveShapingOperation.ShapeProject;
+        
+        public ShapingApplyPage(Program program) : base("Applying Shaping", program)
         {
         }
 
         public override void Display()
         {
-            _stopWatch = Stopwatch.StartNew();
-            _stopWatch.Start();
-
-            ShapingResultPage.TimeWatch = _stopWatch;
-            ShapingAppliedPage.TimeWatch = _stopWatch;
-            ShapingUnappliedPage.TimeWatch = _stopWatch;
-
             ProcessShapeProject();
             DisplayProgram();
-
-            if (ShapeProject != null)
-                DisplayShapingInformation();
-
-            Thread.Sleep(3000);
-
-            ProcessVCXSolution();
+            
+            DisplayShapingInformation();
             ProcessShaping();
 
             Program.NavigateTo<ShapingResultPage>();
         }
 
-        public void DisplayProgram()
+        private void DisplayProgram()
         {
-            ((ConsoleProgram)Program).Display();
+            ConsoleProgram.Display();
 
-            var ptr = typeof(Page).GetMethod("Display").MethodHandle.GetFunctionPointer();
-            var basedisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
-            basedisplay();
+            var ptr = typeof(Page).GetMethod("Display")!.MethodHandle.GetFunctionPointer();
+            var baseDisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
+            baseDisplay?.Invoke();
         }
 
-        public void DisplayShapingInformation()
+        private static void DisplayShapingInformation()
         {
             Output.WriteLine(ConsoleColor.Green, ConsoleExtensions.WindowFill('-'));
 
             Output.WriteLine(ConsoleColor.Cyan, "Project: " + ShapeProject.Configuration.Configuration.Name);
             ConsoleExtensions.Write(ConsoleColor.Red, "Patches: " + ShapeProject.Patches.Count + "\n");
+            
             ConsoleExtensions.Write(ConsoleColor.Red, " - Replacements: " + ShapeProject.TotalReplacementCount() + "\n");
             ConsoleExtensions.Write(ConsoleColor.Red, " - Additions: " + ShapeProject.TotalAdditionsCount() + "\n");
             ConsoleExtensions.Write(ConsoleColor.Red, " - Subtractions: " + ShapeProject.TotalSubtractionsCount() + "\n");
@@ -71,117 +61,74 @@ namespace CLI.Menu.Shaping.Making
             Output.WriteLine(ConsoleColor.Green, ConsoleExtensions.WindowFill('-'));
         }
 
-        public void DisplayShapingProcess()
+        private static void DisplayShapingProcess()
         {
             Output.WriteLine(ConsoleColor.Green, ConsoleExtensions.WindowFill('-'));
 
             Output.WriteLine(ConsoleColor.Cyan, "Project: " + ShapeProject.Configuration.Configuration.Name);
             Console.WriteLine("");
-            Output.WriteLine(ConsoleColor.Cyan, "Parsed Modules: {0}/{1}", VCXProject.Modules.Count, VCXProject.ModuleCount);
+            // Output.WriteLine(ConsoleColor.Cyan, "Parsed Modules: {0}/{1}", VCXProject.Modules.Count, VCXProject.ModuleCount);
+            
+            // var time = $"{t.Minutes:D2} minutes, {t.Seconds:D2} seconds, {t.Milliseconds:D3} milliseconds";
 
-            var t = _stopWatch.Elapsed;
-            string time = string.Format("{0:D2} minutes, {1:D2} seconds, {2:D3} milliseconds",
-                        t.Minutes,
-                        t.Seconds,
-                        t.Milliseconds);
-
-            Output.WriteLine(ConsoleColor.Cyan, "Time Elapsed: {0}", time);
-
+            // Output.WriteLine(ConsoleColor.Cyan, "Time Elapsed: {0}", time);
+            
+            
             Console.WriteLine("");
             ConsoleExtensions.Write(ConsoleColor.Red, "Applied: " + "\n");
-            ConsoleExtensions.Write(ConsoleColor.Red, " - Replacements: " + VCXProject.TotalProcessedReplacementCount() + "\n");
-            ConsoleExtensions.Write(ConsoleColor.Red, " - Additions: " + VCXProject.TotalProcessedAdditionCount() + "\n");
-            ConsoleExtensions.Write(ConsoleColor.Red, " - Subtractions: " + VCXProject.TotalProcessedSubtractionCount() +"\n");
+            ConsoleExtensions.Write(ConsoleColor.Red, " - Replacements: " + ShapingTarget.TotalProcessedReplacementCount() + "\n");
+            ConsoleExtensions.Write(ConsoleColor.Red, " - Additions: " + ShapingTarget.TotalProcessedAdditionCount() + "\n");
+            ConsoleExtensions.Write(ConsoleColor.Red, " - Subtractions: " + ShapingTarget.TotalProcessedSubtractionCount() +"\n");
 
             Output.WriteLine("");
             Output.WriteLine(ConsoleColor.Green, ConsoleExtensions.WindowFill('-'));
         }
 
-        public void DisplaySaving()
+        public static void DisplaySaving()
         {
             ConsoleExtensions.Write(ConsoleColor.Red, "Saving Shaped Files: " + "\n");
         }
 
-        public void ProcessShapeProject()
+        private void ProcessShapeProject()
         {
-            if (ShapeProject == null)
-            {
-                ShapeProject = new(ShapingConfiguration);
-                ShapeProject.SavingShapedFile += OnSavingShapedFile;
-
-                ShapingResultPage.ShapeProject = ShapeProject;
-                ShapingAppliedPage.ShapeProject = ShapeProject;
-                ShapingUnappliedPage.ShapeProject = ShapeProject;
-                ShapingResultDetailed.ShapeProject = ShapeProject;
-            }
+            ShapeProject.SavingShapedFile += OnSavingShapedFile;
+            ShapingTarget.AddGroupsLoadEvent(OnLoadingShapingTargetGroup);
+            ShapingTarget.AddFilesLoadEvent(OnLoadingShapingTargetFile);
         }
 
-        public void ProcessVCXSolution()
-        {
-            VCXProject = new VCXSolution(ShapingConfiguration.SourceDirectory, ShapeProject);
-            VCXProject.LoadingVCXSolution += OnLoadingVCXSolution;
-            VCXProject.LoadingVCXProject += OnLoadingVCXProject;
-            VCXProject.LoadingVCXModule += OnLoadingVCXModule;
-
-            ShapingResultPage.VCXProject = VCXProject;
-            ShapingAppliedPage.VCXProject = VCXProject;
-            ShapingUnappliedPage.VCXProject = VCXProject;
-            ShapingResultDetailed.VCXProject = VCXProject;
-
-            VCXProject.Load();
-        }
-
-        public void ProcessShaping()
+        private void ProcessShaping()
         {
             Console.Clear();
             DisplayProgram();
 
-            ShapeProject.Shape(VCXProject, ShapingConfiguration);
+            ShapingOperation.Start();
         }
 
-        void OnLoadingVCXSolution(object sender, EventArgs e)
+        private void OnLoadingShapingTargetGroup(object sender, IShapingTargetGroup targetGroup)
         {
             Console.Clear();
             DisplayProgram();
 
-            if (ShapeProject != null)
-                DisplayShapingProcess();
+            DisplayShapingProcess();
 
-            Output.WriteLine(ConsoleColor.Red, "Parsing VCX Solution");
+            Output.WriteLine(ConsoleColor.Red, $"Parsing {targetGroup.GetType().Name} {targetGroup.Name}");
             Output.WriteLine(ConsoleColor.Red, ConsoleExtensions.WindowFill('-'));
         }
 
-        void OnLoadingVCXProject(object sender, MVCXProject mvcxProject)
+        private void OnLoadingShapingTargetFile(object sender, IShapingTargetFile targetFile)
         {
             Console.Clear();
             DisplayProgram();
+            
+            DisplayShapingProcess();
 
-            if (ShapeProject != null)
-                DisplayShapingProcess();
-
-            Output.WriteLine(ConsoleColor.Green, "Parsing VCX Project {0}", mvcxProject.Name);
-
+            Output.WriteLine(ConsoleColor.Green, $"Parsing {targetFile.GetType().Name} {targetFile.Name}");
             Output.WriteLine(ConsoleColor.Green, ConsoleExtensions.WindowFill('-'));
         }
 
-        void OnLoadingVCXModule(object sender, VCXModule vcxModule)
+        private static void OnSavingShapedFile(object sender, string filePath)
         {
-            Console.Clear();
-            DisplayProgram();
-
-            if (ShapeProject != null)
-                DisplayShapingProcess();
-
-            Output.WriteLine(ConsoleColor.Green, "Parsing VCX Module {0}", vcxModule.Name);
-
-            Output.WriteLine(ConsoleColor.Green, ConsoleExtensions.WindowFill('-'));
-        }
-
-        void OnSavingShapedFile(object sender, string filePath)
-        {
-            return;
-
-            Output.WriteLine(ConsoleColor.Green, " {0}", filePath);
+            // Output.WriteLine(ConsoleColor.Green, $" {filePath}");
         }
     }
 }

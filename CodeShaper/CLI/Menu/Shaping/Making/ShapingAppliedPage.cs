@@ -1,28 +1,22 @@
 ﻿// System Namespaces
 using System;
-using System.Diagnostics;
 
 
 // Application Namespaces
-using Lib.Shaping;
-using Lib.Projects;
+using Lib.Miscelaneous;
 using CLI.Utility.Extensions;
 
 
 // Library Namespaces
 using EasyConsole;
+using Lib.Managers;
 
 
 namespace CLI.Menu.Shaping.Making
 {
     internal class ShapingAppliedPage : MenuPage
     {
-        public static VCXSolution VCXProject;
-        public static ShapeProject ShapeProject;
-
-        public static Stopwatch TimeWatch;
-
-        public ShapingAppliedPage(ConsoleProgram program) : base("Applied patches", program)
+        public ShapingAppliedPage(Program program) : base("Applied patches", program)
         {
 
         }
@@ -35,36 +29,38 @@ namespace CLI.Menu.Shaping.Making
             this.InputOptions(Menu);
         }
 
-        public void DisplayProgram()
+        private void DisplayProgram()
         {
-            ((ConsoleProgram)Program).Display();
+            ConsoleProgram.Display();
 
-            var ptr = typeof(Page).GetMethod("Display").MethodHandle.GetFunctionPointer();
-            var basedisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
-            basedisplay();
+            var ptr = typeof(Page).GetMethod("Display")!.MethodHandle.GetFunctionPointer();
+            var baseDisplay = (Action)Activator.CreateInstance(typeof(Action), this, ptr);
+            baseDisplay?.Invoke();
         }
 
-        public void DisplayResult()
+        private static void DisplayResult()
         {
             DisplayApplied();
         }
 
-        public void DisplayApplied()
+        private static void DisplayApplied()
         {
+            var currentShapingOperation = ShapingOperationsManager.ActiveShapingOperation;
+            
             Console.WriteLine("");
             ConsoleExtensions.Write(ConsoleColor.Red, "Applied: " + "\n");
-
+            
             ConsoleExtensions.Write(ConsoleColor.Yellow, " - Replacements: \n");
-            foreach (var replacement in VCXProject.AppliedReplacements())
-                ConsoleExtensions.Write(ConsoleColor.DarkYellow, "   - " + replacement.Key + "\n");
+            foreach (var replacement in currentShapingOperation.ShapingTarget.AppliedReplacements())
+                ConsoleExtensions.Write(ConsoleColor.DarkYellow, "   - " + "replacement" + "\n");
 
             ConsoleExtensions.Write(ConsoleColor.Green, " - Additions: \n");
-            foreach (var addition in VCXProject.AppliedAdditions())
-                ConsoleExtensions.Write(ConsoleColor.DarkYellow, "   - " + addition.Key + "\n");
+            foreach (var addition in currentShapingOperation.ShapingTarget.AppliedAdditions())
+                ConsoleExtensions.Write(ConsoleColor.DarkYellow, "   - " + "addition" + "\n");
 
             ConsoleExtensions.Write(ConsoleColor.Red, " - Subtractions: \n");
-            foreach (var subtraction in VCXProject.AppliedSubtractions())
-                ConsoleExtensions.Write(ConsoleColor.DarkYellow, "   - " + subtraction.Key + "\n");
+            foreach (var subtraction in currentShapingOperation.ShapingTarget.AppliedSubtractions())
+                ConsoleExtensions.Write(ConsoleColor.DarkYellow, "   - " + "subtraction" + "\n");
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿// System Namespaces
+
+using System;
 using System.Collections.ObjectModel;
 
 
@@ -15,7 +17,9 @@ namespace Lib.Shaping.Target.Interfaces
         public string Name { get; }
         public ObservableCollection<IShapingTargetGroup> ShapingTargetGroups { get; }
         
-        void Load();
+        public void Load();
+        public void AddGroupsLoadEvent(EventHandler<IShapingTargetGroup> onLoadingShapingTargetGroup);
+        public void AddFilesLoadEvent(EventHandler<IShapingTargetFile> onLoadingShapingTargetFile);
     }
 }
 

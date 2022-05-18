@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 
 
 // Application Namespaces
+using Lib.Managers;
 
 
 // Library Namespaces
@@ -19,14 +20,16 @@ namespace CLI
 
     class EntryPoint
     {
-        static ConsoleProgram program = new();
+        private static readonly ConsoleProgram Program = new();
 
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             NativeMethods.AllocConsole();
 
-            program.Run();
+            LibManager.Initialize(true);
+
+            Program.Run();
         }
     }
 }

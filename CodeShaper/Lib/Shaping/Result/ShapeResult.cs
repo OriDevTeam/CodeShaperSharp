@@ -26,9 +26,9 @@ namespace Lib.Shaping.Result
 
         private List<IShapeActionsBuilder> Builders { get; }
 
-        private List<Tuple<IShapeActionsReplacer, string, string>> Replacements { get; set; } = new();
-        private List<Tuple<IShapeActionsAdder, string, string>> Additions { get; set; } = new();
-        private List<Tuple<IShapeActionsSubtracter, string, string>> Subtractions { get; set; } = new();
+        internal List<Tuple<IShapeActionsReplacer, string, string>> Replacements { get; set; } = new();
+        internal List<Tuple<IShapeActionsAdder, string, string>> Additions { get; set; } = new();
+        internal List<Tuple<IShapeActionsSubtracter, string, string>> Subtractions { get; set; } = new();
         
 
         public ShapeResult(ShapeProject shapeProject, string filePath)

@@ -18,6 +18,8 @@ namespace Lib.Managers
     {
         public static ObservableCollection<Tuple<ShapingConfiguration, ShapeProject>> LocalShapingConfigurations { get; private set; }
         
+        public static Tuple<ShapingConfiguration, ShapeProject> ActiveShapingConfiguration { get; private set; }
+        
         public static void Initialize()
         {
             LocalShapingConfigurations = GetLocalShapingConfigurations();
@@ -38,6 +40,11 @@ namespace Lib.Managers
             }
 
             return configs;
+        }
+        
+        public static void SetShapingConfiguration(ShapingConfiguration shapingConfiguration, ShapeProject shapeProject)
+        {
+            ActiveShapingConfiguration = new Tuple<ShapingConfiguration, ShapeProject>(shapingConfiguration, shapeProject);
         }
     }
 }

@@ -10,12 +10,11 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 
 
-
 namespace AvaloniaUI.Views.UserControls.ShapingWindow
 {
     public class ResultsTreeView : ReactiveUserControl<ResultsTreeViewModel>
     {
-        public ResultsTreeView Instance { get; private set; }
+        public static ResultsTreeView? Instance { get; private set; }
         
         public ResultsTreeView()
         {
@@ -34,6 +33,12 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
         private void BindControls()
         {
             
+        }
+
+        internal void Refresh()
+        {
+            ViewModel ??= (ResultsTreeViewModel?)Content;
+            ViewModel?.Refresh();
         }
     }
 }

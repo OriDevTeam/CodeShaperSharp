@@ -1,9 +1,9 @@
 ﻿// System Namespaces
+using System;
 using System.Collections.ObjectModel;
 
 
 // Application Namespaces
-using Lib.Settings;
 using Lib.Settings.Target;
 using Lib.Shaping;
 using Lib.Shaping.Target.Interfaces;
@@ -14,12 +14,12 @@ using Lib.Shaping.Target.Interfaces;
 
 namespace Lib.Projects.VCXSolution
 {
-    public partial class VCXSolutionTarget : IShapingTarget
+    public class VCXSolutionTarget : IShapingTarget
     {
         public string Name => SolutionInformation.Name;
         
         public ObservableCollection<IShapingTargetGroup> ShapingTargetGroups { get; } = new();
-        public IShapingTargetFile SelectedTargetFile { get; private set; }
+        private IShapingTargetFile SelectedTargetFile { get; set; }
 
         public readonly MVCXSolution SolutionInformation;
 
@@ -39,9 +39,38 @@ namespace Lib.Projects.VCXSolution
             ShapingTargetGroups.Add(new VCXSolutionGroup(ShapingOperation, this, null));
         }
 
-        public void Shape(VCXTargetFile target)
+        public void AddGroupsLoadEvent(EventHandler<IShapingTargetGroup> onLoadingShapingTargetGroup)
         {
-            SelectedTargetFile = target;
+            foreach (var group in ShapingTargetGroups) 
+                AddGroupsLoadEvent(group, onLoadingShapingTargetGroup);
+        }
+
+        private static void AddGroupsLoadEvent(IShapingTargetGroup group, EventHandler<IShapingTargetGroup> onLoadingShapingTargetGroup)
+        {
+            foreach (var childrenGroup in group.ShapingTargetGroups)
+            {
+                group.OnShapingGroupLoad += onLoadingShapingTargetGroup;
+                AddGroupsLoadEvent(childrenGroup, onLoadingShapingTargetGroup);
+            }
+
+            group.OnShapingGroupLoad += onLoadingShapingTargetGroup;
+        }
+        
+        public void AddFilesLoadEvent(EventHandler<IShapingTargetFile> onLoadingShapingTargetFile)
+        {
+            foreach (var group in ShapingTargetGroups) 
+                AddFilesLoadEvent(group, onLoadingShapingTargetFile);
+        }
+
+        private void AddFilesLoadEvent(IShapingTargetGroup group, EventHandler<IShapingTargetFile> onLoadingShapingTargetFile)
+        {
+            foreach (var childrenGroup in group.ShapingTargetGroups)
+            {
+                AddFilesLoadEvent(childrenGroup, onLoadingShapingTargetFile);
+            }
+
+            foreach (var file in group.ShapingTargetFiles)
+                file.OnShapingTargetFileLoad += onLoadingShapingTargetFile;
         }
     }
 }

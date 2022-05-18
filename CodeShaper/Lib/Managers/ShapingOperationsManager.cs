@@ -13,7 +13,7 @@ namespace Lib.Managers
 {
     public static class ShapingOperationsManager
     {
-        public static List<ShapingOperation> ShapingOperations { get; } = new();
+        private static List<ShapingOperation> ShapingOperations { get; } = new();
         
         public static ShapingOperation ActiveShapingOperation { get; private set; }
         

@@ -91,30 +91,33 @@ namespace Lib.Shaping
     {
         public static int TotalReplacementCount(this ShapeProject shapeProject)
         {
-            int count = 0;
+            var count = 0;
 
             foreach (var patch in shapeProject.Patches)
-                count += patch.Header.Actions.Replacers.Count;
+                if (patch.Header.Actions.Replacers != null)
+                    count += patch.Header.Actions.Replacers.Count;
 
             return count;
         }
 
         public static int TotalAdditionsCount(this ShapeProject shapeProject)
         {
-            int count = 0;
+            var count = 0;
 
             foreach (var patch in shapeProject.Patches)
-                count += patch.Header.Actions.Adders.Count;
+                if (patch.Header.Actions.Adders != null)
+                    count += patch.Header.Actions.Adders.Count;
 
             return count;
         }
 
         public static int TotalSubtractionsCount(this ShapeProject shapeProject)
         {
-            int count = 0;
+            var count = 0;
 
             foreach (var patch in shapeProject.Patches)
-                count += patch.Header.Actions.Subtracters.Count;
+                if (patch.Header.Actions.Subtracters != null)
+                    count += patch.Header.Actions.Subtracters.Count;
 
             return count;
         }

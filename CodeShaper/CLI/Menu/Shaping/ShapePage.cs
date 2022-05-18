@@ -2,18 +2,17 @@
 
 
 // Application Namespaces
-using CLI.Menu.Shaping;
 
 
 // Library Namespaces
 using EasyConsole;
 
 
-namespace CLI.Menu
+namespace CLI.Menu.Shaping
 {
     internal class ShapePage : MenuPage
     {
-        public ShapePage(ConsoleProgram program) : base("Shape", program,
+        public ShapePage(Program program) : base("Shape", program,
             new Option("Shape a Project", () => program.NavigateTo<ShapeProjectPage>()),
             new Option("Run Local Shaping Configuration", () => program.NavigateTo<RunShapingConfiguration>())
             )
@@ -23,7 +22,7 @@ namespace CLI.Menu
 
         public override void Display()
         {
-            ((ConsoleProgram)Program).Display();
+            ConsoleProgram.Display();
             base.Display();
         }
     }
