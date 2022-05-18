@@ -27,11 +27,10 @@ namespace Lib.Managers
         
         private static ObservableCollection<Tuple<ShapingConfiguration, ShapeProject>> GetLocalShapingConfigurations()
         {
-            const string configsDir = @"configs\";
-
             var configs = new ObservableCollection<Tuple<ShapingConfiguration, ShapeProject>>();
 
-            foreach (var filePath in Directory.EnumerateFiles(configsDir, "*.hjson", SearchOption.AllDirectories))
+            foreach (var filePath in Directory.EnumerateFiles(Constants.ConfigurationsDirectory, "*.hjson",
+                         SearchOption.AllDirectories))
             {
                 var config = ShapingConfiguration.Load(filePath);
                 var shapeProject = new ShapeProject(config);

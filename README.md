@@ -1,5 +1,5 @@
 <p align="center">
-<img src="Data/logo/CodeShaper-logos_transparent_cut.png" width="300"/>
+<img src="Assets/logo/CodeShaper-logos_transparent_cut.png" width="300"/>
 </p>
 
 ### PROJECT IN DEVELOPMENT
@@ -68,4 +68,4 @@ in expression matching
 ## Supporters
 Thanks JetBrains for providing free licenses for their products
 
-[<img src="Documentation/Assets/jetbrains.png" alt="JetBrains" width=150>](https://www.jetbrains.com/?from=CodeShaper)
+[<img src="Assets/jetbrains.png" alt="JetBrains" width=150>](https://www.jetbrains.com/?from=CodeShaper)

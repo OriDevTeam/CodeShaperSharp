@@ -14,12 +14,15 @@ namespace Lib.Managers
 {
     public static class SettingsManager
     {
-        public static bool Initialized { get; set; }
+        private static bool Initialized { get; set; }
         
         public static IASTVisitorSettings VisitorSettings { get; private set; }
         
         public static void Initialize()
         {
+            if (Initialized)
+                return;
+            
             Initialized = true;
             
             LoadSettings();
@@ -27,16 +30,13 @@ namespace Lib.Managers
         
         private static void LoadSettings()
         {
-            var settingsDirectory = @"settings/";
-            var userSettingsFilePath = settingsDirectory + "user_settings.hjson";
-
-            if (!File.Exists(userSettingsFilePath))
+            if (!File.Exists(Constants.UserSettingsPath))
             {
                 VisitorSettings = new ASTVisitorSettings();
                 return;   
             }
 
-            var hjsonPatch = Hjson.HjsonValue.Load(userSettingsFilePath).ToString();
+            var hjsonPatch = Hjson.HjsonValue.Load(Constants.UserSettingsPath).ToString();
             VisitorSettings = JsonConvert.DeserializeObject<IASTVisitorSettings>(hjsonPatch);
         }
     }
