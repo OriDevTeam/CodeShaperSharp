@@ -64,3 +64,8 @@ When writing any sort of Action (such as Builders, Replacements, Additions, etc.
 that these should not have the same names, as it may end up overwriting each other
 in expression matching
 
+
+## Supporters
+Thanks JetBrains for providing free licenses for their products
+
+[<img src="Documentation/Assets/jetbrains.png" alt="JetBrains" width=150>](https://www.jetbrains.com/?from=CodeShaper)
