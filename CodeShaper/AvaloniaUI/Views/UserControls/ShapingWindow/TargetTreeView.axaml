@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
-             xmlns:interfaces="clr-namespace:Lib.Shaping.Target.Interfaces;assembly=Lib"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.TargetTreeView">
     
@@ -18,23 +17,9 @@
             BorderBrush="Gray"
             BorderThickness="2"
             CornerRadius="1">
-        <TreeView Items="{Binding Groups}">
-            <TreeView.DataTemplates>
-                <TreeDataTemplate DataType="interfaces:IShapingTargetGroup" ItemsSource="{Binding ShapingTargetGroups}">
-                    <Panel>
-                        <TextBlock Text="{Binding Name}" />
-                        <Line Height="5"></Line>
-                        <TreeView Padding="-5, 10" Items="{Binding ShapingTargetFiles}">
-                            <TreeView.DataTemplates>
-                                <DataTemplate DataType="interfaces:IShapingTargetFile">
-                                    <TextBlock Text="{Binding Name}" />
-                                </DataTemplate>
-                            </TreeView.DataTemplates>
-                        </TreeView>
-                    </Panel>
-                </TreeDataTemplate>
-            </TreeView.DataTemplates>
-        </TreeView>
+        
+        <TreeDataGrid Source="{Binding Source}"/>
+        
     </Border>
     
 </UserControl>

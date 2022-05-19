@@ -10,5 +10,6 @@
         <FluentTheme Mode="Dark"/>
         <StyleInclude Source="avares://CodeShaper/Assets/Styles/Icons.axaml"></StyleInclude>
         <StyleInclude Source="avares://AvaloniaEdit/AvaloniaEdit.xaml" />
+        <StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Fluent.axaml"/>
     </Application.Styles>
 </Application>

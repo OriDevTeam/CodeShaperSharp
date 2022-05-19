@@ -14,75 +14,35 @@
     </Design.DataContext>
     
     <Panel>
-        <Grid ColumnDefinitions="*, 5, *">
-            
-            <Panel Grid.Column="0">
-                <Border Margin="5"
-                        VerticalAlignment="Stretch"
-                        Background="Transparent"
-                        BorderBrush="Gray"
-                        BorderThickness="2"
-                        CornerRadius="1">
-                    <TreeView x:Name="TreeView" Items="{Binding Patches}">
-                        <TreeView.DataTemplates>
-                            <TreeDataTemplate DataType="models:ShapePatchModel" ItemsSource="{Binding Header}">
-                                <TextBlock Text="{Binding Name}"></TextBlock>
-                            </TreeDataTemplate>
+        <Border Margin="5"
+                VerticalAlignment="Stretch"
+                Background="Transparent"
+                BorderBrush="Gray"
+                BorderThickness="2"
+                CornerRadius="1">
+            <TreeView x:Name="TreeView" Items="{Binding Patches}">
+                <TreeView.DataTemplates>
+                    <TreeDataTemplate DataType="models:ShapePatchModel" ItemsSource="{Binding Header}">
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </TreeDataTemplate>
                 
-                            <TreeDataTemplate DataType="models:ShapePatchHeaderModel" ItemsSource="{Binding Actions}">
-                                <Panel>
-                                    <TextBlock Text="{Binding FileSearch}"></TextBlock>
-                                </Panel>
-                            </TreeDataTemplate>
+                    <TreeDataTemplate DataType="models:ShapePatchHeaderModel" ItemsSource="{Binding Actions}">
+                        <Panel>
+                            <TextBlock Text="{Binding FileSearch}"></TextBlock>
+                        </Panel>
+                    </TreeDataTemplate>
                 
-                            <TreeDataTemplate DataType="models:ShapePatchActionsModel" ItemsSource="{Binding Builders}">
-                                <TextBlock Text="Actions"></TextBlock>
-                            </TreeDataTemplate>
+                    <TreeDataTemplate DataType="models:ShapePatchActionsModel" ItemsSource="{Binding Builders}">
+                        <TextBlock Text="Actions"></TextBlock>
+                    </TreeDataTemplate>
                 
-                            <TreeDataTemplate DataType="loaders:Builder">
-                                <TextBlock Text="{Binding Name}"></TextBlock>
-                            </TreeDataTemplate>
+                    <TreeDataTemplate DataType="loaders:Builder">
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </TreeDataTemplate>
                 
-                        </TreeView.DataTemplates>
-                    </TreeView>
-                </Border>
-            </Panel>
-            
-            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Cursor="IBeam"></GridSplitter>
-            
-            <Panel Grid.Column="2">
-                <Border Margin="5"
-                        VerticalAlignment="Stretch"
-                        Background="Transparent"
-                        BorderBrush="Gray"
-                        BorderThickness="2"
-                        CornerRadius="1">
-                    <TreeView Items="{Binding SelectedActions}">
-                        <TreeView.DataTemplates>
-                            <TreeDataTemplate DataType="models:ShapePatchModel" ItemsSource="{Binding Header}">
-                                <TextBlock Text="{Binding Name}"></TextBlock>
-                            </TreeDataTemplate>
-                
-                            <TreeDataTemplate DataType="models:ShapePatchHeaderModel" ItemsSource="{Binding Actions}">
-                                <Panel>
-                                    <TextBlock Text="{Binding FileSearch}"></TextBlock>
-                                </Panel>
-                            </TreeDataTemplate>
-                
-                            <TreeDataTemplate DataType="models:ShapePatchActionsModel">
-                                <TextBlock Text="Actions"></TextBlock>
-                            </TreeDataTemplate>
-                
-                            <TreeDataTemplate DataType="loaders:Builder">
-                                <TextBlock Text="{Binding Name}"></TextBlock>
-                            </TreeDataTemplate>
-                
-                        </TreeView.DataTemplates>
-                    </TreeView>
-                </Border>
-            </Panel>
-            
-        </Grid>
+                </TreeView.DataTemplates>
+            </TreeView>
+        </Border>
     </Panel>
     
     

@@ -46,9 +46,9 @@
                    RowDefinitions="*" ColumnDefinitions="200, *, 300" ShowGridLines="False">
             
                 <Border Grid.Row="0" Grid.Column="0" Margin="5, 5, 0, 5">
-                
-                    <uc:ActionsFlowTreeView/>
-                    
+                    <uc:ActionsTreeView>
+                        <shapingWindow:ActionsTreeViewModel/>
+                    </uc:ActionsTreeView>
                 </Border>
                  
                 <Grid Grid.Row="0" Grid.Column="1" RowDefinitions="*, Auto" ShowGridLines="False" VerticalAlignment="Stretch">
@@ -84,18 +84,6 @@
                                     </uc:TargetTreeView>
                                 </Panel>
                                 
-                            </TabItem>
-                            
-                            <TabItem>
-                                <TabItem.Header>
-                                    <TextBlock VerticalAlignment="Stretch">Actions</TextBlock>
-                                </TabItem.Header>
-                                
-                                <Panel>
-                                    <uc:ActionsTreeView>
-                                        <shapingWindow:ActionsTreeViewModel/>
-                                    </uc:ActionsTreeView>
-                                </Panel>
                             </TabItem>
                             
                             <TabItem>
