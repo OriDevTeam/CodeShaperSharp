@@ -40,9 +40,6 @@ namespace Lib.Shaping
         public void Start()
         {
             Log.Information($"Started Shaping {ShapeProject.Configuration.Configuration.Name}");
-            // Stopwatch.Start();
-
-            ShapeProject.Load();
             ShapingTarget.Load();
             
             Log.Information($"Loaded Shape Project and Shaping Target");

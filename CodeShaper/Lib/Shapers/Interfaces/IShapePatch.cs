@@ -16,21 +16,12 @@ namespace Lib.Shapers.Interfaces
 {
     public interface IShapePatch
     {
-        public string Name { get; set; }
-        
-        public ASTPreparationController PreparationController { get; }
-        
-        public IShapePatchHeader Header { get; set; }
-    }
-
-    public interface IShapePatchHeader
-    {
         bool Enabled { get; set; }
         string Alias { get; set; }
         string FileSearch { get; set; }
         public IShapeActions Actions { get; set; }
     }
-
+    
     public interface IShapeActions
     {
         public ObservableCollection<IShapeActionsBuilder> Builders { get; }

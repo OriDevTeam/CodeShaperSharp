@@ -1,15 +1,14 @@
 ﻿// System Namespaces
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 
 // Application Namespaces
 using Lib.Shapers.Interfaces;
+using Lib.Shapers.Patch;
 using Lib.Shaping.Expressions;
 using Lib.Utility.Extensions;
-using Lib.AST.Controllers;
 
 
 // Library Namespaces
@@ -20,33 +19,18 @@ using PCRE;
 
 namespace Lib.Shapers.Loaders
 {
-    
-    
-    public abstract class ShapePatchJSON<TLocation> : IShapePatch
+
+    public abstract class ShapePatchJSON<TLocation> : ShapePatchFile
     {
-        private string FilePath;
-        private string fileContent;
-
-        public string Name { get; set; }
-        public ASTPreparationController PreparationController { get; set; }
-        public IShapePatchHeader Header { get; set; }
-
-        public ShapePatchJSON(string filePath)
+        protected ShapePatchJSON(string filePath) : base(filePath)
         {
-            FilePath = filePath;
-            fileContent = File.ReadAllText(filePath);
-
-            Name = Path.GetFileNameWithoutExtension(filePath);
-            
-            var hjsonPatch = Hjson.HjsonValue.Load(filePath).ToString();
-            
             ShapePatchSettings.Location = typeof(TLocation);
-
-            Header = JsonConvert.DeserializeObject<ShapePatchHeader>(hjsonPatch);
+            
+            Patch = JsonConvert.DeserializeObject<ShapePatch>(Hjson.HjsonValue.Load(filePath).ToString());
         }
     }
     
-    public class ShapePatchHeader : IShapePatchHeader
+    public class ShapePatch : IShapePatch
     {
         [JsonProperty("enabled")]
         public bool Enabled { get; set; }
@@ -65,7 +49,7 @@ namespace Lib.Shapers.Loaders
         [JsonProperty("actions")]
         public IShapeActions Actions { get; set; }
 
-        public ShapePatchHeader(ShapeActions actions)
+        public ShapePatch(ShapeActions actions)
         {
             Actions = actions;
         }
@@ -345,9 +329,10 @@ namespace Lib.Shapers.Loaders
             {
                 var jActions = value.Value<JObject>("actions");
 
-                ShapeActions actions = null;
-                if (jActions != null) 
-                    actions = JsonConvert.DeserializeObject<ShapeActions>(jActions.ToString());
+                if (jActions == null)
+                    return null;
+                
+                var actions = JsonConvert.DeserializeObject<ShapeActions>(jActions.ToString());
 
                 var builder = new Builder(actions)
                 {

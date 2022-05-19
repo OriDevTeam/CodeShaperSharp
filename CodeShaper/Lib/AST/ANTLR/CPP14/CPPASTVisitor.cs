@@ -35,7 +35,7 @@ namespace Lib.AST.ANTLR.CPP14
             var allText = VisitorController.AllText();
             
             VisitorController.ProcessCustomVisit(tree,
-                allText, Location.Module,
+                allText, CPP14Location.Module,
                 CustomVisitInclude(allText),
                 new Func<IParseTree, object>(base.Visit));
             
@@ -54,7 +54,7 @@ namespace Lib.AST.ANTLR.CPP14
         public override object VisitDeclaration([NotNull] CPP14Parser.DeclarationContext context)
         {
             VisitorController.ProcessVisit(context,
-                Location.Declaration,
+                CPP14Location.Declaration,
                 new Func<CPP14Parser.DeclarationContext, object>(base.VisitDeclaration));
 
             return null;
@@ -63,7 +63,7 @@ namespace Lib.AST.ANTLR.CPP14
         public override object VisitDeclarationStatement([NotNull] CPP14Parser.DeclarationStatementContext context)
         {
             VisitorController.ProcessVisit(context,
-                Location.DeclarationStatement,
+                CPP14Location.DeclarationStatement,
                 new Func<CPP14Parser.DeclarationStatementContext, object>(base.VisitDeclarationStatement));
 
             return null;
@@ -71,7 +71,7 @@ namespace Lib.AST.ANTLR.CPP14
         public override object VisitFunctionDefinition([NotNull] CPP14Parser.FunctionDefinitionContext context)
         {
             VisitorController.ProcessCustomVisit(context,
-                Location.FunctionDefinition,
+                CPP14Location.FunctionDefinition,
                 CustomFunctionBodyInclude(context),
                 new Func<CPP14Parser.FunctionDefinitionContext, object>(base.VisitFunctionDefinition));
 
@@ -85,7 +85,7 @@ namespace Lib.AST.ANTLR.CPP14
             var functionBody = con.Substring(1, con.Length - 2);
 
             VisitorController.ProcessCustomVisit(context,
-                functionBody, Location.FunctionBody,
+                functionBody, CPP14Location.FunctionBody,
                 null,
                 new Func<CPP14Parser.FunctionBodyContext, object>(base.VisitFunctionBody));
 
@@ -94,7 +94,7 @@ namespace Lib.AST.ANTLR.CPP14
         public override object VisitCondition([NotNull] CPP14Parser.ConditionContext context)
         {
             VisitorController.ProcessVisit(context,
-                Location.MethodCondition,
+                CPP14Location.MethodCondition,
                 new Func<CPP14Parser.ConditionContext, object>(base.VisitCondition));
 
             return null;
@@ -112,7 +112,7 @@ namespace Lib.AST.ANTLR.CPP14
             var matches = reg.Matches(text);
 
             foreach (var match in matches)
-                locationIncludes.Add(new Tuple<Enum, string>( Location.Include, match.Value));
+                locationIncludes.Add(new Tuple<Enum, string>(CPP14Location.Include, match.Value));
             
             return locationIncludes;
         }
@@ -127,7 +127,7 @@ namespace Lib.AST.ANTLR.CPP14
 
             var functionBody = functionContext.Substring(0, functionContext.Length - functionBodyContext.Length);
 
-            functionLocations.Add(new Tuple<Enum, string>(Location.Function, functionBody));
+            functionLocations.Add(new Tuple<Enum, string>(CPP14Location.Function, functionBody));
 
             return functionLocations;
         }

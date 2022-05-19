@@ -36,8 +36,8 @@ namespace Lib.Managers
                 return;   
             }
 
-            var hjsonPatch = Hjson.HjsonValue.Load(Constants.UserSettingsPath).ToString();
-            VisitorSettings = JsonConvert.DeserializeObject<IASTVisitorSettings>(hjsonPatch);
+            var userSettingsHjson = Hjson.HjsonValue.Load(Constants.UserSettingsPath).ToString();
+            VisitorSettings = JsonConvert.DeserializeObject<IASTVisitorSettings>(userSettingsHjson);
         }
     }
 }

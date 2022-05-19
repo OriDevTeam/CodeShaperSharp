@@ -125,10 +125,9 @@ namespace Lib.Shaping
         {
             get
             {
-                if (CurrentTargetFile == null)
-                    return VisitorState.Stop;
-                
-                return CurrentTargetFile.ShapePatch.PreparationController.ASTSet.Visitor.VisitorController.State;
+                return CurrentTargetFile == null ?
+                    VisitorState.Stop :
+                    CurrentTargetFile.ShapePatchFile.PreparationController.ASTSet.Visitor.VisitorController.State;
             }
             set
             {
@@ -142,7 +141,7 @@ namespace Lib.Shaping
                     CurrentTargetFile = nextTargetFile;
                 }
 
-                var visitorController = CurrentTargetFile.ShapePatch.PreparationController.ASTSet.Visitor.VisitorController;
+                var visitorController = CurrentTargetFile.ShapePatchFile.PreparationController.ASTSet.Visitor.VisitorController;
 
                 visitorController.State = value;
             }

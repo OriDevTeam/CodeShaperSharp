@@ -1,9 +1,10 @@
 ﻿// System Namespaces
 using System.Collections.ObjectModel;
-
+using Lib.Shapers;
 
 // Application Namespaces
 using Lib.Shapers.Interfaces;
+using Lib.Shapers.Patch;
 
 
 // Library Namespaces
@@ -12,19 +13,8 @@ using Lib.Shapers.Interfaces;
 
 namespace AvaloniaUI.Models
 {
-    public class ShapePatchModel
-    {
-        public string Name { get; set; }
-        public ObservableCollection<ShapePatchHeaderModel> Header { get; set; } = new();
-        public ShapePatchModel(IShapePatch patch)
-        {
-            Name = patch.Name;
-            
-            Header.Add(new ShapePatchHeaderModel(patch.Header));
-        }
-    }
     
-    public class ShapePatchHeaderModel
+    public class ShapePatchModel
     {
         public string? Name { get; set; }
         public string FileSearch { get; set; }
@@ -32,14 +22,14 @@ namespace AvaloniaUI.Models
         public ObservableCollection<ShapePatchActionsModel> Actions { get; set; } = new();
 
         
-        public ShapePatchHeaderModel(IShapePatchHeader header)
+        public ShapePatchModel(ShapePatchFile patchFile)
         {
-            FileSearch = $"File Name: {header.FileSearch}";
+            FileSearch = $"File Name: {patchFile.Patch.FileSearch}";
             
-            Actions.Add(new ShapePatchActionsModel(header.Actions));
+            Actions.Add(new ShapePatchActionsModel(patchFile.Patch.Actions));
         }
     }
-
+    
     public class ShapePatchActionsModel
     {
         public ObservableCollection<IShapeActionsBuilder> Builders { get; set; }

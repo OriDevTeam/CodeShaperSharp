@@ -3,7 +3,8 @@ using System;
 
 
 // Application Namespaces
-using Lib.Shapers.Interfaces;
+using Lib.Shapers;
+using Lib.Shapers.Patch;
 using Lib.Shaping.Result;
 
 
@@ -16,7 +17,7 @@ namespace Lib.Shaping.Target.Interfaces
     {
         public string Name { get; }
         
-        public IShapePatch ShapePatch { get; }
+        public ShapePatchFile ShapePatchFile { get; }
         
         public IShapingTargetGroup Parent { get; }
         public string FileContent { get; set; }

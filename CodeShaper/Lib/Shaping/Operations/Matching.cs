@@ -6,7 +6,9 @@ using System.Linq;
 
 // Application Namespaces
 using Lib.AST.Interfaces;
+using Lib.Shapers;
 using Lib.Shapers.Interfaces;
+using Lib.Shapers.Patch;
 using Lib.Utility.Extensions;
 
 
@@ -21,25 +23,30 @@ namespace Lib.Shaping.Operations
     {
         public static bool MatchesFile(string fileName, IShapePatch patchOld)
         {
-            return PcreRegex.IsMatch(fileName, patchOld.Header.FileSearch);
+            return PcreRegex.IsMatch(fileName, patchOld.FileSearch);
         }
     }
 
     public static partial class Building
     {
-        public static List<IShapeActionsBuilder> GetTopBuilders(string fileName, List<IShapePatch> patches)
+        public static List<IShapeActionsBuilder> GetRootBuilders(string fileName, List<ShapePatchFile> patches)
         {
             var builders = new List<IShapeActionsBuilder>();
-
+            
             foreach (var patch in patches)
-            {
-                if (!Matching.MatchesFile(fileName, patch))
-                    continue;
+                builders.AddRange(GetRootBuilders(fileName, patch));
+            
+            return builders;
+        }
+        
+        public static List<IShapeActionsBuilder> GetRootBuilders(string fileName, ShapePatchFile patch)
+        {
+            if (!Matching.MatchesFile(fileName, patch.Patch))
+                return new List<IShapeActionsBuilder>();
 
-                foreach (var builder in patch.Header.Actions.Builders)
-                    builders.Add(builder);
-            }
+            var builders = patch.Patch.Actions.Builders.ToList();
 
+            // TODO: Builders hierarchical preparation should be done somewhere else, as this is a simple getter
             foreach (var builder in builders)
             {
                 builder.RootBuilder = builder;
@@ -57,10 +64,8 @@ namespace Lib.Shaping.Operations
 
             foreach (var childBuilder in parent.Actions.Builders)
             {
-                var childBui = childBuilder;
-
-                childBui.ParentBuilder = parent;
-                childBui.RootBuilder = parent.RootBuilder;
+                childBuilder.ParentBuilder = parent;
+                childBuilder.RootBuilder = parent.RootBuilder;
 
                 PrepareChildrenBuilders(childBuilder);
             }

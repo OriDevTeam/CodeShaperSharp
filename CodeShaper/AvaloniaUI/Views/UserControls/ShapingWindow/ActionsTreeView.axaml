@@ -20,6 +20,10 @@
                 BorderBrush="Gray"
                 BorderThickness="2"
                 CornerRadius="1">
+            
+            <TreeDataGrid Source="{Binding Source}"/>
+            
+            <!--
             <TreeView x:Name="TreeView" Items="{Binding Patches}">
                 <TreeView.DataTemplates>
                     <TreeDataTemplate DataType="models:ShapePatchModel" ItemsSource="{Binding Header}">
@@ -39,9 +43,12 @@
                     <TreeDataTemplate DataType="loaders:Builder">
                         <TextBlock Text="{Binding Name}"></TextBlock>
                     </TreeDataTemplate>
+                    
                 
                 </TreeView.DataTemplates>
             </TreeView>
+            -->
+            
         </Border>
     </Panel>
     

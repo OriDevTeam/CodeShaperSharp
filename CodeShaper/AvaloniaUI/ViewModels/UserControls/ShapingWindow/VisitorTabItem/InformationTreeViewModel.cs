@@ -23,7 +23,7 @@ namespace AvaloniaUI.ViewModels.UserControls.ShapingWindow.VisitorTabItem
         {
             var currentTargetFile = ShapingOperationsManager.ActiveShapingOperation.OperationsController.CurrentTargetFile;
 
-            Locations = currentTargetFile.ShapePatch.PreparationController.ASTSet.Visitor.
+            Locations = currentTargetFile.ShapePatchFile.PreparationController.ASTSet.Visitor.
                 VisitorController.LocationsContent;
         }
         

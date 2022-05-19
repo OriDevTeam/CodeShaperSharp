@@ -1,12 +1,14 @@
 ﻿// System Namespaces
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 
 
 // Application Namespaces
 using Lib.Configurations;
 using Lib.Shapers.Interfaces;
+using Lib.Shapers.Patch;
 using Lib.Shapers.Patches;
 using Lib.Shaping.Interfaces;
 
@@ -22,7 +24,7 @@ namespace Lib.Shaping
         public Type Patch => typeof(CPP14Patch);
         
         public ShapeProjectConfiguration Configuration;
-        public readonly List<IShapePatch> Patches;
+        public readonly List<ShapePatchFile> Patches;
 
         public event EventHandler<string> SavingShapedFile;
 
@@ -31,9 +33,9 @@ namespace Lib.Shaping
             Patches = ParsePatches(shapingConfiguration.ShapeProjectDirectory);
         }
 
-        private List<IShapePatch> ParsePatches(string projectDirectory)
+        private List<ShapePatchFile> ParsePatches(string projectDirectory)
         {
-            var patches = new List<IShapePatch>();
+            var patches = new List<ShapePatchFile>();
 
             if (!Directory.Exists(projectDirectory))
                 throw new Exception();
@@ -41,13 +43,10 @@ namespace Lib.Shaping
             var configurationPath = projectDirectory + @"\settings.hjson";
             Configuration = new ShapeProjectConfiguration(configurationPath);
 
-            var projectsPath = projectDirectory + @"\projects\";
-
-            foreach (var file in Directory.EnumerateFiles(projectDirectory, "projects/*.hjson", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(projectDirectory, "projects/*.hjson",
+                         SearchOption.AllDirectories))
             {
-                var patch = (IShapePatch)Activator.CreateInstance(Patch, file);
-                
-                patches.Add(patch);
+                patches.Add((ShapePatchFile)Activator.CreateInstance(Patch, file));
             }
 
             return patches;
@@ -69,21 +68,12 @@ namespace Lib.Shaping
         }
         */
 
-        internal IShapePatch MatchingShapePatch(string fileName)
+        internal ShapePatchFile MatchingShapePatch(string fileName)
         {
-            foreach (var patch in Patches)
-            {
-                var match = PcreRegex.IsMatch(fileName, patch.Header.FileSearch);
-
-                if (match)
-                    return patch;
-            }
-
-            return null;
-        }
-
-        public void Load()
-        {
+            return (from patch in Patches
+                let match = PcreRegex.IsMatch(fileName, patch.Patch.FileSearch)
+                where match
+                select patch).FirstOrDefault();
         }
     }
 
@@ -94,8 +84,8 @@ namespace Lib.Shaping
             var count = 0;
 
             foreach (var patch in shapeProject.Patches)
-                if (patch.Header.Actions.Replacers != null)
-                    count += patch.Header.Actions.Replacers.Count;
+                if (patch.Patch.Actions.Replacers != null)
+                    count += patch.Patch.Actions.Replacers.Count;
 
             return count;
         }
@@ -105,8 +95,8 @@ namespace Lib.Shaping
             var count = 0;
 
             foreach (var patch in shapeProject.Patches)
-                if (patch.Header.Actions.Adders != null)
-                    count += patch.Header.Actions.Adders.Count;
+                if (patch.Patch.Actions.Adders != null)
+                    count += patch.Patch.Actions.Adders.Count;
 
             return count;
         }
@@ -116,8 +106,8 @@ namespace Lib.Shaping
             var count = 0;
 
             foreach (var patch in shapeProject.Patches)
-                if (patch.Header.Actions.Subtracters != null)
-                    count += patch.Header.Actions.Subtracters.Count;
+                if (patch.Patch.Actions.Subtracters != null)
+                    count += patch.Patch.Actions.Subtracters.Count;
 
             return count;
         }

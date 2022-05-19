@@ -30,7 +30,7 @@ namespace AvaloniaUI.ViewModels.UserControls.ShapingWindow.VisitorTabItem
         {
             var currentTargetFile = ShapingOperationsManager.ActiveShapingOperation.OperationsController.CurrentTargetFile;
 
-            var visitorController = currentTargetFile.ShapePatch.PreparationController
+            var visitorController = currentTargetFile.ShapePatchFile.PreparationController
                 .ASTSet.Visitor.VisitorController;
 
             var currentContext = visitorController.CurrentContext;

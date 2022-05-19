@@ -13,7 +13,7 @@ using Lib.Shapers.Loaders;
 
 namespace Lib.Shapers.Patches
 {
-    public class CPP14Patch : ShapePatchJSON<Location>
+    public class CPP14Patch : ShapePatchJSON<CPP14Location>
     {
         public CPP14Patch(string filePath) : base(filePath)
         {
@@ -21,7 +21,7 @@ namespace Lib.Shapers.Patches
         }
     }
 
-    public enum Location
+    public enum CPP14Location
     {
         [EnumMember(Value = "none")]
         None,

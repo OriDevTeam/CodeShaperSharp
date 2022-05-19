@@ -73,7 +73,7 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
             
             if (currentTargetFile != null)
             {
-                var currentLocation = currentTargetFile.ShapePatch.PreparationController.ASTSet.Visitor.VisitorController.CurrentLocation;
+                var currentLocation = currentTargetFile.ShapePatchFile.PreparationController.ASTSet.Visitor.VisitorController.CurrentLocation;
 
                 var locationStr = "None";
 
@@ -82,7 +82,7 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
                 
                 FileNameText.Text = currentTargetFile.Name;
                 VisitorLocationText.Text = $"Visitor Location: {locationStr}";
-                VisitorNameText.Text = currentTargetFile.ShapePatch.PreparationController.ASTSet.Visitor.Name;
+                VisitorNameText.Text = currentTargetFile.ShapePatchFile.PreparationController.ASTSet.Visitor.Name;
             }
 
             App.Current.Styles.TryGetResource("PauseRegular", out var pauseIcon);

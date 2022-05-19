@@ -5,9 +5,10 @@ using System.IO;
 
 // Application Namespaces
 using Lib.Shaping;
-using Lib.Shaping.Target.Interfaces;
-using Lib.Shapers.Interfaces;
+using Lib.Shapers;
+using Lib.Shapers.Patch;
 using Lib.Shaping.Result;
+using Lib.Shaping.Target.Interfaces;
 
 
 // Library Namespaces
@@ -19,7 +20,7 @@ namespace Lib.Projects.VCXSolution
     {
         public string Name { get; }
         
-        public IShapePatch ShapePatch { get; }
+        public ShapePatchFile ShapePatchFile { get; }
         public IShapingTargetGroup Parent { get; }
 
         public event EventHandler<IShapingTargetFile> OnShapingTargetFileLoad;
@@ -34,7 +35,7 @@ namespace Lib.Projects.VCXSolution
 
         private readonly ShapingOperation ShapingOperation;
         
-        public VCXTargetFile(ShapingOperation shapingOperation, IShapePatch shapePatch, string filePath, IShapingTargetGroup parentGroup)
+        public VCXTargetFile(ShapingOperation shapingOperation, ShapePatchFile shapePatch, string filePath, IShapingTargetGroup parentGroup)
         {
             Name = Path.GetFileName(filePath);
             FilePath = filePath;
@@ -44,7 +45,7 @@ namespace Lib.Projects.VCXSolution
             Parent = parentGroup;
             
             ShapingOperation = shapingOperation;
-            ShapePatch = shapePatch;
+            ShapePatchFile = shapePatch;
 
             Result = new ShapeResult(ShapingOperation.ShapeProject, FilePath);
             
@@ -53,8 +54,8 @@ namespace Lib.Projects.VCXSolution
         
         public void LoadFile()
         {
-            ShapePatch.PreparationController.Prepare(Result.FileContent);
-            ShapePatch.PreparationController.ASTSet.Visitor.VisitorController.OnVisitorProcess += Result.VisitorProcess;
+            ShapePatchFile.PreparationController.Prepare(Result.FileContent);
+            ShapePatchFile.PreparationController.ASTSet.Visitor.VisitorController.OnVisitorProcess += Result.VisitorProcess;
         }
     }
 }

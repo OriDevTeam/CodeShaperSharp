@@ -39,7 +39,7 @@ namespace Lib.Shaping.Result
             FileName = Path.GetFileName(filePath);;
             FileContent = File.ReadAllText(filePath);
 
-            Builders = Building.GetTopBuilders(FileName, ShapeProject.Patches);
+            Builders = Building.GetRootBuilders(FileName, ShapeProject.Patches);
         }
 
         public void VisitorProcess(object sender, Enum location)
