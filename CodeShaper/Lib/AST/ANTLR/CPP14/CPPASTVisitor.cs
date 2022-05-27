@@ -103,7 +103,7 @@ namespace Lib.AST.ANTLR.CPP14
 
     public partial class CPPASTVisitor
     {
-        private IEnumerable<Tuple<Enum, string>> CustomVisitInclude(string text)
+        private static IEnumerable<Tuple<Enum, string>> CustomVisitInclude(string text)
         {
             var locationIncludes = new List<Tuple<Enum, string>>();
             

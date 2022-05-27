@@ -25,7 +25,6 @@
         <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.14" />
         <PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.13.3" />
         <PackageReference Include="AvalonStudio.Shell" Version="0.9.9" />
-        <PackageReference Include="Dragablz" Version="0.0.3.223" />
         <PackageReference Include="Markdown.Avalonia" Version="0.10.11" />
         <PackageReference Include="Serilog.Sinks.TextWriter" Version="2.1.0" />
         <PackageReference Include="ThingLing.Avalonia.Controls.TabControl" Version="1.0.1" />

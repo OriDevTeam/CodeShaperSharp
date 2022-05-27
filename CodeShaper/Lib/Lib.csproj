@@ -37,6 +37,7 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.TextWriter" Version="2.1.0" />
+    <PackageReference Include="stateless" Version="5.11.0" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
 

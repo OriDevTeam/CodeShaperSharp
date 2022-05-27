@@ -25,8 +25,8 @@ namespace AvaloniaUI.Views.UserControls.ShapingWindow
         {
             AvaloniaXamlLoader.Load(this);
             
-            // ActionsTreeViewControl = this.Find<TreeView>("TreeView");
-            // ActionsTreeViewControl.SelectionChanged += OnSelectionChanged;
+            ActionsTreeViewControl = this.Find<TreeView>("TreeView");
+            ActionsTreeViewControl.SelectionChanged += OnSelectionChanged;
         }
 
         private void OnSelectionChanged(object? sender, SelectionChangedEventArgs selectionChangedEventArgs)

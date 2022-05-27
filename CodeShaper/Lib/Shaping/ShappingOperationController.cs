@@ -25,76 +25,6 @@ namespace Lib.Shaping
             ShapingOperation = shapingOperation;
         }
 
-        public void Shape()
-        {
-            
-        }
-        
-        /*
-        private IShapingTargetFile Next()
-        {
-            if (CurrentTargetFile == null)
-                return Next(ShapingOperation.ShapingTarget.ShapingTargetGroups[0]);
-
-            var next = CurrentTargetFile.Parent.ShapingTargetFiles.Next(x => false);
-
-            return next ?? Next(CurrentTargetFile.Parent);
-        }
-
-        private IShapingTargetFile NextGroup(IShapingTargetGroup group)
-        {
-            while (true)
-            {
-                if (group.ParentGroup == null)
-                    @group = @group?.ShapingTargetGroups.FirstOrDefault();
-                    
-                if (@group is { ShapingTargetFiles: { } })
-                    return Next(group.ParentGroup);
-                
-            }
-        }
-        */
-        /*
-        
-        private IShapingTargetFile Next()
-        {
-            IShapingTargetGroup group = null;
-            IShapingTargetFile targetFile = null;
-            
-            if (CurrentTargetFile == null)
-            {
-                group = NextGroup(null);
-                targetFile = group.ShapingTargetFiles.FirstOrDefault();
-            }
-            
-            return targetFile;
-        }
-        
-        
-        private IShapingTargetFile NextFile(IShapingTargetFile file)
-        {
-            
-        }
-        
-        private IShapingTargetGroup NextGroup()
-        {
-            return NextGroup(ShapingOperation.ShapingTarget.ShapingTargetGroups.FirstOrDefault());
-        }
-        
-        private IShapingTargetGroup NextGroup(IShapingTargetGroup group)
-        {
-            IShapingTargetGroup grp;
-            
-            grp = CurrentTargetFile.Parent.ShapingTargetGroups.Next(x => x == CurrentTargetFile.Parent);
-            
-            if (grp != null && grp.ShapingTargetFiles.Count < 1)
-                return NextGroup(grp);
-
-            return grp;
-        }
-        
-        */
-
 
         private IShapingTargetFile Next()
         {
@@ -143,7 +73,7 @@ namespace Lib.Shaping
 
                 var visitorController = CurrentTargetFile.ShapePatchFile.PreparationController.ASTSet.Visitor.VisitorController;
 
-                visitorController.State = value;
+                visitorController.RequestState = value;
             }
         }
         

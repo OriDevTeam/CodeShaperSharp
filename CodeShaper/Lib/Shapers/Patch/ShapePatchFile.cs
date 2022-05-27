@@ -1,10 +1,10 @@
 ﻿// System Imports
-
-
 using System.IO;
+
+
+// Application Imports
 using Lib.AST.Controllers;
 using Lib.Shapers.Interfaces;
-// Application Imports
 
 
 // Library Imports
@@ -17,8 +17,14 @@ namespace Lib.Shapers.Patch
         protected string FilePath;
         
         protected string FileContent;
+        
+        protected string Name { get; set; }
 
-        public ShapePatchFile(string path)
+        public ASTPreparationController PreparationController { get; set; }
+
+        public IShapePatch Patch { get; protected init; }
+
+        protected ShapePatchFile(string path)
         {
             FilePath = path;
             
@@ -27,10 +33,5 @@ namespace Lib.Shapers.Patch
             Name = Path.GetFileNameWithoutExtension(path);
         }
 
-        protected string Name { get; set; }
-
-        public ASTPreparationController PreparationController { get; set; }
-
-        public IShapePatch Patch { get; init; }
     }
 }

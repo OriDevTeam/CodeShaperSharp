@@ -5,6 +5,8 @@
              xmlns:shapingWindow="clr-namespace:AvaloniaUI.ViewModels.UserControls.ShapingWindow"
              xmlns:models="clr-namespace:AvaloniaUI.Models"
              xmlns:loaders="clr-namespace:Lib.Shapers.Loaders;assembly=Lib"
+             xmlns:patch="clr-namespace:Lib.Shapers.Patch;assembly=Lib"
+             xmlns:interfaces="clr-namespace:Lib.Shapers.Interfaces;assembly=Lib"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaUI.Views.UserControls.ShapingWindow.ActionsTreeView">
     
@@ -21,7 +23,27 @@
                 BorderThickness="2"
                 CornerRadius="1">
             
+            <!--
             <TreeDataGrid Source="{Binding Source}"/>
+            -->
+            
+            <TreeView x:Name="TreeView" Items="{Binding Patches}">
+                <TreeView.DataTemplates>
+                    
+                    <TreeDataTemplate DataType="patch:ShapePatchFile">
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </TreeDataTemplate>
+                    
+                    <TreeDataTemplate DataType="interfaces:IShapeActions">
+                        <TextBlock Text="Test"></TextBlock>
+                    </TreeDataTemplate>
+                                       
+                    <TreeDataTemplate>
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </TreeDataTemplate>
+                    
+                </TreeView.DataTemplates>
+            </TreeView>
             
             <!--
             <TreeView x:Name="TreeView" Items="{Binding Patches}">
@@ -30,7 +52,7 @@
                         <TextBlock Text="{Binding Name}"></TextBlock>
                     </TreeDataTemplate>
                 
-                    <TreeDataTemplate DataType="models:ShapePatchHeaderModel" ItemsSource="{Binding Actions}">
+                    <TreeDataTemplate DataType="models:ShapePatchModel" ItemsSource="{Binding Actions}">
                         <Panel>
                             <TextBlock Text="{Binding FileSearch}"></TextBlock>
                         </Panel>

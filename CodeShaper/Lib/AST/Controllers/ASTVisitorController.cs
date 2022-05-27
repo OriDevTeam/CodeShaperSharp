@@ -12,6 +12,7 @@ using Serilog;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using Stateless;
 
 
 namespace Lib.AST.Controllers
@@ -19,7 +20,7 @@ namespace Lib.AST.Controllers
     public partial class ASTVisitorController<TLocation> where TLocation : Enum
     {
 
-        public Dictionary<TLocation, string> LocationsContent { get; private set; } = new();
+        public Dictionary<TLocation, string> LocationsContent { get; } = new();
         
         public TLocation CurrentLocation { get; private set; }
         
@@ -27,19 +28,24 @@ namespace Lib.AST.Controllers
 
         public event EventHandler<TLocation> OnVisitorProcess;
         
-        private VisitorState state;
-        public VisitorState State
+        public VisitorState State { get; private set; }
+
+        private VisitorState requestState;
+        public VisitorState RequestState
         {
-            get => state;
             set
             {
-                ProcessStateChange();
-                state = value;
+                if (requestState == value)
+                    return;
+                
+                requestState = value;
+                PreProcessVisit();
             }
         }
 
-        private bool visiting;
-        
+        private bool _processing;
+        private int _temp;
+
         public ParserRuleContext CurrentContext { get; set; }
         private Delegate CurrentDelegate { get; set; }
 
@@ -50,7 +56,7 @@ namespace Lib.AST.Controllers
 
         internal void ProcessVisitError(IErrorNode node, Delegate visit)
         {
-            Log.Error($"ERROR: Visitor cannot parse node {node}, stopping visits.");
+            Log.Error($"ERROR: Visitor cannot parse node {node}, stopped visiting.");
             
         }
         
@@ -65,12 +71,9 @@ namespace Lib.AST.Controllers
             foreach (var (item1, item2) in customVisits)
                 LocationsContent[item1] = item2;
 
-            // CurrentContext = tree;
-            visiting = true;
-            
             CurrentDelegate = visit;
             
-            ProcessVisitorState(location);
+            PostProcessVisit(location);
         }
         
         internal void ProcessCustomVisit([NotNull] ParserRuleContext context, 
@@ -83,12 +86,10 @@ namespace Lib.AST.Controllers
 
             foreach (var (item1, item2) in customVisits)
                 LocationsContent[item1] = item2;
-
-            ProcessContextState(context);
             
             CurrentDelegate = visit;
             
-            ProcessVisitorState(location);
+            PostProcessVisit(location, context);
         }
         
         internal void ProcessCustomVisit([NotNull] ParserRuleContext context, 
@@ -102,12 +103,10 @@ namespace Lib.AST.Controllers
             if (customVisits != null)
                 foreach (var (item1, item2) in customVisits)
                     LocationsContent[item1] = item2;
-
-            ProcessContextState(context);
             
             CurrentDelegate = visit;
             
-            ProcessVisitorState(location);
+            PostProcessVisit(location, context);
         }
 
         internal void ProcessVisit([NotNull] ParserRuleContext context, TLocation location, Delegate visit)
@@ -116,29 +115,15 @@ namespace Lib.AST.Controllers
             
             LocationsContent[location] = contextText;
             
-            ProcessContextState(context);
-
             CurrentDelegate = visit;
             
-            ProcessVisitorState(location);
+            PostProcessVisit(location, context);
         }
 
-        private void ProcessContextState(ParserRuleContext context)
+        private void PreProcessVisit()
         {
-            CurrentContext = context;
-            visiting = true;
-        }
-        
-        private void ProcessVisitorState(TLocation location)
-        {
-            Log.Information($"Visiting '{location}' location");
+            State = requestState;
             
-            CurrentLocation = location;
-
-            OnVisitorProcess?.Invoke(this, location);
-            
-            ProcessVisitorSettings();
-
             switch (State)
             {
                 case VisitorState.Stop:
@@ -147,7 +132,6 @@ namespace Lib.AST.Controllers
                 
                 case VisitorState.Play:
                     ShapingOperationsManager.ActiveShapingOperation.Stopwatch.Start();
-                    ProcessStateChange();
                     break;
 
                 case VisitorState.Pause:
@@ -155,36 +139,95 @@ namespace Lib.AST.Controllers
                     break;
                 
                 case VisitorState.Previous:
-                    throw new Exception("Cannot go back on a visitor, not implemented");
-                    
                 case VisitorState.Next:
-                    throw new Exception("Cannot go back on a visitor, not implemented");
-                
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new NotImplementedException();
             }
+            
+            switch (State)
+            {
+                case VisitorState.Stop:
+                    Log.Information("Stopped visiting");
+                    break;
+                
+                case VisitorState.Play:
+                    Log.Information("Played visiting");
+                    break;
+                
+                case VisitorState.Pause:
+                    Log.Information("Paused visiting");
+                    break;
 
-            visiting = false;
+                case VisitorState.Previous:
+                case VisitorState.Next:
+                default:
+                    throw new NotImplementedException();
+            }
+            
+            ProcessVisit();
         }
 
-        private void ProcessVisitorSettings()
+        private void ProcessVisit()
         {
-            if (SettingsManager.VisitorSettings.PauseOnVisit)
-                state = VisitorState.Pause;
-        }
-        
-        private void ProcessStateChange()
-        {
+            if (_processing)
+                return;
+            
+            if (State != VisitorState.Play)
+                return;
+
+            _processing = true;
+            
             CurrentContext ??= PreparationController.ASTSet.GetRootContext();
             CurrentDelegate ??= new Func<IParseTree, object>(PreparationController.ASTSet.Visitor.Visit);
             
-            CurrentDelegate.DynamicInvoke(CurrentContext);
+            Log.Information($"Visiting '{CurrentLocation}' location");
+            var result = CurrentDelegate.DynamicInvoke(CurrentContext);
+            _temp += 1;
+            
+            if (_temp >= 109)
+                _processing = false;
 
-            if (!visiting)
-                Log.Information("Finished visiting");
+            
+            OnVisitorProcess?.Invoke(this, CurrentLocation);
+        }
+
+        private void PostProcessVisit(TLocation location, ParserRuleContext context)
+        {
+            if (PreparationController.ASTSet.GetRootContext() == context)
+                _processing = false;
+            
+            CurrentContext = context;
+            
+            PostProcessVisit(location);
+        }
+        
+        private void PostProcessVisit(TLocation location)
+        {
+            _processing = false;
+            
+            CurrentLocation = location;
+
+            if (SettingsManager.VisitorSettings.PauseOnVisit)
+                State = VisitorState.Pause;
+
+            requestState = State;
+            
+            ProcessVisit();
         }
     }
 
+    // TODO: Attempt at making a simpler FSM instead of current proccesing above
+    public partial class ASTVisitorController<TLocation>
+    {
+
+        private void MakeFiniteStateMachine()
+        {
+            var ModuleVisit = new StateMachine<VisitorState, VisitorState>(State);
+
+            ModuleVisit.Configure(VisitorState.Play).Permit(VisitorState.Pause, VisitorState.Play);
+        }
+    }
+    
     public partial class ASTVisitorController<TLocation>
     {
         internal string GetText(ParserRuleContext context)
